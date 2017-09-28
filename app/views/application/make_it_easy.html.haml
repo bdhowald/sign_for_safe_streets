@@ -1,0 +1,74 @@
+%main
+  %div.container
+    %div.row
+      %div.col-lg-12
+        %div#page_header
+          %h1.title
+            Transportation Alternatives Campaigns
+
+        %div#filters
+          %div.input-group
+            %span#search_exp.input-group-addon
+              Search
+            %input.form-control.typeahead{"aria-describedby" => "search_exp", placeholder: "ex: bike lanes, cameras, Queens", type: "text"}
+
+          %ul.filter-buttons
+            %div.row
+              %li.col
+                %i.fa.fa-bicycle
+                %span.sans
+                  Cycling
+              %li.col
+                %i.fa.fa-female
+                %span.sans
+                  Walking
+              %li.col
+                %i.fa.fa-bus
+                %span.sans
+                  Transit
+              %li.col
+                %i.fa.fa-graduation-cap
+                %span.sans
+                  Schools
+
+
+
+        / .container-2
+        /   %br/
+        /   //%p Click all the fruits that you like
+        /   .btn-group.col-xs-12{"data-toggle" => "buttons"}
+        /     %label.btn.btn-outline-info
+        /       %input#cycling{:name => "campaign_categories", :type => "checkbox", :value => "cycling"}>/
+        /       Cycling
+        /     %label.btn.btn-outline-info
+        /       %input#walking{:name => "campaign_categories", :type => "checkbox", :value => "walking"}>/
+        /       Walking
+        /     %label.btn.btn-outline-info
+        /       %input#transit{:name => "campaign_categories", :type => "checkbox", :value => "transit"}>/
+        /       Transit
+        /     %label.btn.btn-outline-info
+        /       %input#schools{:name => "campaign_categories", :type => "checkbox", :value => "schools"}>/
+        /       Schools
+
+
+        %div.panel-group#accordion{'role' => 'tablist', 'aria-multiselectable' => 'true'}
+          - @campaigns_by_location.each do |loc, list|
+            - underscore_safe_loc = loc.downcase.tr(' ', '_')
+
+            %div.panel.campaign-collection
+              %div.panel-heading{id: "heading_#{underscore_safe_loc}"}
+                %div.row
+                  %div.col
+                    %a.panel-toggle.collapsed{'data-toggle' => 'collapse', 'data-parent' => '#accordion', 'href' => "#collapse_#{underscore_safe_loc}", 'aria-expanded' => 'false', 'aria-controls' => "collapse_#{underscore_safe_loc}"}
+                      %div.panel-title
+                        %h3.mb-0
+                          = loc + " Petitions"
+                  %div.col-12.col-sm-auto
+                    / %input.check-all-box{type:"checkbox", "data-toggle" => "toggle", id: "check_all_#{underscore_safe_loc}"}
+              %div.panel-collapse.collapse{'role' => 'tabpanel', 'aria-labelledby' => "heading_#{underscore_safe_loc}", id: "collapse_#{underscore_safe_loc}"}
+                %div.row.campaign-list
+                  - list.each do |cp|
+                    = render partial: 'campaign', locals: {campaign: cp}
+
+  / %div#thingie_container
+  /   = render "user_fields"

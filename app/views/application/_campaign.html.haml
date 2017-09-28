@@ -1,0 +1,17 @@
+%div.col-sm-6.col-md-4
+  %div.card
+    %div.campaign
+      %div.card-body
+        %h3.card-title.campaign-name{'data-full-name' => campaign.name, 'data-shortened-name' => string_with_ellipses(campaign.name, 100)}
+          / = link_to(campaign.name, campaign.full_url)
+          = string_with_ellipses(campaign.name, 100)
+        %div.card-text.d-block.d-md-none
+          %a.expand-campaign{href: '#'}
+            see campaign description
+      %ul.campaign-details.list-group-flush.d-none.d-md-block
+        %li.list-group-item
+          %div.card-text.campaign-description
+          / = campaign.shortened_description.html_safe
+          = (string_with_ellipses(campaign.description_first_paragraph, 100) + link_to(' (see more)', campaign.full_url, {class: 'campaign-link', target: '_blank'})).html_safe
+        %li.list-group-item
+          = "Signatures: #{number_with_delimiter(campaign.num_signatures, :delimiter => ',')}"

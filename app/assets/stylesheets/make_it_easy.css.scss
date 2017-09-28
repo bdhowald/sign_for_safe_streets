@@ -1,0 +1,227 @@
+/****************************************
+            GLOBAL SITE CONTROLS
+****************************************/
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+
+* {
+  /*margin: 0;*/
+  padding: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+
+input[type="text"],
+input[type="email"],
+input[type="search"],
+input[type="password"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  /* mobile firefox too! */
+}
+
+
+div,
+div:hover,
+ul,
+ul:hover,
+i,
+i:hover,
+a,
+a:hover,
+li,
+li:hover{
+  list-style-type: none;
+  text-decoration: none;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+$transalt-orange: #ff4500;
+
+
+
+/*#main_container {
+  width: 768px;
+}*/
+
+#page_header h1.title {
+  color: green;
+  font-size: 20px;
+}
+
+#filters .twitter-typeahead, #filters .tt-input {
+  width: 100%;
+}
+
+#filters .filter-buttons {
+  padding: 10px 0 0;
+}
+
+#filters .filter-buttons li {
+  display: inline-block;
+  text-align: center;
+}
+
+#filters .filter-buttons li i {
+
+}
+
+#filters .filter-buttons li span.sans {
+  display: block;
+  font-family: 'Open Sans', sans-serif;
+}
+
+/*.card {
+  border: 2px solid $transalt-orange;
+  border-radius: 10px;
+  margin: 10px;
+}*/
+
+/*.card {
+  border: none;
+  margin-bottom: 15px;
+}
+*/
+.card {
+  margin: 0 0 1rem;
+}
+
+.card .card-block .campaign h3.campaign-description {
+  text-align: center;
+}
+
+.card .card-block .campaign h3.campaign-link {
+  color: #0074d9;
+}
+
+.card .card-block .campaign .campaign-name {
+  width: 50%;
+}
+
+.card .campaign .campaign-name {
+  /*text-align: center;*/
+}
+
+.card .campaign .campaign-details {
+  margin: 0;
+}
+
+.card .campaign .campaign-details p {
+  margin: 0;
+}
+
+.campaign-collection.panel {
+  margin: 5px 0;
+}
+
+.campaign-collection.panel .panel-heading {
+  background-color: transparent;
+  border: 2px solid #ff4500;
+  border-radius: 3px;
+  color: #ff4500;
+}
+
+.campaign-collection.panel .panel-heading:hover {
+  background-color: #ff4500;
+  color: #fff;
+}
+
+.campaign-collection.panel .panel-heading .panel-title {
+  padding: 10px;
+}
+
+.campaign-collection.panel .panel-heading .panel-title h3 {
+  color: #ff4500;
+}
+
+.campaign-collection.panel .panel-heading .panel-title h3:hover {
+  color: #ffffff;
+}
+
+
+.campaign-collection.panel .panel-heading .toggle-group .btn {
+/*  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  background-image: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  margin-bottom: 0;
+  padding: 6px 12px;
+  vertical-align: middle;
+  white-space: nowrap;*/
+}
+
+.campaign-collection.panel .panel-heading .toggle-group .btn-default {
+    color: #333;
+    /*background-color: #fff;*/
+    border-color: #ccc;
+}
+
+.campaign-collection.panel .panel-heading .toggle-group .toggle.btn {
+  /*border: 2px solid #000;*/
+}
+
+.campaign-collection.panel .panel-heading .toggle-group .toggle-handle {
+/*  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+
+  color: #333;
+  background-color: #fff;
+  border-color: #ccc;
+
+  position: relative;
+  margin: 0 auto;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  height: 100%;
+  width: 0px;
+  border-width: 0 1px;
+
+  transition: all 0.15s ease-in-out;*/
+  /*background-color: yellow;*/
+  /*border: 1px solid red;*/
+  /*border-radius: 40px;*/
+}
+
+.campaign-collection.panel .panel-heading .toggle-group .toggle-off {
+  /*background-color: #ccc;*/
+  /*border: 1px solid #999;*/
+  /*color: #333;*/
+}
+
+/*.card-header#heading_bronx {
+  background-color: red;
+}*/
+
+.campaign-collection.panel .campaign-list {
+  margin: 10px 0;
+}
