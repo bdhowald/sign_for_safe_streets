@@ -1,0 +1,11 @@
+/ %div.results-header
+/   %p
+/     Campaigns that matched your search:
+
+%div.row.campaign-list.matching
+  - campaigns.each do |cp|
+    = render partial: 'application/campaign', locals: {campaign: cp}
+
+%div.row.campaign-list.not-matching
+  - other_campaigns.each do |ocp|
+    = render partial: 'application/campaign', locals: {campaign: ocp}

@@ -17,5 +17,6 @@
 //= require popper
 //= require bootstrap-sprockets
 //= require typeahead
+//= require js.cookie
 
 //= require_tree .

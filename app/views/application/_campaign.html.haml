@@ -1,17 +1,44 @@
 %div.col-sm-6.col-md-4
   %div.card
-    %div.campaign
+    %div.campaign{class: "#{(@campaigns_already_signed || []).include?(campaign.id) ? 'already-signed' : ''}", 'data-campaign-id' => campaign.id}
       %div.card-body
-        %h3.card-title.campaign-name{'data-full-name' => campaign.name, 'data-shortened-name' => string_with_ellipses(campaign.name, 100)}
+        / -byebug
+        %h3.card-title.campaign-name{'data-full-name' => campaign.name, 'data-shortened-name' => string_with_ellipses(campaign.name, 50)}
           / = link_to(campaign.name, campaign.full_url)
-          = string_with_ellipses(campaign.name, 100)
-        %div.card-text.d-block.d-md-none
-          %a.expand-campaign{href: '#'}
-            see campaign description
-      %ul.campaign-details.list-group-flush.d-none.d-md-block
-        %li.list-group-item
+          = string_with_ellipses(campaign.name, 50)
+
+        %div.card-text
+          %div.d-block.d-md-none
+            %a.expand-campaign{href: '#'}
+              see campaign description
+
+      %ul.campaign-details.list-group-flush
+
+        %li.list-group-item.d-none.d-md-block.description-list-item
           %div.card-text.campaign-description
           / = campaign.shortened_description.html_safe
-          = (string_with_ellipses(campaign.description_first_paragraph, 100) + link_to(' (see more)', campaign.full_url, {class: 'campaign-link', target: '_blank'})).html_safe
-        %li.list-group-item
+          = (string_with_ellipses(campaign.description_first_paragraph, 200) + link_to(' (see more)', campaign.full_url, {class: 'campaign-link', target: '_blank'})).html_safe
+
+        %li.list-group-item.d-none.d-md-block
           = "Signatures: #{number_with_delimiter(campaign.num_signatures, :delimiter => ',')}"
+
+        %li.list-group-item.no-padding
+          %div.details.row
+            - if (@campaigns_to_sign || []).include?(campaign.id)
+              %div.col.to-be-signed{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'true'}
+                %span
+                %i.fa.fa-check
+            - elsif (@campaigns_already_signed || []).include?(campaign.id)
+              %div.col.already-signed{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'false'}
+                %span
+                %i.fa.fa-check
+            - else
+              %div.col.sign{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'false'}
+                %span
+                  Sign
+                %i.fa.fa-plus
+
+
+            %div.col{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}"}
+              %span.borough
+                = borough_abbreviation(campaign.borough)

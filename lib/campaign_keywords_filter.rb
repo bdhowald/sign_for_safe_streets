@@ -17,12 +17,12 @@ class CampaignKeywordsFilter
       Tag.all.each do |tag|
 
         # grab word if it matches stem
-        if (campaign.description =~ / #{@stemmer.stem(tag.word)}/)
+        if (campaign.description =~ / #{@stemmer.stem(tag.word)}/i)
           new_tags << tag
         end
 
         # grab word if it matches exactly
-        if (campaign.description =~ / #{tag.word}/)
+        if (campaign.description =~ / #{tag.word}/i)
           if !new_tags.include?(tag)
             new_tags << tag
           end
@@ -30,11 +30,29 @@ class CampaignKeywordsFilter
       end
 
 
+      # special case for borough tags
+      # people may use borough name's in descriptions
+      # but the use may be comparative or illustrative
+      # without implying connection to that borough.
+      boro_tags = [
+        'Bronx',
+        'Brooklyn',
+        'Manhattan',
+        'Queens',
+        'Staten Island'
+      ].collect{|boro| Tag.find_by(word: boro)}
+
+      boro_tags.each{|tag|
+        new_tags -= [tag] unless campaign.borough == tag.word
+      }
+
+
       # tags to be removed
       (old_tags - new_tags).each{|old_tag| campaign.tags.delete(old_tag)}
 
       # tags to be added
       (new_tags - old_tags).each{|new_tag| campaign.tags << new_tag}
+
 
     end
   end

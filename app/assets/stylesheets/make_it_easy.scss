@@ -1,0 +1,424 @@
+/****************************************
+            GLOBAL SITE CONTROLS
+****************************************/
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+
+* {
+  /*margin: 0;*/
+  padding: 0;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+
+input[type="text"],
+input[type="email"],
+input[type="search"],
+input[type="password"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  /* mobile firefox too! */
+}
+
+
+div,
+div:hover,
+ul,
+ul:hover,
+i,
+i:hover,
+a,
+a:hover,
+li,
+li:hover{
+  list-style-type: none;
+  text-decoration: none;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+}
+
+$transalt-orange: #ff4500;
+
+
+
+/*#main_container {
+  width: 768px;
+}*/
+
+#page_header {
+  /*background-color: red;*/
+  margin-right: auto;
+  margin-left: auto;
+  padding-right: 15px;
+  padding-left: 15px;
+  width: 100%;
+  background-color: #eee;
+}
+
+#page_header h1.title {
+  color: green;
+  font-size: 20px;
+}
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #47B2B2;
+  height: 75px;
+}
+
+.footer-text {
+  color: #fff;
+  font-size: 18pt;
+  font-weight: 600;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 75px;
+}
+
+
+@media (min-width: 576px) {
+  #filters {
+    padding: 0 15px;
+  }
+}
+
+#filters .twitter-typeahead, #filters .tt-input {
+  width: 100%;
+}
+
+#filters .filter-buttons {
+  margin: 16px 0;
+}
+
+#filters .filter-buttons li {
+  display: inline-block;
+  text-align: center;
+}
+
+#filters .filter-buttons li i {
+
+}
+
+/*.card {
+  border: 2px solid $transalt-orange;
+  border-radius: 10px;
+  margin: 10px;
+}*/
+
+/*.card {
+  border: none;
+  margin-bottom: 15px;
+}
+*/
+.card {
+  margin: 0 0 1rem;
+}
+
+
+.card .campaign.already-signed {
+  color: #999;
+}
+
+.card .campaign.already-signed a {
+  color: rgba(0, 123, 255, 0.5);
+}
+
+
+.card .campaign .campaign-details div.col.citywide {
+  background-color: rgba(255, 179, 71, 0.25);
+}
+
+.card .campaign .campaign-details div.col.statewide {
+  background-color: rgba(0, 119, 200, 0.25);
+}
+
+.card .campaign .campaign-details div.col.bronx {
+  background-color: rgba(245, 199, 184, 0.25);
+}
+
+.card .campaign .campaign-details div.col.brooklyn {
+  background-color: rgba(147, 230, 180, 0.25);
+}
+
+.card .campaign .campaign-details div.col.manhattan {
+  background-color: rgba(0, 200, 238, 0.25);
+}
+
+.card .campaign .campaign-details div.col.queens {
+  background-color: rgba(243, 234, 161, 0.25);
+}
+
+.card .campaign .campaign-details div.col.staten-island {
+  background-color: rgba(218, 197, 208, 0.25);
+}
+
+
+.card .campaign .campaign-details div.col.sign.citywide {
+  background-color: rgba(255, 179, 71, 0.5);
+}
+
+.card .campaign .campaign-details div.col.sign.statewide {
+  background-color: rgba(0, 119, 200, 0.5);
+}
+
+.card .campaign .campaign-details div.col.sign.bronx {
+  background-color: rgba(245, 199, 184, 0.5);
+}
+
+.card .campaign .campaign-details div.col.sign.brooklyn {
+  background-color: rgba(147, 230, 180, 0.5);
+}
+
+.card .campaign .campaign-details div.col.sign.manhattan {
+  background-color: rgba(0, 200, 238, 0.5);
+}
+
+.card .campaign .campaign-details div.col.sign.queens {
+  background-color: rgba(243, 234, 161, 0.5);
+}
+
+.card .campaign .campaign-details div.col.sign.staten-island {
+  background-color: rgba(218, 197, 208, 0.5);
+}
+
+
+.card .campaign .campaign-details div.col.to-be-signed.citywide {
+  background-color: rgba(255, 179, 71, 1.0);
+}
+
+.card .campaign .campaign-details div.col.to-be-signed.statewide {
+  background-color: rgba(0, 119, 200, 1.0);
+}
+
+.card .campaign .campaign-details div.col.to-be-signed.bronx {
+  background-color: rgba(245, 199, 184, 1.0);
+}
+
+.card .campaign .campaign-details div.col.to-be-signed.brooklyn {
+  background-color: rgba(147, 230, 180, 1.0);
+}
+
+.card .campaign .campaign-details div.col.to-be-signed.manhattan {
+  background-color: rgba(0, 200, 238, 1.0);
+}
+
+.card .campaign .campaign-details div.col.to-be-signed.queens {
+  background-color: rgba(243, 234, 161, 1.0);
+}
+
+.card .campaign .campaign-details div.col.to-be-signed.staten-island {
+  background-color: rgba(218, 197, 208, 1.0);
+}
+
+
+.card .campaign.already-signed .campaign-details div.col.already-signed {
+  background-color: #ccc;
+}
+
+
+
+/*.card .campaign .campaign-details div.sign {
+  background-color: #000;
+  color: #fff;
+  font-size: 13pt;
+}*/
+
+.card .campaign .campaign-details span.borough {
+  font-weight: 300;
+  font-size: 14pt;
+}
+
+
+
+
+
+.card .card-block .campaign h3.campaign-description {
+  text-align: center;
+}
+
+.card .card-block .campaign h3.campaign-link {
+  color: #0074d9;
+}
+
+.card .card-block .campaign .campaign-name {
+  width: 50%;
+}
+
+
+
+.card .campaign .campaign-name {
+  /*text-align: center;*/
+}
+
+.card .campaign .campaign-details {
+  margin: 0;
+}
+
+.card .campaign .campaign-details p {
+  margin: 0;
+}
+
+
+
+.card .campaign .card-text:last-child {
+  margin: 0 0 5px;
+}
+
+@media (min-width: 576px) {
+  .card .campaign .card-text:last-child {
+    margin: 0;
+  }
+}
+
+/*@media (min-width: 768px) {
+  .card .campaign .card-text:last-child {
+    margin: 0 0 10px;
+  }
+}*/
+
+
+
+
+/*.campaign-collection.panel {
+  margin: 5px 0;
+}
+
+.campaign-collection.panel .panel-heading {
+  background-color: transparent;
+  border: 2px solid #ff4500;
+  border-radius: 3px;
+  color: #ff4500;
+}
+
+.campaign-collection.panel .panel-heading:hover {
+  background-color: #ff4500;
+  color: #fff;
+}
+
+.campaign-collection.panel .panel-heading .panel-title {
+  padding: 10px;
+}
+
+.campaign-collection.panel .panel-heading .panel-title h3 {
+  color: #ff4500;
+}
+
+.campaign-collection.panel .panel-heading .panel-title h3:hover {
+  color: #ffffff;
+}*/
+
+
+.all-campaigns-body {
+  background-color: #f9f9f9;
+}
+
+.campaign-list {
+  margin: 10px 0 75px;
+}
+
+span.sans {
+  display: block;
+  font-family: 'Open Sans', sans-serif;
+}
+
+li.list-group-item.no-padding {
+  padding: 0;
+}
+
+li.list-group-item.no-padding div.row {
+  margin: 0;
+  text-align: center;
+}
+
+li.list-group-item.no-padding div.col {
+  padding: 0.75rem 1.25rem;
+}
+
+li.list-group-item.no-padding div.col:first-child {
+  border-right: 1px solid #ddd;
+}
+
+
+
+span.twitter-typeahead .tt-menu {
+  cursor: pointer;
+}
+
+.dropdown-menu, span.twitter-typeahead .tt-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+  display: none;
+  float: left;
+  min-width: 160px;
+  padding: 5px 0;
+  margin: 2px 0 0;
+  font-size: 1rem;
+  color: #373a3c;
+  text-align: left;
+  list-style: none;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.25rem; 
+  width: 100%;}
+
+span.twitter-typeahead .tt-suggestion {
+  display: block;
+  width: 100%;
+  padding: 3px 20px;
+  clear: both;
+  font-weight: normal;
+  line-height: 1.5;
+  color: #373a3c;
+  text-align: inherit;
+  white-space: nowrap;
+  background: none;
+  border: 0;
+  text-overflow: ellipsis;
+  overflow: hidden;}
+span.twitter-typeahead .tt-suggestion:focus, .dropdown-item:hover, span.twitter-typeahead .tt-suggestion:hover {
+    color: #2b2d2f;
+    text-decoration: none;
+    background-color: #f5f5f5; }
+span.twitter-typeahead .active.tt-suggestion, span.twitter-typeahead .tt-suggestion.tt-cursor, span.twitter-typeahead .active.tt-suggestion:focus, span.twitter-typeahead .tt-suggestion.tt-cursor:focus, span.twitter-typeahead .active.tt-suggestion:hover, span.twitter-typeahead .tt-suggestion.tt-cursor:hover {
+    color: #fff;
+    text-decoration: none;
+    background-color: #0275d8;
+    outline: 0; }
+span.twitter-typeahead .disabled.tt-suggestion, span.twitter-typeahead .disabled.tt-suggestion:focus, span.twitter-typeahead .disabled.tt-suggestion:hover {
+    color: #818a91; }
+span.twitter-typeahead .disabled.tt-suggestion:focus, span.twitter-typeahead .disabled.tt-suggestion:hover {
+    text-decoration: none;
+    cursor: not-allowed;
+    background-color: transparent;
+    background-image: none;
+    filter: "progid:DXImageTransform.Microsoft.gradient(enabled = false)"; }
+span.twitter-typeahead {
+  background-color: #fff;
+  width: 100%; }
+  .input-group span.twitter-typeahead {
+    display: block !important; }
+    .input-group span.twitter-typeahead .tt-menu {
+      top: 2.375rem !important; }
+span.twitter-typeahead .tt-header {
+  /*padding: 3px 20px;*/
+  font-weight: 600;
+  margin: 0 20px 5px 20px;
+  padding: 3px 0;
+  border-bottom: 1px solid #ccc;
+}
+
