@@ -28,39 +28,97 @@ transalt_campaigns.each do |campaign|
 
   next if petition_info.nil?
 
-  link           = campaign['petition_link']
-  num_signatures = (campaign['num_signatures'] || "").gsub(/\D/, '').to_i
-  name           = petition_info['campaign_name']
-  description    = petition_info['campaign_description']
+  description       = petition_info['campaign_description'].collect{|p| '<p>' + p + '</p>'}.join
+  is_success        = !campaign['campaign_won'].nil?
+  letter            = petition_info['letter']
+  link              = campaign['petition_link']
+  name              = petition_info['campaign_name']
+  num_signatures    = (campaign['num_signatures'] || '').gsub(/\D/, '').to_i
+  signatures_needed = ((petition_info['signatures_needed'] || '').split('of').last || '').gsub(/\D/, '').to_i
+  targets           = petition_info['targets']
 
-  borough, starter = campaign['campaign_starter'].split(' by ')
+  borough, starter  = campaign['campaign_starter'].split(' by ')
+
+  alert_id          = petition_info['alert_id']
+  node_id           = petition_info['node_id']
+  offline_id        = petition_info['offline_id']
+  offline_num       = petition_info['offline_num']
+
+  # strip borough of petition and spaces
+  borough           = borough.gsub(/petition/i, "").strip
+
+  if num_signatures == 0
+    num_signatures = petition_info['num_signatures'].gsub(/\D/, '').to_i
+  end
+
+  if targets
+
+    community_board_regex = /((Bronx|Brooklyn|Manhattan|Queens|Staten Island) )?Community Boards (\d+(,?))(\s*\d+(,?))* (and|&) \d+/
+    if community_board_regex.match(targets)
+
+      substr_to_replace = community_board_regex.match(targets)[0]
+
+      targets.gsub!(
+        substr_to_replace,
+        substr_to_replace.scan(/\d+/).collect{ |elem|
+          "#{borough} Community Board #{elem}"
+        }.to_sentence
+      )
+    end
+
+    if (boards = targets.scan(/Community Board \d+/)) && targets.scan(/#{borough} Community Board \d+/).empty?
+      boards.each{|board|
+        targets.gsub!(board, "#{borough} #{board}")
+      }
+    end
+  end
+
+
 
   if (cp = Campaign.find_by link: link)
 
     # puts "I already have campaign #{campaign['campaign_name']}"
     cp.update_attributes(
-      borough:        borough.gsub(/petition/i, "").strip,
-      description:    description.collect{|p| '<p>' + p + '</p>'}.join,
-      name:           name,
-      num_signatures: num_signatures
+      alert_id:          alert_id,
+      borough:           borough,
+      description:       description,
+      is_success:        is_success,
+      letter:            letter,
+      name:              name,
+      node_id:           node_id,
+      num_signatures:    num_signatures,
+      offline_id:        offline_id,
+      offline_num:       offline_num,
+      signatures_needed: signatures_needed,
+      targets:           targets
     )
 
     seen_campaign_ids << cp.id
     keywords_filter.add(cp)
 
+    puts "Updating campaign: #{name}"
+
   else
 
     begin
       cp = Campaign.new({
-        borough:        borough,
-        description:    description.collect{|p| '<p>' + p + '</p>'}.join,
-        link:           campaign['petition_link'],
-        name:           name,
-        num_signatures: num_signatures,
-        starter:        starter
+        alert_id:          alert_id,
+        borough:           borough,
+        description:       description,
+        is_success:        is_success,
+        letter:            letter,
+        link:              link,
+        name:              name,
+        node_id:           node_id,
+        num_signatures:    num_signatures,
+        offline_id:        offline_id,
+        offline_num:       offline_num,
+        signatures_needed: signatures_needed,
+        starter:           starter,
+        targets:           targets
       })
 
-      puts "Creating new campaign: #{campaign['campaign_name']}"
+      puts "Creating new campaign: #{name}."
 
       cp.save
 

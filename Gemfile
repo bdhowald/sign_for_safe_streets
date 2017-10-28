@@ -6,10 +6,11 @@ git_source(:github) do |repo_name|
 end
 
 # User-specific gems
-gem 'bootstrap', '~> 4.0.0.beta'
+gem 'bootstrap', '~> 4.0.0.beta2'
 gem 'font-awesome-sass'
 gem 'haml-rails'
 gem 'jquery-rails'
+gem 'rest-client'
 gem 'ruby-stemmer'
 gem 'wombat'
 

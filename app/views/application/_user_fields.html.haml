@@ -1,29 +1,115 @@
-%div#fields_container
-  %div.user-fields
-    %select#title
-      %option{value: 'Ms.'}
-        Ms.
-      %option{value: 'Miss'}
-        Miss
-      %option{value: 'Mrs.'}
-        Mrs.
-      %option{value: 'Mr.'}
-        Mr.
-      %option{value: 'Dr.'}
-        Dr.
-  %div.user-fields
-    %input#first_name
-  %div.user-fields
-    %input#last_name
-  %div.user-fields
-    %input#address
-  %div.user-fields
-    %input#city
-  %div.user-fields
-    %input#state
-  %div.user-fields
-    %input#zip
-  %div.user-fields
-    %input#phone
-  %div.user-fields
-    %input#email
+%div#user-info-form
+  %h3#instructions
+    Your Info
+  %div#user-details
+    = form_tag('/sign', {method: 'POST', novalidate: true, id: 'user-form'}) do
+      %div#form-fields
+        %div.form-group
+          %label{for: 'user-title', id: 'title-label'}
+            Select title
+          %select.form-control#user-title{'name' => 'title', 'type' => 'text', 'aria-labeledby' => 'title-label', 'required' => true}
+            %option{disabled: 'true', selected: 'true', value: ''}
+              Select
+            %option
+              Ms.
+            %option
+              Miss
+            %option
+              Mrs.
+            %option
+              Mr.
+            %option
+              Dr.
+
+          %div.invalid-feedback
+            Please select a title
+
+
+        %div.form-group
+          %label{for: 'user-first-name', id: 'first-name-label'}
+            First name
+          %input.form-control#user-first-name{'name' => 'first_name', 'type' => 'text', 'aria-labeledby' => 'first-name-label', 'placeholder' => 'Enter first name', 'required' => true}
+          / %small
+
+          %div.invalid-feedback
+            Please enter your first name
+
+
+        %div.form-group
+          %label{for: 'user-last-name', id: 'last-name-label'}
+            Last name
+          %input.form-control#user-last-name{'name' => 'last_name', 'type' => 'text', 'aria-labeledby' => 'last-name-label', 'placeholder' => 'Enter last name', 'required' => true}
+          / %small
+
+          %div.invalid-feedback
+            Please enter your last name
+
+
+        %div.form-group
+          %label{for: 'user-address', id: 'address-label'}
+            Address
+          %input.form-control#user-address{'type' => 'text', 'aria-labeledby' => 'address-label', 'placeholder' => 'Enter address', 'required' => true}
+          / %small
+          %input#user-address-street{type: 'hidden', name:'address[street]'}
+          %input#user-address-city{type: 'hidden', name:'address[city]'}
+          %input#user-address-state{type: 'hidden', name:'address[state]'}
+          %input#user-address-zip{type: 'hidden', name:'address[zip]'}
+
+          %div.invalid-feedback
+            Please enter your address
+
+
+        %div.form-group
+          %label{for: 'user-phone', id: 'phone-label'}
+            Phone number
+          %input.form-control#user-phone{'name' => 'phone', 'type' => 'text', 'aria-labeledby' => 'phone-label', 'pattern' => '(?:\([2-9]\d{2}\)|[2-9]\d{2})[- \.]?\d{3}[- \.]?\d{4}', 'placeholder' => 'Enter phone number', 'required' => true}
+          %small
+            Many petition recipients require a phone number.
+
+          %div.invalid-feedback
+            Please enter a valid phone number
+
+
+        %div.form-group
+          %label{for: 'user-email', id: 'email-label'}
+            Email
+          %input.form-control#user-email{'name' => 'email', 'type' => 'text', 'aria-labeledby' => 'email-label', 'pattern' => '[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$', 'placeholder' => 'Enter email address', 'required' => true}
+          / %small
+
+          %div.invalid-feedback
+            Please enter a valid email address
+
+        %button.btn.btn-primary.btn-lg.btn-block{type: 'submit'}
+          = "Sign #{@petitions_to_sign.count} Campaigns"
+
+
+      %input#petition-data{type: 'hidden', name:'selected_petitions'}
+
+  /   %div.user-fields
+  /     %select#title
+  /       %option{value: 'Ms.'}
+  /         Ms.
+  /       %option{value: 'Miss'}
+  /         Miss
+  /       %option{value: 'Mrs.'}
+  /         Mrs.
+  /       %option{value: 'Mr.'}
+  /         Mr.
+  /       %option{value: 'Dr.'}
+  /         Dr.
+  /   %div.user-fields
+  /     %input#first_name
+  /   %div.user-fields
+  /     %input#last_name
+  /   %div.user-fields
+  /     %input#address
+  /   %div.user-fields
+  /     %input#city
+  /   %div.user-fields
+  /     %input#state
+  /   %div.user-fields
+  /     %input#zip
+  /   %div.user-fields
+  /     %input#phone
+  /   %div.user-fields
+  /     %input#email

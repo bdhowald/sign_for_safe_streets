@@ -3,6 +3,8 @@ class Campaign < ApplicationRecord
   has_and_belongs_to_many :tags
   has_many :categories, through: :tags
 
+  scope :active, -> { where(is_active: true) }
+
   validates_presence_of :borough, :description, :link,
     :name, :num_signatures
   validates_numericality_of :num_signatures

@@ -1,0 +1,32 @@
+%main
+  %div.header#page-header
+    / %h1.title
+    /   Transportation Alternatives Campaigns
+
+    %div.container
+      %div.row
+        %div.col-lg-12
+          %div#directions
+            %h1#encouragement
+              You're almost done!
+            %h5#ps
+              (but feel free to
+              = link_to("go back", homepage_path, {id: 'sign-more', method: :get})
+              and sign some more)
+
+
+  %div.signing-page-body
+    %div.signing-page-container.container
+      %div.row.justify-content-center
+
+        %div.col-sm-6.col-md-6.campaigns-to-sign
+          %div.explanation
+            %h3.signing
+              Your Campaigns
+            %div.campaign-container.card
+              %ul.campaigns.list-group.list-group-flush
+                - @petitions_to_sign.each do |pet|
+                  = render partial: 'petition_details', locals: {petition: pet}
+
+        %div.col-sm-6.col-md-6
+          = render 'application/user_fields'

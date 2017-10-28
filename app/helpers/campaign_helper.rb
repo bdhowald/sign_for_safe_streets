@@ -20,6 +20,17 @@ module CampaignHelper
   end
 
 
+  def target_abbreviation(targets)
+    new_str = targets
+    new_str.gsub!(/borough\s*president/i, 'BP')
+    new_str.gsub!(/community\s*board/i, 'CB')
+    new_str.gsub!(/council\s*(member|man|woman)/i, 'CM')
+    new_str.gsub!(/assembly\s*(member|man|woman)/i, 'AM')
+    new_str.gsub!(/state\s*senator/i, 'SS')
+    new_str
+  end
+
+
   def string_with_ellipses(orig_str, length = 100)
     if orig_str.length <= length
       return orig_str

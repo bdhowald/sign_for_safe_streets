@@ -2,8 +2,8 @@ class CampaignKeywordsFilter
 
   require 'lingua/stemmer'
 
-  def initialize
-    @campaigns = Set.new
+  def initialize(campaigns = [])
+    @campaigns = Set.new(campaigns)
     @stemmer   = Lingua::Stemmer.new(:language => "en")
   end
 
@@ -43,7 +43,15 @@ class CampaignKeywordsFilter
       ].collect{|boro| Tag.find_by(word: boro)}
 
       boro_tags.each{|tag|
-        new_tags -= [tag] unless campaign.borough == tag.word
+        if campaign.borough == tag.word
+          if !new_tags.include?(tag)
+            new_tags += [tag]
+          end
+        else
+          if new_tags.include?(tag)
+            new_tags -= [tag]
+          end
+        end
       }
 
 

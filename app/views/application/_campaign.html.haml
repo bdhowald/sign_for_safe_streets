@@ -1,8 +1,9 @@
 %div.col-sm-6.col-md-4
   %div.card
     %div.campaign{class: "#{(@campaigns_already_signed || []).include?(campaign.id) ? 'already-signed' : ''}", 'data-campaign-id' => campaign.id}
+
       %div.card-body
-        / -byebug
+
         %h3.card-title.campaign-name{'data-full-name' => campaign.name, 'data-shortened-name' => string_with_ellipses(campaign.name, 50)}
           / = link_to(campaign.name, campaign.full_url)
           = string_with_ellipses(campaign.name, 50)
@@ -14,13 +15,32 @@
 
       %ul.campaign-details.list-group-flush
 
+        - if campaign.is_success
+          %li.list-group-item.d-none.d-md-block.success-list-item
+            %div.success-banner
+              %i.fa.fa-star
+              Campaign Won!
+
         %li.list-group-item.d-none.d-md-block.description-list-item
           %div.card-text.campaign-description
           / = campaign.shortened_description.html_safe
           = (string_with_ellipses(campaign.description_first_paragraph, 200) + link_to(' (see more)', campaign.full_url, {class: 'campaign-link', target: '_blank'})).html_safe
 
-        %li.list-group-item.d-none.d-md-block
+        %li.list-group-item.d-none.d-md-block.signatures-list-item
           = "Signatures: #{number_with_delimiter(campaign.num_signatures, :delimiter => ',')}"
+
+          %div.progress
+            - percentage_complete = (campaign.num_signatures.to_f / campaign.signatures_needed) * 100
+
+            - progress_class = case percentage_complete
+              - when percentage_complete..25 then "bg-danger"
+              - when percentage_complete..75 then "bg-warning"
+              - when percentage_complete..100 then "bg-success"
+              - else "bg-success"
+
+
+            %div{'class' => "#{progress_class} progress-bar", 'role' => "progressbar", 'style' => "width: #{(percentage_complete)}%", 'aria-valuenow' => "#{percentage_complete}", 'aria-valuemin' => '0', 'aria-valuemax' => '100'}
+              = "#{percentage_complete.to_i}%"
 
         %li.list-group-item.no-padding
           %div.details.row
@@ -35,7 +55,7 @@
             - else
               %div.col.sign{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'false'}
                 %span
-                  Sign
+                  Add
                 %i.fa.fa-plus
 
 

@@ -1,53 +1,74 @@
 %main
-  %div.header#page_header
-    %h1.title
-      Transportation Alternatives Campaigns
+  / %div.header#other_header{style: 'background-color:#e9ebef;'}
+  /   %div.container
+  /     %div.jumbotron
+  /       %h1.display-3
+  /         Hello, world!
+  /       %p.lead
+  /         This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.
+  /       %hr.my-4
+  /       %p
+  /         It uses utility classes for typography and spacing to space content out within the larger container.
+  /       %p.lead
+  /         %a.btn.btn-primary.btn-lg{href: "#", role:"button"}
+  /           Learn more
+
+  %div.header#page-header
+    / %h1.title
+    /   Transportation Alternatives Campaigns
 
     %div.container
       %div.row
         %div.col-lg-12
           %div#filters
             %div.input-group
-              %span#search_exp.input-group-addon
-                Search
-              %input.form-control.typeahead{"aria-describedby" => "search_exp", placeholder: "ex: bike lanes, cameras, Queens", type: "text"}
+              %span#search-exp.input-group-addon
+                %i.fa.fa-search
+              %input.form-control.typeahead{"aria-describedby" => "search-exp", placeholder: "ex: bike lanes, cameras, Queens", type: "text"}
+              %span.input-group-btn
+                %button.btn.btn-secondary.clear-search{type: 'button', style: 'display:none'}
+                  %i.fa.fa-times
             %ul.filter-buttons
               %div.row
-                %li.col.filter-button
-                  %i.fa.fa-bicycle
-                  %span.sans
-                    Cycling
-                %li.col.filter-button
-                  %i.fa.fa-female
-                  %span.sans
-                    Walking
-                %li.col.filter-button
-                  %i.fa.fa-bus
-                  %span.sans
-                    Transit
-                %li.col.filter-button
-                  %i.fa.fa-graduation-cap
-                  %span.sans
-                    Schools
+                - [['Cycling', 'bicycle'], ['Walking', 'female'], ['Transit', 'bus'], ['Schools', 'graduation-cap']].each do |button_text|
+                  %li.col-6.col-sm-3.filter-button
+                    %div.search-button
+                      %i{class: "fa fa-#{button_text[1]}"}
+                      %span.sans
+                        = button_text[0]
 
-  %div.all-campaigns-body#main_content
-    %div.container
       %div.row
         %div.col-lg-12
-          %div.row.campaign-list.matching
+          %div.sign-all
+            - if @campaigns_to_sign.sort == @campaigns.collect(&:id).sort
+              %button.btn.btn-danger.btn-lg.btn-block{type: 'button'}
+                Remove All Campaigns
+            - else
+              %button.btn.btn-primary.btn-lg.btn-block{type: 'button'}
+                Add All Campaigns
+
+  %div.all-campaigns-body#main-content
+    %div.container
+      %div.row
+        %div.campaign-list-container
+          %div.row.campaign-list
             - @campaigns.each do |cp|
               = render partial: 'campaign', locals: {campaign: cp}
 
-  %div.footer{style: "display: #{@campaigns_to_sign.empty? ? 'none' : 'block'}"}
-    %div.footer-text
-      Sign
-      %span.num-campaigns
-        one campaign!
 
-
-  / %div#thingie_container
-  /   = render "user_fields"
-
+  %div.footer.sign-petitions{style: "bottom: #{@campaigns_to_sign.empty? ? '-75px' : '0px'}"}
+    = form_tag('/review', method: 'POST') do
+      %input#petition-data{type: 'hidden', name:'selected_petitions'}
+      %input#unsigned-campaign-ids{type: 'hidden', value: @campaigns.collect(&:id).sort}
+      %div.footer-text
+        Sign
+        %span.num-campaigns
+          = (@campaigns_to_sign.count.to_s || 'one')
+        %span.campaign-word
+          = (@campaigns_to_sign.count == 1 ? 'petition!' : 'petitions!')
+      %div.notification-box{'data-add-color' => '#15a3d0', 'data-remove-color' => '#ffc107'}
+        %div.notification
+          Campaign added!
 
 
 

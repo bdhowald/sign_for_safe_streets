@@ -1,0 +1,16 @@
+%li.campaign.list-group-item{class: "#{petition.borough.downcase}", 'data-campaign-id' => petition.id}
+  %a.information-toggle{href: '#'}
+    %div.card-body
+      %div.campaign-name
+        = petition.name
+      %div.borough
+        = borough_abbreviation(petition.borough)
+    %div.target-details.d-none
+      %div.petition-delivery
+        This petition will be delivered to:
+      %ul.targets.list-group-flush
+        - petition.targets.split(/,\s*|and\s*/).reject(&:blank?).each do |target|
+          %li.target.wide-display
+            = target
+          %li.target.narrow-display
+            = target_abbreviation(target)

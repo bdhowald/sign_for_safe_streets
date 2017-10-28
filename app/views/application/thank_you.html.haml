@@ -1,0 +1,30 @@
+%main
+  %div.header#page-header
+
+    %div.container
+      %div.row
+        %div.col-lg-12
+          %div#directions
+            %h1#encouragement
+              = "You're a safe streets hero!"
+            %h5#ps
+              (Want to sign more?
+              = link_to("Head back", homepage_path, {id: 'sign-more', method: :get})
+              to the petition homepage)
+
+
+  %div.thank-you-page-body
+    %div.thank-you-page-container.container
+      %div.row.justify-content-center
+
+        %div.col-sm-6.col-md-6.signed-campaigns
+          %div.explanation
+            %h3.your-campaigns
+              Your Campaigns
+            %div.campaign-container.card
+              %ul.campaigns.list-group.list-group-flush
+                / - @petitions_to_sign.each do |pet|
+                /   = render partial: 'petition_details', locals: {petition: pet}
+
+  /       %div.col-sm-6.col-md-6
+  /         = render 'application/user_fields'

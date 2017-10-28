@@ -1,11 +1,21 @@
-/ %div.results-header
-/   %p
-/     Campaigns that matched your search:
+- if !other_campaigns.empty?
+  %div.results-header
+    %p
+      Campaigns that matched
+      = succeed ':' do
+        %span.search-term
+          = @search_term
 
-%div.row.campaign-list.matching
+%div{class: "row campaign-list #{'matching' if !other_campaigns.empty?}"}
   - campaigns.each do |cp|
     = render partial: 'application/campaign', locals: {campaign: cp}
 
-%div.row.campaign-list.not-matching
-  - other_campaigns.each do |ocp|
-    = render partial: 'application/campaign', locals: {campaign: ocp}
+
+- if !other_campaigns.empty?
+  %div.results-header
+    %p
+      Other campaigns:
+
+  %div.row.campaign-list.not-matching
+    - other_campaigns.each do |ocp|
+      = render partial: 'application/campaign', locals: {campaign: ocp}

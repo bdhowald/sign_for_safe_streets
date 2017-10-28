@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170916231908) do
+ActiveRecord::Schema.define(version: 20171028073322) do
 
   create_table "campaigns", force: :cascade do |t|
     t.string "name", null: false
@@ -22,6 +22,14 @@ ActiveRecord::Schema.define(version: 20170916231908) do
     t.text "description"
     t.integer "num_signatures", default: 0, null: false
     t.boolean "is_active", default: true, null: false
+    t.integer "signatures_needed", default: 0
+    t.boolean "is_success", default: false
+    t.text "targets", default: ""
+    t.text "letter", default: ""
+    t.integer "alert_id"
+    t.integer "node_id"
+    t.integer "offline_id"
+    t.integer "offline_num"
     t.index ["link"], name: "index_campaigns_on_link", unique: true
   end
 
