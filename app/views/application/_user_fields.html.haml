@@ -7,19 +7,20 @@
         %div.form-group
           %label{for: 'user-title', id: 'title-label'}
             Select title
-          %select.form-control#user-title{'name' => 'title', 'type' => 'text', 'aria-labeledby' => 'title-label', 'required' => true}
-            %option{disabled: 'true', selected: 'true', value: ''}
+          %select.form-control#user-title{'name' => 'user[title]', 'type' => 'text', 'aria-labeledby' => 'title-label', 'required' => true}
+            %option{disabled: 'true', selected: @user['title'].nil?, value: ''}
               Select
-            %option
+            %option{selected: @user['title'] == 'Ms.'}
               Ms.
-            %option
+            %option{selected: @user['title'] == 'Miss.'}
               Miss
-            %option
+            %option{selected: @user['title'] == 'Mrs.'}
               Mrs.
-            %option
+            %option{selected: @user['title'] == 'Mr.'}
               Mr.
-            %option
+            %option{selected: @user['title'] == 'Dr.'}
               Dr.
+          / = select_tag('user[title]', grouped_options_for_select([['Select', ['Ms.', 'Miss', 'Mrs.', 'Mr.', 'Dr.']]], selected: @user['title'] || 'Selected', disabled: 'Select'), {'id' => 'user-title', 'class' => 'form-control', 'type' => 'text', 'aria-labeledby' => 'title-label', 'required' => true})
 
           %div.invalid-feedback
             Please select a title
@@ -28,7 +29,7 @@
         %div.form-group
           %label{for: 'user-first-name', id: 'first-name-label'}
             First name
-          %input.form-control#user-first-name{'name' => 'first_name', 'type' => 'text', 'aria-labeledby' => 'first-name-label', 'placeholder' => 'Enter first name', 'required' => true}
+          %input.form-control#user-first-name{'name' => 'user[first_name]', 'type' => 'text', 'aria-labeledby' => 'first-name-label', 'placeholder' => 'Enter first name', 'required' => true, value: @user['first_name']}
           / %small
 
           %div.invalid-feedback
@@ -38,7 +39,7 @@
         %div.form-group
           %label{for: 'user-last-name', id: 'last-name-label'}
             Last name
-          %input.form-control#user-last-name{'name' => 'last_name', 'type' => 'text', 'aria-labeledby' => 'last-name-label', 'placeholder' => 'Enter last name', 'required' => true}
+          %input.form-control#user-last-name{'name' => 'user[last_name]', 'type' => 'text', 'aria-labeledby' => 'last-name-label', 'placeholder' => 'Enter last name', 'required' => true, value: @user['last_name']}
           / %small
 
           %div.invalid-feedback
@@ -48,12 +49,12 @@
         %div.form-group
           %label{for: 'user-address', id: 'address-label'}
             Address
-          %input.form-control#user-address{'type' => 'text', 'aria-labeledby' => 'address-label', 'placeholder' => 'Enter address', 'required' => true}
+          %input.form-control#user-address{'type' => 'text', 'aria-labeledby' => 'address-label', 'placeholder' => 'Enter address', 'required' => true, value: address_string(@user['address'])}
           / %small
-          %input#user-address-street{type: 'hidden', name:'address[street]'}
-          %input#user-address-city{type: 'hidden', name:'address[city]'}
-          %input#user-address-state{type: 'hidden', name:'address[state]'}
-          %input#user-address-zip{type: 'hidden', name:'address[zip]'}
+          %input#user-address-street{type: 'hidden', name: 'user[address][street]', value: @user.try(:[], 'address').try(:[], 'street')}
+          %input#user-address-city{type: 'hidden', name: 'user[address][city]', value: @user.try(:[], 'address').try(:[], 'address')}
+          %input#user-address-state{type: 'hidden', name: 'user[address][state]', value: @user.try(:[], 'address').try(:[], 'state')}
+          %input#user-address-zip{type: 'hidden', name: 'user[address][zip]', value: @user.try(:[], 'address').try(:[], 'zip')}
 
           %div.invalid-feedback
             Please enter your address
@@ -62,9 +63,9 @@
         %div.form-group
           %label{for: 'user-phone', id: 'phone-label'}
             Phone number
-          %input.form-control#user-phone{'name' => 'phone', 'type' => 'text', 'aria-labeledby' => 'phone-label', 'pattern' => '(?:\([2-9]\d{2}\)|[2-9]\d{2})[- \.]?\d{3}[- \.]?\d{4}', 'placeholder' => 'Enter phone number', 'required' => true}
+          %input.form-control#user-phone{'name' => 'user[phone]', 'type' => 'text', 'aria-labeledby' => 'phone-label', 'pattern' => '(?:\([2-9]\d{2}\)|[2-9]\d{2})[- \.]?\d{3}[- \.]?\d{4}', 'placeholder' => 'Enter phone number', 'required' => true, value: @user['phone']}
           %small
-            Many petition recipients require a phone number.
+            Petition recipients require a phone number.
 
           %div.invalid-feedback
             Please enter a valid phone number
@@ -73,7 +74,7 @@
         %div.form-group
           %label{for: 'user-email', id: 'email-label'}
             Email
-          %input.form-control#user-email{'name' => 'email', 'type' => 'text', 'aria-labeledby' => 'email-label', 'pattern' => '[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$', 'placeholder' => 'Enter email address', 'required' => true}
+          %input.form-control#user-email{'name' => 'user[email]', 'type' => 'text', 'aria-labeledby' => 'email-label', 'pattern' => '[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$', 'placeholder' => 'Enter email address', 'required' => true, value: @user['email']}
           / %small
 
           %div.invalid-feedback
@@ -85,31 +86,7 @@
 
       %input#petition-data{type: 'hidden', name:'selected_petitions'}
 
-  /   %div.user-fields
-  /     %select#title
-  /       %option{value: 'Ms.'}
-  /         Ms.
-  /       %option{value: 'Miss'}
-  /         Miss
-  /       %option{value: 'Mrs.'}
-  /         Mrs.
-  /       %option{value: 'Mr.'}
-  /         Mr.
-  /       %option{value: 'Dr.'}
-  /         Dr.
-  /   %div.user-fields
-  /     %input#first_name
-  /   %div.user-fields
-  /     %input#last_name
-  /   %div.user-fields
-  /     %input#address
-  /   %div.user-fields
-  /     %input#city
-  /   %div.user-fields
-  /     %input#state
-  /   %div.user-fields
-  /     %input#zip
-  /   %div.user-fields
-  /     %input#phone
-  /   %div.user-fields
-  /     %input#email
+
+
+
+

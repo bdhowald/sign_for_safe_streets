@@ -26,7 +26,7 @@
             %div.campaign-container.card
               %ul.campaigns.list-group.list-group-flush
                 - @petitions_to_sign.each do |pet|
-                  = render partial: 'petition_details', locals: {petition: pet}
+                  = render partial: 'petition_details', locals: {petition: pet, show_detail: @petitions_to_sign.count == 1}
 
         %div.col-sm-6.col-md-6
           = render 'application/user_fields'

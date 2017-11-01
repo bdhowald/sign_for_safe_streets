@@ -26,6 +26,17 @@ $(document).ready(function(){
   })
 
 
+  $('body').on('click', 'div.read-more', function(){
+    var $thisPetitionText = $(this).parents('.petition-text');
+    var $thisBlockquote = $thisPetitionText.find('blockquote.blockquote');
+
+    $thisBlockquote.html($thisBlockquote.data('full-letter'));
+
+    // hide '(read more)'
+    $(this).hide();
+  })
+
+
   /*///*/
   // When the user selects a place, let's track it.
   //
@@ -233,28 +244,41 @@ $(document).ready(function(){
 
   function toggleTargetDetails(elem) {
 
-    var $toggleLink = elem;
-
+    var $toggleLink     = elem;
     var $campaignList   = $toggleLink.parents('ul.campaigns');
-    var $thisCampaign   = $toggleLink.parents('li.campaign');
-    var $allToggleLinks = $campaignList.find('a.information-toggle');
 
-    var $allCampaignsDetails  = $campaignList.find('.target-details');
-    var $thisCampaignsDetails = $thisCampaign.find('.target-details');
+    if ($campaignList.find('li.campaign').length > 1) {
 
-    var $allCampaignsNames = $campaignList.find('.campaign-name');
-    var $thisCampaignsName = $thisCampaign.find('.campaign-name');
+      var $thisCampaign   = $toggleLink.parents('li.campaign');
+      var $allToggleLinks = $campaignList.find('a.information-toggle');
+
+      var $allCampaignsDetails  = $campaignList.find('.petition-details');
+      var $thisCampaignsDetails = $thisCampaign.find('.petition-details');
+
+      var $allCampaignsNames = $campaignList.find('.campaign-name');
+      var $thisCampaignsName = $thisCampaign.find('.campaign-name');
+
+      var $allPetitionTexts   = $('div.petition-text');
 
 
-    if ($thisCampaignsDetails.hasClass('d-none')) {
-      $allCampaignsDetails
-        .addClass('d-none')
+      if ($thisCampaignsDetails.hasClass('d-none')) {
+        $allCampaignsDetails
+          .addClass('d-none')
 
-      $thisCampaignsDetails
-        .removeClass('d-none')
-    } else {
-      $thisCampaignsDetails
-        .addClass('d-none')
+        $thisCampaignsDetails
+          .removeClass('d-none')
+      } else {
+        $thisCampaignsDetails
+          .addClass('d-none')
+      }
+
+      $allPetitionTexts.each(function(){
+        var $thisBlockquote = $(this).find('blockquote.blockquote');
+
+        $thisBlockquote.html($thisBlockquote.data('shortened-letter'));
+        $(this).find('div.read-more').show();
+      })
+
     }
 
   }
