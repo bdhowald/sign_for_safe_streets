@@ -2,6 +2,8 @@ class SearchController < ActionController::Base
 
   require 'lingua/stemmer'
 
+  include UserControllerConcern
+
   # include Response
   # include ExceptionHandler
 
@@ -62,10 +64,8 @@ class SearchController < ActionController::Base
       format.html do
 
         # Set instance variables for view
-        @campaigns_to_sign = JSON.parse(
-          cookies[:campaigns_to_sign] || '[]'
-        )
-        @campaigns_already_signed = cookies[:campaigns_already_signed] || []
+        @selected_campaigns       = unserialized_campaigns_cookie['selected']
+        @campaigns_already_signed = unserialized_campaigns_cookie['already_signed']
 
 
         if search_params[:all].present?
@@ -74,13 +74,13 @@ class SearchController < ActionController::Base
 
             @search_term = search_params[:all]
 
+            active_campaigns = Campaign.where(is_active: true)
+
             render(
               partial: 'application/results',
               layout: false,
               locals: {
-                campaigns: Campaign.active.sort{|x,y|
-                  x.name.length <=> y.name.length
-                },
+                campaigns: active_campaigns,
                 other_campaigns: []
               }
             )
@@ -99,11 +99,6 @@ class SearchController < ActionController::Base
             )
 
           if campaign
-            # render(
-            #   partial: 'application/campaign',
-            #   layout: false,
-            #   locals: {campaign: campaign}
-            # )
 
             @search_term = search_params[:name]
 
@@ -122,19 +117,12 @@ class SearchController < ActionController::Base
         elsif search_params[:search_term]
 
           tag = Tag.find_by(
-            word: search_params[:search_term]
+            word: search_params[:search_term].downcase
           ) || Tag.find_by(
-            word: stemmer.stem(search_params[:search_term])
+            word: stemmer.stem(search_params[:search_term].downcase)
           )
 
           if tag && tag.campaigns.active.present?
-            # render(
-            #   partial: 'application/campaign',
-            #   layout: false,
-            #   collection: tag.campaigns.sort{ |x,y|
-            #     x.name.length <=> y.name.length
-            #   }, as: campaign
-            # )
 
             @search_term = search_params[:search_term]
 
@@ -150,8 +138,6 @@ class SearchController < ActionController::Base
             )
           end
 
-
-
         end
 
       end
@@ -165,7 +151,7 @@ class SearchController < ActionController::Base
 
         if search_params[:suggestion].present?
           campaigns = Campaign.where(
-            'description LIKE :query OR description LIKE :stem',
+            'description LIKE :query OR description LIKE :stem OR name LIKE :query OR name LIKE :query',
             query: "%#{search_params[:suggestion]}%",
             stem:  "%#{stemmer.stem(search_params[:suggestion])}%"
           )
@@ -228,8 +214,8 @@ class SearchController < ActionController::Base
     if search_params[:suggestion].present?
       tags = Tag.where(
         'word LIKE :query OR word LIKE :stem',
-        query: "%#{search_params[:suggestion]}%",
-        stem:  "%#{stemmer.stem(search_params[:suggestion])}%"
+        query: "%#{search_params[:suggestion].downcase}%",
+        stem:  "%#{stemmer.stem(search_params[:suggestion].downcase)}%"
       ).collect do |tag|
         {
           id:         tag.id,

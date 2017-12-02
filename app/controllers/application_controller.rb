@@ -2,25 +2,22 @@ class ApplicationController < ActionController::Base
 
   require 'rest-client'
 
-  # FIX THIS
-  protect_from_forgery with: :exception
+  include UserControllerConcern
 
-  helper_method :is_mobile?
+
+  protect_from_forgery with: :exception
 
   THREAD_COUNT = 8  # tweak this number for maximum performance.
 
+
   def make_it_easy
-    # @campaigns_by_location = Hash[Campaign.all.group_by(&:borough).sort]
 
-    @campaigns_to_sign = JSON.parse(
-      cookies[:campaigns_to_sign] || '[]'
-    )
+    if (campaignData = unserialized_campaigns_cookie)
+      @selected_campaigns       = campaignData['selected']
+      @campaigns_already_signed = campaignData['already_signed']
+    end
 
-    @campaigns_already_signed = cookies[:campaigns_already_signed] || []
-
-    @campaigns = Campaign.where(is_active: true).sort{|x,y|
-      x.name.length <=> y.name.length
-    }
+    @all_active_campaigns = Campaign.where(is_active: true)
 
     render
   end
@@ -28,23 +25,29 @@ class ApplicationController < ActionController::Base
 
   def review
 
-    if params["selected_petitions"]
-
-      session['selected_petitions'] = JSON.parse(
-        params["selected_petitions"] || '[]'
-      ).reject{ |i| i.to_i == 0 }
-
+    if (selected_campaigns_params = params['campaigns'].try(:[], 'selected'))
+      # handles changes to set of selected campaigns
+      update_selected_campaigns(selected_campaigns_params)
     end
 
-    petitions_to_sign = session['selected_petitions']
+    # Update petitions to display.
+    petitions_to_sign = unserialized_campaigns_cookie['selected']
 
-    if petitions_to_sign.empty?
-      return redirect_to(homepage_path)
+    if !petitions_to_sign.present?
+      return redirect_to homepage_path
     end
 
+    # Find these petitions to display.
     @petitions_to_sign = Campaign.find(petitions_to_sign)
 
-    @user = session['user'] || {}
+    # remember successful signatures
+    if (newly_signed_petition_ids = unserialized_campaigns_cookie['just_signed'])
+      @recently_signed_petitions = Campaign.find(newly_signed_petition_ids)
+    end
+
+    # Also, make sure we have a user object for
+    # the signing fields.
+    @user = unserialize_hash(cookies['user']) || {}
 
     render
 
@@ -53,184 +56,279 @@ class ApplicationController < ActionController::Base
 
   def sign
 
-    if params['selected_petitions']
+    if request.post?
 
-      session['selected_petitions'] = JSON.parse(
-        params['selected_petitions'] || '[]'
-      ).reject{ |i| i.to_i == 0 }
-
-    end
-
-    petitions_to_sign = session['selected_petitions']
-
-    # TODO: redirect long before this
-    if petitions_to_sign.empty?
-      return redirect_to(homepage_path)
-    end
-
-    petitions_to_sign = Campaign.find(petitions_to_sign)
-
-
-    if params['user']
-      session['user'] ||= {}
-
-      session['user']['title']      =  params['user'].try(:[], 'title')
-      session['user']['first_name'] =  params['user'].try(:[], 'first_name')
-      session['user']['last_name']  =  params['user'].try(:[], 'last_name')
-      session['user']['phone']      =  params['user'].try(:[], 'phone')
-      session['user']['email']      =  params['user'].try(:[], 'email')
-
-      session['user']['address']  ||= {}
-
-      session['user']['address']['street'] =  params['user'].try(:[], 'address').try(:[], 'street')
-      session['user']['address']['city']   =  params['user'].try(:[], 'address').try(:[], 'city')
-      session['user']['address']['state']  =  params['user'].try(:[], 'address').try(:[], 'state')
-      session['user']['address']['zip']    =  params['user'].try(:[], 'address').try(:[], 'zip')
-    end
-
-
-
-    trans_alt_url = 'https://campaigns.transalt.org/sites/all/modules/luminate_submit/submit.php'
-
-    responses = {}
-    mutex = Mutex.new
-
-    THREAD_COUNT.times.map {
-      Thread.new(petitions_to_sign) do |petitions|
-        while petition = mutex.synchronize { petitions.pop }
-
-          success = {"success"=>true,
-           "message"=>"Success",
-           "signerinfo"=>"Brian H. of Brooklyn",
-           "loginteraction"=>
-            {"code"=>"4",
-             "message"=>"Request not allowed from source IP address '104.154.160.53'."},
-           "submitsalert"=>
-            {"interaction"=>
-              {"interactionId"=>"161798",
-               "interacted"=>"2017-10-28T17:21:54.370-04:00",
-               "alert"=>
-                {"alertId"=>"221",
-                 "type"=>"action",
-                 "status"=>"active",
-                 "priority"=>"medium",
-                 "url"=>
-                  "https://secure.transalt.org/site/Advocacy?pagename=homepage&id=221",
-                 "interactionCount"=>"4438",
-                 "title"=>"Fix 5th and 6th",
-                 "thumbnail"=>{},
-                 "internalName"=>
-                  "5th and 6th Forward: We Support Bicycle, Pedestrian and Transit Improvements on 5th and 6th Avenues",
-                 "description"=>
-                  "We support the installation of protected bike lanes and pedestrian safety improvements on 5th and 6th Avenues, starting at 59th Street and continuing south.",
-                 "category"=>"General",
-                 "issues"=>{"issue"=>"5thand6th"},
-                 "restrictByState"=>{},
-                 "modified"=>"2016-09-07T11:41:00.000-04:00",
-                 "publish"=>"2012-08-01T14:54:41.277-04:00",
-                 "expire"=>{},
-                 "targets"=>
-                  {"target"=>
-                    ["Manhattan Community Boards 2, 4 and 5",
-                     "Joseph Borelli",
-                     "Mitchell Silver"]},
-                 "messageSubject"=>"Stand Up for Safer 5th and 6th Avenues",
-                 "messageSubjectEditable"=>"optional",
-                 "messageGreeting"=>"Dear",
-                 "messageOpening"=>{},
-                 "messageBody"=>
-                  "When you make part of Sixth Avenue safe, don't leave me stranded! Make Fifth Avenue, and the rest of Sixth Avenue, safe with a protected bike lane, too.",
-                 "messageBodyEditable"=>"optional",
-                 "messageClosing"=>{},
-                 "messageSignature"=>"Sincerely,",
-                 "letterLimit"=>"0",
-                 "wordLimit"=>"0",
-                 "position"=>"none",
-                 "yeaCount"=>"0",
-                 "nayCount"=>"0",
-                 "abstainCount"=>"0",
-                 "notPresentCount"=>"0"},
-               "recipients"=>
-                {"recipient"=>
-                  {"recipientId"=>"other.110",
-                   "title"=>"Council Member",
-                   "name"=>"Joseph Borelli",
-                   "interactive"=>"false",
-                   "deliveryOptions"=>{"delivery"=>["all", "internet", "fax"]},
-                   "position"=>"Council Member",
-                   "representing"=>{},
-                   "party"=>{}}},
-               "subject"=>"Fix 5th and 6th",
-               "body"=>
-                "When you make part of Sixth Avenue safe, don't leave me stranded! Make Fifth Avenue, and the rest of Sixth Avenue, safe with a protected bike lane, too.",
-               "called"=>{},
-               "contactPosition"=>{},
-               "contactName"=>{},
-               "reply"=>{},
-               "note"=>{}}},
-           "outgoingip"=>"10.128.1.14"}
-
-          failure = {"success"=>false,
-            "errors"=>{"address"=>"Address is required.", "zip"=>"ZIP code is required."}}
-
-          # res = RestClient.post(
-          #   trans_alt_url,
-          #   title:      params['title'],
-          #   firstname:  params['first_name'],
-          #   lastname:   params['last_name'],
-          #   email:      params['email'],
-          #   address:    params['address'].try(:[], 'street'),
-          #   zip:        params['address'].try(:[], 'zip'),
-          #   phone:      params['phone'],
-          #   city:       params['address'].try(:[], 'city'),
-          #   state:      params['address'].try(:[], 'state'),
-
-          #   body:       petition.letter,
-          #   subject:    petition.name,
-          #   nodeid:     petition.node_id,
-          #   alertid:    petition.alert_id,
-          #   offlineid:  petition.offline_id,
-          #   offlinenum: petition.offline_id
-          # )
-
-          res = if Kernel.rand(2) == 1
-            success
-          else
-            failure
-          end
-
-          mutex.synchronize { responses[petition.id] = res }
-
-        end
+      if (selected_campaigns_params = params['campaigns'].try(:[], 'selected'))
+        # handles changes to set of selected campaigns
+        update_selected_campaigns(selected_campaigns_params)
+      else
+        return redirect_to homepage_path
       end
-    }.each(&:join)
 
-    if responses.all?{|_, res| res['success']}
+      # Update petitions to display.
+      petitions_to_sign = unserialized_campaigns_cookie['selected']
 
-      return redirect_to thank_you_path
+      if !petitions_to_sign.present?
+        return redirect_to homepage_path
+      end
+
+      petitions_to_sign = Campaign.find(petitions_to_sign)
+
+      update_user_params(params['user'])
+
+      user_params = params['user']
+
+
+      trans_alt_url = 'https://campaigns.transalt.org/sites/all/modules/luminate_submit/submit.php'
+
+      responses = {}
+      mutex = Mutex.new
+
+      THREAD_COUNT.times.map {
+        Thread.new(petitions_to_sign) do |petitions|
+          while petition = mutex.synchronize { petitions.pop }
+
+            # success = {"success"=>true,
+            #  "message"=>"Success",
+            #  "signerinfo"=>"Brian H. of Brooklyn",
+            #  "loginteraction"=>
+            #   {"code"=>"4",
+            #    "message"=>"Request not allowed from source IP address '104.154.160.53'."},
+            #  "submitsalert"=>
+            #   {"interaction"=>
+            #     {"interactionId"=>"161798",
+            #      "interacted"=>"2017-10-28T17:21:54.370-04:00",
+            #      "alert"=>
+            #       {"alertId"=>"221",
+            #        "type"=>"action",
+            #        "status"=>"active",
+            #        "priority"=>"medium",
+            #        "url"=>
+            #         "https://secure.transalt.org/site/Advocacy?pagename=homepage&id=221",
+            #        "interactionCount"=>"4438",
+            #        "title"=>"Fix 5th and 6th",
+            #        "thumbnail"=>{},
+            #        "internalName"=>
+            #         "5th and 6th Forward: We Support Bicycle, Pedestrian and Transit Improvements on 5th and 6th Avenues",
+            #        "description"=>
+            #         "We support the installation of protected bike lanes and pedestrian safety improvements on 5th and 6th Avenues, starting at 59th Street and continuing south.",
+            #        "category"=>"General",
+            #        "issues"=>{"issue"=>"5thand6th"},
+            #        "restrictByState"=>{},
+            #        "modified"=>"2016-09-07T11:41:00.000-04:00",
+            #        "publish"=>"2012-08-01T14:54:41.277-04:00",
+            #        "expire"=>{},
+            #        "targets"=>
+            #         {"target"=>
+            #           ["Manhattan Community Boards 2, 4 and 5",
+            #            "Joseph Borelli",
+            #            "Mitchell Silver"]},
+            #        "messageSubject"=>"Stand Up for Safer 5th and 6th Avenues",
+            #        "messageSubjectEditable"=>"optional",
+            #        "messageGreeting"=>"Dear",
+            #        "messageOpening"=>{},
+            #        "messageBody"=>
+            #         "When you make part of Sixth Avenue safe, don't leave me stranded! Make Fifth Avenue, and the rest of Sixth Avenue, safe with a protected bike lane, too.",
+            #        "messageBodyEditable"=>"optional",
+            #        "messageClosing"=>{},
+            #        "messageSignature"=>"Sincerely,",
+            #        "letterLimit"=>"0",
+            #        "wordLimit"=>"0",
+            #        "position"=>"none",
+            #        "yeaCount"=>"0",
+            #        "nayCount"=>"0",
+            #        "abstainCount"=>"0",
+            #        "notPresentCount"=>"0"},
+            #      "recipients"=>
+            #       {"recipient"=>
+            #         {"recipientId"=>"other.110",
+            #          "title"=>"Council Member",
+            #          "name"=>"Joseph Borelli",
+            #          "interactive"=>"false",
+            #          "deliveryOptions"=>{"delivery"=>["all", "internet", "fax"]},
+            #          "position"=>"Council Member",
+            #          "representing"=>{},
+            #          "party"=>{}}},
+            #      "subject"=>"Fix 5th and 6th",
+            #      "body"=>
+            #       "When you make part of Sixth Avenue safe, don't leave me stranded! Make Fifth Avenue, and the rest of Sixth Avenue, safe with a protected bike lane, too.",
+            #      "called"=>{},
+            #      "contactPosition"=>{},
+            #      "contactName"=>{},
+            #      "reply"=>{},
+            #      "note"=>{}}},
+            #  "outgoingip"=>"10.128.1.14"}
+
+            # failure = {"success"=>false,
+            #   "errors"=>{"address"=>"Address is required.", "zip"=>"ZIP code is required."}}
+
+            res = RestClient.post(
+              trans_alt_url,
+              title:      user_params['title'],
+              firstname:  user_params['first_name'],
+              lastname:   user_params['last_name'],
+              email:      user_params['email'],
+              address:    user_params['address'].try(:[], 'street'),
+              zip:        user_params['address'].try(:[], 'zip'),
+              phone:      user_params['phone'].try(:gsub, /\D/, ''),
+              city:       user_params['address'].try(:[], 'city'),
+              state:      user_params['address'].try(:[], 'state'),
+
+              body:       petition.letter,
+              subject:    petition.name,
+              nodeid:     petition.node_id,
+              alertid:    petition.alert_id,
+              offlineid:  petition.offline_id,
+              offlinenum: petition.offline_id
+            )
+
+            # res = if Kernel.rand(2) == 1
+            #   success
+            # else
+            #   failure
+            # end
+
+            # res = if (petitions.count == 1 || true)
+            #   failure
+            # else
+            #   success
+            # end
+
+            # res = if (responses.keys.count % 2 == 0 && false)
+            #   failure
+            # else
+            #   success
+            # end
+
+            mutex.synchronize { responses[petition.id] = res }
+
+          end
+        end
+      }.each(&:join)
+
+      # Copy new cookie to make changes then set them.
+      cookie_hash = unserialized_campaigns_cookie
+
+      # Gather successful responses and their petitions' ids.
+      successful_responses            = responses.select{|_, res| res['success'] == 'success'}
+
+      previously_signed_petitions_ids = cookie_hash['just_signed'] || []
+      newly_signed_petition_ids       = successful_responses.keys
+      cookie_hash['just_signed']      = previously_signed_petitions_ids + newly_signed_petition_ids
+
+      # Remove signed petitions' ids from
+      # selected petitions and campaigns to sign.
+
+      selected_campaign_ids           = cookie_hash['selected'] || []
+      remaining_campaign_ids          = selected_campaign_ids - newly_signed_petition_ids
+      cookie_hash['selected']         = remaining_campaign_ids
+
+      # Record campaigns that have just been signed and add to the list.
+      already_signed_ids              = cookie_hash['already_signed'] || []
+      cookie_hash['already_signed']   = already_signed_ids + newly_signed_petition_ids
+
+      # Feed changes back into cookies.
+      set_campaigns_cookie(cookie_hash)
+
+
+      if responses.all?{|_, res| res['success'] == 'success' }
+
+        return redirect_to thank_you_path
+
+      else
+
+        @errors = {}
+        # populate errors
+        responses.each{|k,v| @errors[k] = v['errors'] || []}
+
+        # remember successful signatures
+        @recently_signed_petitions = Campaign.find(previously_signed_petitions_ids + newly_signed_petition_ids)
+
+        # reload data
+        @petitions_to_sign = Campaign.find(remaining_campaign_ids)
+
+        @user = unserialize_hash(cookies['user']) || {}
+
+        return render
+
+      end
 
     else
 
-      @errors = {}
-      # populate errors
-      responses.each{|k,v| @errors[k] = v['errors'] || []}
-
-      # remember successful signatures
-      @successfully_signed_petitions = responses.select{|_, res| res['success']}.keys
-
-      # reload data
-      @petitions_to_sign = Campaign.find(session['selected_petitions'])
-
-      @user = session['user'] || {}
-
-      return render 'review'
+      return redirect_to review_path
 
     end
 
   end
 
   def thank_you
-    true
+
+    cookie_hash = unserialized_campaigns_cookie
+
+    just_signed_campaign_ids    = cookie_hash.delete('just_signed') || []
+    already_signed_campaign_ids = cookie_hash['already_signed'] || []
+
+    @just_signed_campaigns      = Campaign.find(just_signed_campaign_ids)
+    @already_signed_campaigns   = Campaign.find(already_signed_campaign_ids - just_signed_campaign_ids)
+
+    set_campaigns_cookie(cookie_hash)
+
+  end
+
+
+  private
+
+
+  def serialize_hash(hash_to_serialize)
+    JSON.unparse(hash_to_serialize)
+  end
+
+  def set_campaigns_cookie(new_cookie_hash)
+    cookies['campaigns'] = serialize_hash(new_cookie_hash)
+  end
+
+
+  def update_selected_campaigns(selected_campaigns_params)
+
+    # If the user has deleted some campaigns
+    # update the list
+    if selected_campaigns_params
+
+      selected_campaigns = unserialize_hash(selected_campaigns_params)
+        .reject{ |i| i.to_i == 0 }
+
+      if (cookie_hash = unserialized_campaigns_cookie)
+        cookie_hash['selected'] = selected_campaigns
+
+        set_campaigns_cookie(cookie_hash)
+      end
+    end
+
+  end
+
+  def update_user_params(user_params)
+    if user_params
+      user_cookie = {}
+
+      ['email', 'first_name', 'last_name', 'phone', 'title'].each do |field|
+        user_cookie[field] = (user_params.try(:[], field) || '')
+      end
+
+      user_address_cookie = user_cookie['address'] ||= {}
+      user_address_params = user_params.try(:[], 'address')
+
+      ['city', 'state', 'street', 'zip'].each do |address_field|
+        user_address_cookie[address_field] = (user_address_params.try(:[], address_field) || '')
+      end
+
+      cookies['user'] = serialize_hash(user_cookie)
+
+    end
+
   end
 
 end
+
+
+
+
