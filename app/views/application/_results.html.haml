@@ -1,14 +1,15 @@
+- campaigns_already_signed = @campaigns_already_signed || []
+- selected_campaigns       = @selected_campaigns || []
+
 - if !other_campaigns.empty?
   %div.results-header
     %p
-      Campaigns that matched
-      = succeed ':' do
-        %span.search-term
-          = @search_term
+      = "#{campaigns.count} campaign#{'s' if campaigns.count != 1} matched"
+      %span.search-term
+        = "#{@search_term}:"
 
 %div{class: "row campaign-list #{'matching' if !other_campaigns.empty?}"}
-  - campaigns.each do |cp|
-    = render partial: 'application/campaign', locals: {campaign: cp}
+  = render partial: 'application/campaign', collection: campaigns.sort{|x,y| x.name.length <=> y.name.length}, cached: -> campaign { [ campaign, campaigns_already_signed.include?(campaign.id), selected_campaigns.include?(campaign.id) ] }
 
 
 - if !other_campaigns.empty?
@@ -17,5 +18,4 @@
       Other campaigns:
 
   %div.row.campaign-list.not-matching
-    - other_campaigns.each do |ocp|
-      = render partial: 'application/campaign', locals: {campaign: ocp}
+    = render partial: 'application/campaign', collection: other_campaigns.sort{|x,y| x.name.length <=> y.name.length}, cached: -> campaign { [ campaign, campaigns_already_signed.include?(campaign.id), selected_campaigns.include?(campaign.id) ] }

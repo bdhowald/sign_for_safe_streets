@@ -1,21 +1,9 @@
+- campaigns_already_signed = @campaigns_already_signed || []
+- selected_campaigns       = @selected_campaigns || []
+
 %main
-  / %div.header#other_header{style: 'background-color:#e9ebef;'}
-  /   %div.container
-  /     %div.jumbotron
-  /       %h1.display-3
-  /         Hello, world!
-  /       %p.lead
-  /         This is a simple hero unit, a simple jumbotron-style component for calling extra attention to featured content or information.
-  /       %hr.my-4
-  /       %p
-  /         It uses utility classes for typography and spacing to space content out within the larger container.
-  /       %p.lead
-  /         %a.btn.btn-primary.btn-lg{href: "#", role:"button"}
-  /           Learn more
 
   %div.header#page-header
-    / %h1.title
-    /   Transportation Alternatives Campaigns
 
     %div.container
       %div.row
@@ -32,17 +20,28 @@
               %div.row
                 - [['Cycling', 'bicycle'], ['Walking', 'female'], ['Transit', 'bus'], ['Schools', 'graduation-cap']].each do |button_text|
                   %li.col-6.col-sm-3.filter-button
-                    %div.search-button
+                    %div.search-button{'data-search-text' => button_text[0]}
                       %i{class: "fa fa-#{button_text[1]}"}
                       %span.sans
                         = button_text[0]
 
+            %ul.filter-buttons
+              %div.row
+                - ['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island', 'Citywide', 'Statewide'].each do |button_text|
+                  %li.col.filter-button
+                    %div{class: "search-button borough #{button_text.downcase.strip.gsub(' ', '-')}", 'data-search-text' => button_text}
+                      %span.sans
+                        = borough_abbreviation(button_text)
+
       %div.row
         %div.col-lg-12
           %div.sign-all
-            - if @campaigns_to_sign.sort == @campaigns.collect(&:id).sort
+            - if selected_campaigns.present? && @selected_campaigns.sort == @all_active_campaigns.collect(&:id).sort
               %button.btn.btn-danger.btn-lg.btn-block{type: 'button'}
                 Remove All Campaigns
+            - elsif @all_active_campaigns.collect(&:id).sort == campaigns_already_signed.sort
+              %button.btn.btn-secondary.btn-lg.btn-block{type: 'button'}
+                All Campaigns Signed
             - else
               %button.btn.btn-primary.btn-lg.btn-block{type: 'button'}
                 Add All Campaigns
@@ -52,23 +51,45 @@
       %div.row
         %div.campaign-list-container
           %div.row.campaign-list
-            - @campaigns.each do |cp|
-              = render partial: 'campaign', locals: {campaign: cp}
+            = render partial: 'application/campaign', collection: @all_active_campaigns.sort{|x,y| x.name.length <=> y.name.length}, cached: -> campaign { [ campaign, campaigns_already_signed.include?(campaign.id), selected_campaigns.include?(campaign.id) ] }
 
 
-  %div.footer.sign-petitions{style: "bottom: #{@campaigns_to_sign.empty? ? '-75px' : '0px'}"}
+
+  - have_selected_campaigns = @selected_campaigns.present?
+  %div.sticky-footer.sign-petitions{class: "#{'retracted' if !have_selected_campaigns}"}
     = form_tag('/review', method: 'POST') do
-      %input#petition-data{type: 'hidden', name:'selected_petitions'}
-      %input#unsigned-campaign-ids{type: 'hidden', value: @campaigns.collect(&:id).sort}
+      %input#petition-data{type: 'hidden', name:'campaigns[selected]'}
+      %input#unsigned-campaign-ids{type: 'hidden', value: @all_active_campaigns.collect(&:id).sort}
       %div.footer-text
         Sign
+        - num_selected_campaigns = (@selected_campaigns || []).count
         %span.num-campaigns
-          = (@campaigns_to_sign.count.to_s || 'one')
+          = num_selected_campaigns.to_s
         %span.campaign-word
-          = (@campaigns_to_sign.count == 1 ? 'petition!' : 'petitions!')
+          = (num_selected_campaigns == 1 ? 'petition!' : 'petitions!')
       %div.notification-box{'data-add-color' => '#15a3d0', 'data-remove-color' => '#ffc107'}
         %div.notification
           Campaign added!
+
+  %div.static-footer
+    %p
+      © Brian Howald 2017
+    %div.social-media-links
+      %a{'href' => 'https://twitter.com/bdhowald', 'target' => '_blank'}
+        %i.fa.fa-2x.fa-twitter
+      %a{'href' => 'https://github.com/bdhowald', 'target' => '_blank'}
+        %i.fa.fa-2x.fa-github
+      %a{'href' => 'https://linkedin.com/in/bdhowald', 'target' => '_blank'}
+        %i.fa.fa-2x.fa-linkedin
+      %a{'href' => 'https://instagram/bdhowald', 'target' => '_blank'}
+        %i.fa.fa-2x.fa-instagram
+
+    %p
+      %a
+        Privacy Policy
+
+:javascript
+  mixpanel.track('Campaign catalog viewed');
 
 
 

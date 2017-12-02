@@ -1,0 +1,39 @@
+- signed_petitions = (@recently_signed_petitions || []) + (@already_signed_campaigns || [])
+- signed           = signed_petitions.include?(petition)
+- errors           = (@errors || {})[petition.id]
+- has_errors       = !errors.blank?
+- show_detail      = petition.id == petition_to_expand
+
+%li.campaign.list-group-item{class: "#{petition.borough.downcase.strip.gsub(' ', '-')} #{'signed' if signed}", 'data-campaign-id' => petition.id}
+  %a.information-toggle{href: '#'}
+    %div.card-body
+      %div.campaign-name
+        = petition.name
+      %div.borough
+        - if signed
+          %i.fa.fa-check
+        - elsif has_errors
+          %i.fa.fa-refresh
+        - else
+          = borough_abbreviation(petition.borough)
+
+  %div{class: "petition-details #{'d-none' unless show_detail}"}
+    %div.petition-text
+      %blockquote.blockquote{'data-full-letter' => format_letter(petition.letter.gsub('\'', '')), 'data-shortened-letter' => string_with_ellipses(format_letter(petition.letter.gsub('\'', '')))}
+        = "\"#{string_with_ellipses(format_letter(petition.letter.gsub('\'', '')), 200)}\""
+      %div.read-more
+        (read more)
+
+    %div.target-details
+      %div.petition-delivery
+        - if signed
+          This petition was delivered to:
+        - else
+          This petition will be delivered to:
+      %ul.targets.list-group-flush
+        - targets_for_display = petition.targets.split(/(;|,|&|\band\b)/).reject(&:blank?).reject{|cap| /(;|,|&|\band\b)/.match(cap)}.uniq
+        - targets_for_display.each do |target|
+          %li.target.wide-display
+            = remove_targets_abbreviations(target.strip)
+          %li.target.narrow-display
+            = abbreviate_targets(target.strip)

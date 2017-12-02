@@ -49,10 +49,11 @@
         %div.form-group
           %label{for: 'user-address', id: 'address-label'}
             Address
-          %input.form-control#user-address{'type' => 'text', 'aria-labeledby' => 'address-label', 'placeholder' => 'Enter address', 'required' => true, value: address_string(@user['address'])}
+
+          %input.form-control#user-address{'type' => 'text', 'aria-labeledby' => 'address-label', 'placeholder' => 'Enter address', 'required' => true, value: "#{address_string(@user['address']) if address_complete?(@user['address'])}"}
           / %small
           %input#user-address-street{type: 'hidden', name: 'user[address][street]', value: @user.try(:[], 'address').try(:[], 'street')}
-          %input#user-address-city{type: 'hidden', name: 'user[address][city]', value: @user.try(:[], 'address').try(:[], 'address')}
+          %input#user-address-city{type: 'hidden', name: 'user[address][city]', value: @user.try(:[], 'address').try(:[], 'city')}
           %input#user-address-state{type: 'hidden', name: 'user[address][state]', value: @user.try(:[], 'address').try(:[], 'state')}
           %input#user-address-zip{type: 'hidden', name: 'user[address][zip]', value: @user.try(:[], 'address').try(:[], 'zip')}
 
@@ -80,11 +81,11 @@
           %div.invalid-feedback
             Please enter a valid email address
 
-        %button.btn.btn-primary.btn-lg.btn-block{type: 'submit'}
-          = "Sign #{@petitions_to_sign.count} Campaigns"
+        %button.btn.btn-primary.btn-lg.btn-block{type: 'submit', id: 'submit-form'}
+          = "Sign #{@petitions_to_sign.count} Petition#{'s' if @petitions_to_sign.count > 1}"
 
 
-      %input#petition-data{type: 'hidden', name:'selected_petitions'}
+      %input#petition-data{type: 'hidden', name:'campaigns[selected]'}
 
 
 

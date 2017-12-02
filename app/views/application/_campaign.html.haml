@@ -1,6 +1,11 @@
+- campaigns_already_signed = @campaigns_already_signed || []
+- selected_campaigns       = @selected_campaigns || []
+- campaign_domain          = 'https://campaigns.transalt.org'
+
+
 %div.col-sm-6.col-md-4
   %div.card
-    %div.campaign{class: "#{(@campaigns_already_signed || []).include?(campaign.id) ? 'already-signed' : ''}", 'data-campaign-id' => campaign.id}
+    %div.campaign{class: "#{campaigns_already_signed.include?(campaign.id) ? 'already-signed' : ''}", 'data-campaign-id' => campaign.id}
 
       %div.card-body
 
@@ -42,13 +47,29 @@
             %div{'class' => "#{progress_class} progress-bar", 'role' => "progressbar", 'style' => "width: #{(percentage_complete)}%", 'aria-valuenow' => "#{percentage_complete}", 'aria-valuemin' => '0', 'aria-valuemax' => '100'}
               = "#{percentage_complete.to_i}%"
 
+        %li.list-group-item.d-none.d-md-block.campaign-starter-list-item
+          Started by:
+          %span.starter
+            = campaign.starter
+
+        %li.list-group-item.d-none.d-md-block.social-media-list-item
+          %span.share-text
+
+          %a{'href' => "https://twitter.com/intent/tweet?status=Sign the petition #{campaign.name}%0A#{campaign_domain}#{campaign.link}", 'target' => '_blank'}
+            %i.fa.fa-2x.fa-twitter-square
+
+          %a{'href' => "https://www.facebook.com/sharer/sharer.php?u=#{campaign_domain}#{campaign.link}&title=#{campaign.name}", 'target' => '_blank'}
+            %i.fa.fa-2x.fa-facebook-square
+
+
         %li.list-group-item.no-padding
           %div.details.row
-            - if (@campaigns_to_sign || []).include?(campaign.id)
+            - if selected_campaigns.include?(campaign.id)
+
               %div.col.to-be-signed{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'true'}
                 %span
                 %i.fa.fa-check
-            - elsif (@campaigns_already_signed || []).include?(campaign.id)
+            - elsif campaigns_already_signed.include?(campaign.id)
               %div.col.already-signed{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'false'}
                 %span
                 %i.fa.fa-check

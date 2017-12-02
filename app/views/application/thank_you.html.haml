@@ -1,5 +1,13 @@
+- just_signed_campaigns    = @just_signed_campaigns || []
+- already_signed_campaigns = @already_signed_campaigns || []
+
 %main
   %div.header#page-header
+    - 5.times.each do
+      %div.balloon
+        %p
+          Thank You!
+
 
     %div.container
       %div.row
@@ -10,21 +18,34 @@
             %h5#ps
               (Want to sign more?
               = link_to("Head back", homepage_path, {id: 'sign-more', method: :get})
-              to the petition homepage)
+              to the petition homepage.)
 
 
-  %div.thank-you-page-body
+  %div.thank-you-page-body#main-content
     %div.thank-you-page-container.container
-      %div.row.justify-content-center
+      %div.all-campaigns
+        %div.row.justify-content-center
 
-        %div.col-sm-6.col-md-6.signed-campaigns
-          %div.explanation
-            %h3.your-campaigns
-              Your Campaigns
-            %div.campaign-container.card
-              %ul.campaigns.list-group.list-group-flush
-                / - @petitions_to_sign.each do |pet|
-                /   = render partial: 'petition_details', locals: {petition: pet}
 
-  /       %div.col-sm-6.col-md-6
-  /         = render 'application/user_fields'
+          - if just_signed_campaigns.present?
+            %div.col-sm-6.col-md-6.campaigns-chunk.recently-signed-campaigns
+              %div.explanation
+                %h3.recently-signed-title.petitions-title
+                  You just signed
+                %div.campaign-container.card
+                  %ul.campaigns.list-group.list-group-flush
+                    = render partial: 'application/petition', collection: just_signed_campaigns, locals: { petition_to_expand: -1 }, cached: -> petition { [ petition, true, already_signed_campaigns.include?(petition.id) ] }
+
+
+          - if already_signed_campaigns.present?
+            %div.col-sm-6.col-md-6.campaigns-chunk.already-signed-campaigns
+              %div.explanation
+                %h3.already-signed-title.petitions-title
+                  You already signed
+                %div.campaign-container.card
+                  %ul.campaigns.list-group.list-group-flush
+                    = render partial: 'application/petition', collection: already_signed_campaigns, locals: { petition_to_expand: -1 }, cached: -> petition { [ petition, just_signed_campaigns.include?(petition.id), true ] }
+
+  %div.thank-you-page-footer
+    %a{'href' => 'https://codepen.io/JeffreyTaylor'}
+      Balloon animation by Jeffrey Taylor

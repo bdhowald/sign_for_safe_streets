@@ -1,0 +1,28 @@
+- recently_signed_petitions = @recently_signed_petitions || []
+- user                      = @user || {}
+- all_errors                = (@errors || {})
+
+%div.signing-page-body
+  %div.signing-page-container.container
+    %div.row.justify-content-center
+      %div.col-sm-6.col-md-6.campaigns-chunk.campaigns-to-sign
+        %div.explanation
+          %div.all-campaigns
+            %h3.signing.petitions-title
+              Your Petitions
+            %div.campaign-container.card
+              %ul.campaigns.list-group.list-group-flush
+                = render partial: 'application/petition', collection: @petitions_to_sign, locals: { petition_to_expand: @petitions_to_sign.first.id }, cached: -> petition { [ petition, recently_signed_petitions.include?(petition.id), @petitions_to_sign.first.id, all_errors[petition.id].present?, @petitions_to_sign ] }
+
+            - if !@recently_signed_petitions.blank?
+              %h3.signing.petitions-title
+                Signed Petitions
+              %div.campaign-container.card
+                %ul.campaigns.list-group.list-group-flush
+                  - if @recently_signed_petitions.present?
+                    = render partial: 'application/petition', collection: @recently_signed_petitions, locals: { petition_to_expand: -1 }, cached: -> petition { [ petition, recently_signed_petitions.include?(petition.id), @petitions_to_sign ] }
+
+
+      %div.col-sm-6.col-md-6
+        - cache_if current_user.present?, [current_user, @petitions_to_sign, @user['email'].present?, @user.hash ] do
+          = render partial: 'application/user_fields'
