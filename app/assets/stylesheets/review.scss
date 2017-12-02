@@ -32,236 +32,259 @@
 }
 
 
+@media (max-width: 575px) {
+  .campaigns-to-sign:after {
+    content: '';
+    width: 90%;
+    height: 1px;
+    background-color: #333;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -6px;
+    margin: 0 auto;
+  }
+}
+
 @media (min-width: 576px) {
   .campaigns-to-sign {
     border-right: 1px solid #333;
   }
 }
 
-.campaigns-to-sign .explanation {
-  // background-color: #65dda1;
-  margin: 30px 15px;
-}
-
-.campaigns-to-sign .explanation h3.signing {
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-.campaigns-to-sign .explanation .campaign-container {
-
-}
-
-
-.campaigns-to-sign .explanation .campaigns a {
-  color: #000;
-}
-
-.campaigns-to-sign .explanation .campaigns .campaign {
-  padding: 12px 0 0;
-}
-
-.campaigns-to-sign .explanation .campaigns .campaign.citywide {
-  background-color: rgba(255, 179, 71, 0.25);
-}
-
-.campaigns-to-sign .explanation .campaigns .campaign.statewide {
-  background-color: rgba(0, 119, 200, 0.25);
-}
-
-.campaigns-to-sign .explanation .campaigns .campaign.bronx {
-  background-color: rgba(245, 199, 184, 0.25);
-}
-
-.campaigns-to-sign .explanation .campaigns .campaign.brooklyn {
-  background-color: rgba(147, 230, 180, 0.25);
-}
-
-.campaigns-to-sign .explanation .campaigns .campaign.manhattan {
-  background-color: rgba(0, 200, 238, 0.25);
-}
-
-.campaigns-to-sign .explanation .campaigns .campaign.queens {
-  background-color: rgba(243, 234, 161, 0.25);
-}
-
-.campaigns-to-sign .explanation .campaigns .campaign.staten-island {
-  background-color: rgba(218, 197, 208, 0.25);
-}
-
-.campaigns-to-sign .explanation .campaigns .campaign .card-body {
-  padding: 0 10px;
-}
-
-.campaigns-to-sign .explanation .campaigns .campaign .campaign-name {
-  border-bottom: 1px solid #666;
-  display: inline-block;
-  line-height: 26px;
-  max-width: 75%;
-  overflow: hidden;
-  // text-decoration: underline;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-@media (max-width: 767px) and (min-width: 576px) {
-  .campaigns-to-sign .explanation .campaigns .campaign .campaign-name {
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 399px) {
-  .campaigns-to-sign .explanation .campaigns .campaign .campaign-name {
-    max-width: 70%;
-  }
-}
-
-@media (max-width: 299px) {
-  .campaigns-to-sign .explanation .campaigns .campaign .campaign-name {
-    max-width: 100%;
-  }
-}
-
-// .campaigns-to-sign .explanation .campaigns .campaign-name:after {
-//   content: "";
-//   text-align: right;
-//   position: absolute;
-//   bottom: 0;
-//   right: 0;
-//   width: 20%;
-//   height: 1.2em;
-//   // background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(101, 221, 161, 1) 50%);
+// .campaigns-to-sign .explanation {
+//   // background-color: #65dda1;
+//   margin: 30px 15px;
 // }
 
-.campaigns-to-sign .explanation .campaigns .campaign .borough {
-  border: 1px solid #000;
-  float: right;
-  padding: 0px 5px;
-  text-align: center;
-  width: 60px;
-}
+// .campaigns-to-sign .explanation h3.petitions-title {
+//   margin-bottom: 1rem;
+//   text-align: center;
+// }
 
-@media (max-width: 767px) and (min-width: 576px) {
-  .campaigns-to-sign .explanation .campaigns .campaign .borough {
-    display: none;
-  }
-}
+// .campaigns-to-sign .explanation .campaign-container {
 
-@media (max-width: 299px) {
-  .campaigns-to-sign .explanation .campaigns .campaign .borough {
-    display: none;
-  }
-}
+// }
 
 
-.campaigns-to-sign .explanation .campaigns .campaign .petition-text {
-  border-top: 1px solid #ccc;
-  padding: 12px 20px;
+// .campaigns-to-sign .explanation .campaigns a {
+//   color: #000;
+// }
 
-  -webkit-animation: fadeIn 1s;
-  animation: fadeIn 1s;
-}
+// .campaigns-to-sign .explanation .campaigns .campaign {
+//   padding: 12px 0 0;
+// }
 
-.campaigns-to-sign .explanation .campaigns .campaign .petition-text .blockquote {
-  display: inline;
-  font-size: 16px;
-  font-style: italic;
-  margin-bottom: 0;
+// .campaigns-to-sign .explanation .campaigns .campaign.citywide {
+//   background-color: rgba(255, 179, 71, 0.25);
+// }
 
-  // max-height: 120px;
-  // overflow: hidden;
-  // position: relative;
-}
+// .campaigns-to-sign .explanation .campaigns .campaign.statewide {
+//   background-color: rgba(0, 119, 200, 0.25);
+// }
 
-.campaigns-to-sign .explanation .campaigns .campaign .petition-text div.read-more {
-  cursor: pointer;
-  display: inline;
-  font-style: normal;
-  font-weight: 600;
-  margin-left: 5px;
-}
+// .campaigns-to-sign .explanation .campaigns .campaign.bronx {
+//   background-color: rgba(245, 199, 184, 0.25);
+// }
 
-.campaigns-to-sign .explanation .campaigns .campaign .target-details {
-  border-top: 1px solid #ccc;
-  padding: 12px 20px;
+// .campaigns-to-sign .explanation .campaigns .campaign.brooklyn {
+//   background-color: rgba(147, 230, 180, 0.25);
+// }
 
-  -webkit-animation: fadeIn 1s;
-  animation: fadeIn 1s;
-}
+// .campaigns-to-sign .explanation .campaigns .campaign.manhattan {
+//   background-color: rgba(0, 200, 238, 0.25);
+// }
 
-@-webkit-keyframes fadeIn {
-    from { opacity: 0; }
-      to { opacity: 1; }
-}
+// .campaigns-to-sign .explanation .campaigns .campaign.queens {
+//   background-color: rgba(243, 234, 161, 0.25);
+// }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-      to { opacity: 1; }
-}
+// .campaigns-to-sign .explanation .campaigns .campaign.staten-island {
+//   background-color: rgba(218, 197, 208, 0.25);
+// }
+
+// // .campaigns-to-sign .explanation .campaigns .campaign.signed.citywide {
+// //   background-color: rgba(255, 179, 71, 0.75);
+// // }
+
+// // .campaigns-to-sign .explanation .campaigns .campaign.signed.statewide {
+// //   background-color: rgba(0, 119, 200, 0.75);
+// // }
+
+// // .campaigns-to-sign .explanation .campaigns .campaign.signed.bronx {
+// //   background-color: rgba(245, 199, 184, 0.75);
+// // }
+
+// // .campaigns-to-sign .explanation .campaigns .campaign.signed.brooklyn {
+// //   background-color: rgba(147, 230, 180, 0.75);
+// // }
+
+// // .campaigns-to-sign .explanation .campaigns .campaign.signed.manhattan {
+// //   background-color: rgba(0, 200, 238, 0.75);
+// // }
+
+// // .campaigns-to-sign .explanation .campaigns .campaign.signed.queens {
+// //   background-color: rgba(243, 234, 161, 0.75);
+// // }
+
+// // .campaigns-to-sign .explanation .campaigns .campaign.signed.staten-island {
+// //   background-color: rgba(218, 197, 208, 0.75);
+// // }
+
+// .campaigns-to-sign .explanation .campaigns .campaign.signed {
+//   background-color: rgba(192, 192, 192, 0.5);
+// }
+
+// .campaigns-to-sign .explanation .campaigns .campaign .card-body {
+//   padding: 0 10px;
+// }
+
+// .campaigns-to-sign .explanation .campaigns .campaign .campaign-name {
+//   border-bottom: 1px solid #666;
+//   display: inline-block;
+//   line-height: 26px;
+//   max-width: 75%;
+//   overflow: hidden;
+//   // text-decoration: underline;
+//   text-overflow: ellipsis;
+//   white-space: nowrap;
+// }
+
+// @media (max-width: 767px) and (min-width: 576px) {
+//   .campaigns-to-sign .explanation .campaigns .campaign .campaign-name {
+//     max-width: 100%;
+//   }
+// }
+
+// @media (max-width: 399px) {
+//   .campaigns-to-sign .explanation .campaigns .campaign .campaign-name {
+//     max-width: 70%;
+//   }
+// }
+
+// @media (max-width: 299px) {
+//   .campaigns-to-sign .explanation .campaigns .campaign .campaign-name {
+//     max-width: 100%;
+//   }
+// }
+
+// // .campaigns-to-sign .explanation .campaigns .campaign-name:after {
+// //   content: "";
+// //   text-align: right;
+// //   position: absolute;
+// //   bottom: 0;
+// //   right: 0;
+// //   width: 20%;
+// //   height: 1.2em;
+// //   // background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(101, 221, 161, 1) 50%);
+// // }
+
+// .campaigns-to-sign .explanation .campaigns .campaign .borough {
+//   border: 1px solid #000;
+//   float: right;
+//   padding: 0px 5px;
+//   text-align: center;
+//   width: 60px;
+// }
+
+// @media (max-width: 767px) and (min-width: 576px) {
+//   .campaigns-to-sign .explanation .campaigns .campaign .borough {
+//     display: none;
+//   }
+// }
+
+// @media (max-width: 299px) {
+//   .campaigns-to-sign .explanation .campaigns .campaign .borough {
+//     display: none;
+//   }
+// }
 
 
-.campaigns-to-sign .explanation .campaigns .campaign .target-details .petition-delivery {
-  font-weight: 600;
-  text-decoration: underline;
-}
+// .campaigns-to-sign .explanation .campaigns .campaign .petition-text {
+//   border-top: 1px solid #ccc;
+//   padding: 12px 20px;
 
-.campaigns-to-sign .explanation .campaigns .campaign .target-details .targets .target.narrow-display {
-  display: none;
-}
+//   -webkit-animation: fadeIn 1s;
+//   animation: fadeIn 1s;
+// }
 
-.campaigns-to-sign .explanation .campaigns .campaign .target-details .targets .target.wide-display {
-  display: block;
-}
+// .campaigns-to-sign .explanation .campaigns .campaign .petition-text .blockquote {
+//   display: inline;
+//   font-size: 16px;
+//   font-style: italic;
+//   margin-bottom: 0;
 
-@media (max-width: 991px) {
-  .campaigns-to-sign .explanation .campaigns .campaign .target-details .targets .target.narrow-display {
-    display: block;
-  }
+//   // max-height: 120px;
+//   // overflow: hidden;
+//   // position: relative;
+// }
 
-  .campaigns-to-sign .explanation .campaigns .campaign .target-details .targets .target.wide-display {
-    display: none;
-  }
-}
+// .campaigns-to-sign .explanation .campaigns .campaign .petition-text div.read-more {
+//   cursor: pointer;
+//   display: inline;
+//   font-style: normal;
+//   font-weight: 600;
+//   margin-left: 5px;
+// }
 
-@media (max-width: 575px) {
-  .campaigns-to-sign .explanation .campaigns .campaign .target-details .targets .target.narrow-display {
-    display: none;
-  }
+// .campaigns-to-sign .explanation .campaigns .campaign .target-details {
+//   border-top: 1px solid #ccc;
+//   padding: 12px 20px;
 
-  .campaigns-to-sign .explanation .campaigns .campaign .target-details .targets .target.wide-display {
-    display: block;
-  }
-}
+//   -webkit-animation: fadeIn 1s;
+//   animation: fadeIn 1s;
+// }
 
-@media (max-width: 399px) {
-  .campaigns-to-sign .explanation .campaigns .campaign .target-details .targets .target.narrow-display {
-    display: block;
-  }
+// @-webkit-keyframes fadeIn {
+//     from { opacity: 0; }
+//       to { opacity: 1; }
+// }
 
-  .campaigns-to-sign .explanation .campaigns .campaign .target-details .targets .target.wide-display {
-    display: none;
-  }
-}
+// @keyframes fadeIn {
+//     from { opacity: 0; }
+//       to { opacity: 1; }
+// }
 
 
+// .campaigns-to-sign .explanation .campaigns .campaign .target-details .petition-delivery {
+//   font-weight: 600;
+//   text-decoration: underline;
+// }
 
-#user-info-form {
-  // background-color: #eee;
-  margin: 30px 15px;
-}
+// .campaigns-to-sign .explanation .campaigns .campaign .target-details .targets .target.narrow-display {
+//   display: none;
+// }
 
-#user-info-form #instructions {
-  text-align: center;
-}
+// .campaigns-to-sign .explanation .campaigns .campaign .target-details .targets .target.wide-display {
+//   display: block;
+// }
 
-#user-info-form #user-details #form-fields {
-  margin: 10px 0;
-}
+// @media (max-width: 991px) {
+//   .campaigns-to-sign .explanation .campaigns .campaign .target-details .targets .target.narrow-display {
+//     display: block;
+//   }
 
-#user-info-form #user-details #form-fields .form-group label {
-  // margin-bottom: 4px;
-}
+//   .campaigns-to-sign .explanation .campaigns .campaign .target-details .targets .target.wide-display {
+//     display: none;
+//   }
+// }
 
-#user-info-form #user-details #form-fields .form-group small {
-  color: #868e96
-}
+// @media (max-width: 575px) {
+//   .campaigns-to-sign .explanation .campaigns .campaign .target-details .targets .target.narrow-display {
+//     display: none;
+//   }
+
+//   .campaigns-to-sign .explanation .campaigns .campaign .target-details .targets .target.wide-display {
+//     display: block;
+//   }
+// }
+
+// @media (max-width: 399px) {
+//   .campaigns-to-sign .explanation .campaigns .campaign .target-details .targets .target.narrow-display {
+//     display: block;
+//   }
+
+//   .campaigns-to-sign .explanation .campaigns .campaign .target-details .targets .target.wide-display {
+//     display: none;
+//   }
+// }

@@ -42,8 +42,15 @@ li:hover{
   text-decoration: none;
 }
 
+html {
+  // height: 100%;
+  // overflow: hidden;
+}
+
 body {
   font-family: 'Montserrat', sans-serif;
+  // height: 100%;
+  // overflow: auto;
 }
 
 $transalt-orange: #ff4500;
@@ -68,14 +75,39 @@ $transalt-orange: #ff4500;
   font-size: 20px;
 }
 
-.footer {
+#page_header .container .row {
+  margin: 15px 0;
+}
+
+.sticky-footer {
   position: fixed;
+  bottom: 0px;
   left: 0;
   right: 0;
   background-color: #0dc50d;
   height: 75px;
 
   cursor: pointer;
+
+  -webkit-transition: transform 0.8s, background-color 0.2s ease-out;
+     -moz-transition: transform 0.8s, background-color 0.2s ease-out;
+       -o-transition: transform 0.8s, background-color 0.2s ease-out;
+          transition: transform 0.8s, background-color 0.2s ease-out;
+}
+
+// .footer.disabled {
+//   background-color: #999;
+//   cursor: default;
+// }
+
+.sticky-footer.extended {
+  transform: translate(0px, -75px);
+}
+
+.sticky-footer.retracted {
+  background-color: #999;
+  cursor: default;
+  transform: translate(0px, 75px);
 }
 
 .footer-text {
@@ -107,6 +139,42 @@ $transalt-orange: #ff4500;
 }
 
 
+.static-footer {
+  background-color: #fff;
+  padding: 30px;
+  text-align: center;
+}
+
+.static-footer > * {
+  display: inline-block;
+}
+
+.static-footer .social-media-links {
+  left: 10px;
+  top: 5px;
+  position: relative;
+}
+
+.static-footer .social-media-links i {
+  padding: 0px 3px;
+}
+
+.static-footer .social-media-links i.fa-twitter {
+  color: #1da1f2;
+}
+
+.static-footer .social-media-links i.fa-github {
+  color: #444;
+}
+
+.static-footer .social-media-links i.fa-linkedin {
+  color: #007bb6
+}
+
+.static-footer .social-media-links i.fa-instagram {
+  color: #000;
+}
+
 
 #filters {
   margin: 30px 0px;
@@ -128,6 +196,11 @@ $transalt-orange: #ff4500;
   #filters .filter-buttons {
     display: none;
   }
+}
+
+#filters .filter-buttons .row {
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 #filters .filter-buttons li {
@@ -178,6 +251,124 @@ $transalt-orange: #ff4500;
     margin: 10px;
   }
 }
+
+#filters .filter-buttons li div.search-button.borough {
+  border-radius: .15rem;
+  color: #333;
+  font-weight: 300;
+}
+
+
+#filters .filter-buttons li div.search-button.borough:hover {
+  color: #fff;
+}
+
+#filters .filter-buttons li div.search-button.borough.active {
+  color: #fff;
+}
+
+#filters .filter-buttons li div.search-button.citywide {
+  background-color: rgba(255, 179, 71, 0.25);
+  border: 2px solid rgba(255, 179, 71, 0.25);
+  color: rgb(225, 149, 41);
+}
+
+#filters .filter-buttons li div.search-button.citywide:hover {
+  background-color: rgba(255, 179, 71, 1);
+}
+
+
+#filters .filter-buttons li div.search-button.citywide.active {
+  background-color: rgba(255, 179, 71, 1);
+}
+
+#filters .filter-buttons li div.search-button.statewide {
+  background-color: rgba(0, 119, 200, 0.25);
+  border: 2px solid rgba(0, 119, 200, 0.25);
+  color: rgb(0, 89, 170);
+}
+
+#filters .filter-buttons li div.search-button.statewide:hover {
+  background-color: rgba(0, 119, 200, 1);
+}
+
+#filters .filter-buttons li div.search-button.statewide.active {
+  background-color: rgba(0, 119, 200, 1);
+}
+
+#filters .filter-buttons li div.search-button.bronx {
+  background-color: rgba(245, 199, 184, 0.25);
+  border: 2px solid rgba(245, 199, 184, 0.25);
+  color: rgb(215, 139, 124);
+}
+
+#filters .filter-buttons li div.search-button.bronx:hover {
+  background-color: rgba(245, 199, 184, 1);
+}
+
+#filters .filter-buttons li div.search-button.bronx.active {
+  background-color: rgba(245, 199, 184, 1);
+}
+
+#filters .filter-buttons li div.search-button.brooklyn {
+  background-color: rgba(147, 230, 180, 0.25);
+  border: 2px solid rgba(147, 230, 180, 0.25);
+  color: rgb(117, 200, 150);
+}
+
+#filters .filter-buttons li div.search-button.brooklyn:hover {
+  background-color: rgba(147, 230, 180, 1.0);
+}
+
+#filters .filter-buttons li div.search-button.brooklyn.active {
+  background-color: rgba(147, 230, 180, 1.0);
+}
+
+#filters .filter-buttons li div.search-button.manhattan {
+  background-color: rgba(0, 200, 238, 0.25);
+  border: 2px solid rgba(0, 200, 238, 0.25);
+  color: rgb(0, 170, 208);
+}
+
+#filters .filter-buttons li div.search-button.manhattan:hover {
+  background-color: rgba(0, 200, 238, 1.0);
+}
+
+#filters .filter-buttons li div.search-button.manhattan.active {
+  background-color: rgba(0, 200, 238, 1.0);
+}
+
+#filters .filter-buttons li div.search-button.queens {
+  background-color: rgba(243, 234, 161, 0.25);
+  border: 2px solid rgba(243, 234, 161, 0.25);
+  color: rgb(153, 144, 71);
+}
+
+#filters .filter-buttons li div.search-button.queens:hover {
+  background-color: rgba(223, 214, 141, 1.0);
+  border: 2px solid rgba(223, 214, 141, 1.0);
+}
+
+#filters .filter-buttons li div.search-button.queens.active {
+  background-color: rgba(223, 214, 141, 1.0);
+  border: 2px solid rgba(223, 214, 141, 1.0);
+}
+
+#filters .filter-buttons li div.search-button.staten-island {
+  background-color: rgba(218, 197, 208, 0.25);
+  border: 2px solid rgba(218, 197, 208, 0.25);
+  color: rgb(158, 137, 148);
+}
+
+#filters .filter-buttons li div.search-button.staten-island:hover {
+  background-color: rgba(218, 197, 208, 1.0);
+}
+
+#filters .filter-buttons li div.search-button.staten-island.active {
+  background-color: rgba(218, 197, 208, 1.0);
+}
+
+
 
 
 
@@ -336,6 +527,7 @@ $transalt-orange: #ff4500;
 }*/
 
 .card .campaign .campaign-details span.borough {
+  color: #212529;
   font-weight: 300;
   font-size: 14pt;
 }
@@ -358,6 +550,26 @@ $transalt-orange: #ff4500;
 .card .campaign li.success-list-item {
   background-color: #e9632d;
   color: #fff;
+}
+
+
+.card .campaign li.campaign-starter-list-item span.starter {
+  font-weight: bold;
+}
+
+// .card .campaign li.social-media-list-item i {
+//   position: relative;
+//   /* Adjust these values accordingly */
+//   top: 5px;
+//   left: 5px;
+// }
+
+.card .campaign li.social-media-list-item i.fa.fa-facebook-square {
+  color: #29487d;
+}
+
+.card .campaign li.social-media-list-item i.fa.fa-twitter-square {
+  color: #1da1f2;
 }
 
 
@@ -459,7 +671,7 @@ $transalt-orange: #ff4500;
 
 span.sans {
   display: block;
-  font-family: 'Open Sans', sans-serif;
+  // font-family: 'Open Sans', sans-serif;
 }
 
 li.list-group-item.no-padding {
