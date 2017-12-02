@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   post '/review', to: 'application#review'
   get '/review', to: 'application#review'
 
+  get '/sign', to: 'application#sign'
   post '/sign', to: 'application#sign'
 
   get 'thank_you', to: 'application#thank_you'
