@@ -50,7 +50,7 @@ transalt_campaigns.each_with_index do |campaign, num|
   end
 
   if targets
-    targets.gsub!(/Gov./, "Governor")
+    targets.gsub!(/Gov\./, "Governor")
 
     periods_regex = /[a-z0-9]\./
     if periods_regex.match(targets)
