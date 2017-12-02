@@ -8,11 +8,9 @@ while more_campaigns do
   scraper = CampaignCrawler.new(campaign_page)
   output = scraper.crawl
 
-  # pp output['campaigns']
+  transalt_campaigns = transalt_campaigns + output['campaigns']
 
-  transalt_campaigns = transalt_campaigns + output["campaigns"]
-
-  output["campaigns"].empty? ? (more_campaigns = false) : campaign_page +=1
+  output['campaigns'].empty? ? (more_campaigns = false) : campaign_page +=1
 end
 
 # Instantiate Filter
@@ -22,7 +20,7 @@ seen_campaign_ids = Set.new
 
 
 # Create new Campaign records for each new campaign.
-transalt_campaigns.each do |campaign|
+transalt_campaigns.each_with_index do |campaign, num|
 
   petition_info = campaign['petition_info'].first
 
@@ -52,25 +50,73 @@ transalt_campaigns.each do |campaign|
   end
 
   if targets
+    targets.gsub!(/Gov./, "Governor")
 
-    community_board_regex = /((Bronx|Brooklyn|Manhattan|Queens|Staten Island) )?Community Boards (\d+(,?))(\s*\d+(,?))* (and|&) \d+/
-    if community_board_regex.match(targets)
+    periods_regex = /[a-z0-9]\./
+    if periods_regex.match(targets)
+      targets.gsub!(periods_regex){|match| "#{match[0]},"}
+    end
 
+    twitter_regex = /[^,] @/
+    if twitter_regex.match(targets)
+      targets.gsub!(/[^,] @/){|match|
+        "#{match[0]}, #{match[2]}"
+      }
+    end
+
+    community_board_regex = /((Bronx|Brooklyn|Manhattan|Queens|Staten Island) )?Community Boards (\d+(,?))(\s*\d+(,?))*(((\s*)(and|&)(\s*))?)\d+/
+
+    while community_board_regex.match(targets)
       substr_to_replace = community_board_regex.match(targets)[0]
 
       targets.gsub!(
         substr_to_replace,
-        substr_to_replace.scan(/\d+/).collect{ |elem|
-          "#{borough} Community Board #{elem}"
+        substr_to_replace.scan(/\d+/).collect{ |board_num|
+          "#{borough} Community Board #{board_num}"
         }.to_sentence
       )
     end
 
-    if (boards = targets.scan(/Community Board \d+/)) && targets.scan(/#{borough} Community Board \d+/).empty?
-      boards.each{|board|
-        targets.gsub!(board, "#{borough} #{board}")
-      }
+    if (boards = targets.scan(/Community Board \d+/)) && targets.scan(/(Bronx|Brooklyn|Manhattan|Queens|Staten Island) Community Board \d+/).empty?
+      if /(Bronx|Brooklyn|Manhattan|Queens|Staten Island)/.match(borough)
+        boards.each{|board|
+          targets.gsub!(board, "#{borough} #{board}")
+        }
+      end
     end
+
+    councilmember_regex = /(council ?member|CM)s\s*[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð\s ,.'-]+\s*(and|&)\s*[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð\s ,'-]+(,|.|$)/i
+    while councilmember_regex.match(targets)
+
+      substr_to_replace = councilmember_regex.match(targets)[0]
+
+      targets.gsub!(
+        substr_to_replace,
+        substr_to_replace
+          .gsub(/((, )|( (and|&) )|(, (and|&) ))/i, ', Council Member ')
+          .gsub(/((city )?council ?members)/i, 'Council Member')
+      )
+
+    end
+
+    if (fix_councilmember_spelling_regex = /((city )?councilmember)/i).match(targets)
+      targets.gsub!(fix_councilmember_spelling_regex, 'Council Member')
+    end
+
+    semicolon_regex = /([\w\s]+,[\w\s]+;)+[\w\s]+,[\w\s]+/
+    if semicolon_regex.match(targets)
+      substr_to_replace = semicolon_regex.match(targets)[0]
+
+      targets.gsub!(
+        substr_to_replace,
+        targets.scan(/([\w\s]+,[\w\s]+)(;|$)/).collect{ |matches|
+          arr = matches.collect{|item| item.split(',')}.flatten.collect(&:strip)
+          "#{arr[1]} #{arr[0]}"
+        }.to_sentence
+      )
+
+    end
+
   end
 
 
@@ -140,6 +186,11 @@ keywords_filter.filter_campaigns
 inactive_campaigns = Campaign.where.not(id: seen_campaign_ids.to_a)
 
 inactive_campaigns.each do |in_cp|
-  in_cp.update_attributes(is_active: false)
+  if in_cp.is_active
+    in_cp.update_attributes(is_active: false)
+    puts "Deactivating campaign: #{in_cp.name}"
+  else
+    puts "Campaign already inactive: #{in_cp.name}"
+  end
 end
 

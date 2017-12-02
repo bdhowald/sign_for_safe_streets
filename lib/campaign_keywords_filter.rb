@@ -3,6 +3,10 @@ class CampaignKeywordsFilter
   require 'lingua/stemmer'
 
   def initialize(campaigns = [])
+    if campaigns.empty?
+      campaigns = Campaign.all
+    end
+
     @campaigns = Set.new(campaigns)
     @stemmer   = Lingua::Stemmer.new(:language => "en")
   end
@@ -35,15 +39,17 @@ class CampaignKeywordsFilter
       # but the use may be comparative or illustrative
       # without implying connection to that borough.
       boro_tags = [
-        'Bronx',
-        'Brooklyn',
-        'Manhattan',
-        'Queens',
-        'Staten Island'
+        'bronx',
+        'brooklyn',
+        'manhattan',
+        'queens',
+        'staten island',
+        'citywide',
+        'statewide'
       ].collect{|boro| Tag.find_by(word: boro)}
 
       boro_tags.each{|tag|
-        if campaign.borough == tag.word
+        if campaign.borough.downcase == tag.word
           if !new_tags.include?(tag)
             new_tags += [tag]
           end
