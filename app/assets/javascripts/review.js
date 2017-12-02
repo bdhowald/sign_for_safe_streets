@@ -1,11 +1,13 @@
-$(document).ready(function(){
+'use strict'
 
-  'use strict'
+var onReviewPageLoad = function(){
 
   var that = this;
 
   setUpGoogleListeners();
   setUpValidations();
+
+  var googlePlaceSelected = checkAddressFields()
 
 
   $('body').on('click', 'a.information-toggle', function(){
@@ -18,10 +20,9 @@ $(document).ready(function(){
 
 
   $('body').on('submit', '#user-form', function(){
-    var campaignIds = $('li.campaign').map(function() {
+    var campaignIds = $('li.campaign').not('.signed').map(function() {
       return $(this).data('campaign-id')
     })
-
     $('#petition-data').val(JSON.stringify(campaignIds.get()));
   })
 
@@ -38,11 +39,48 @@ $(document).ready(function(){
 
 
   /*///*/
+  // If user address info is complete, a Google
+  // place has been selected.
+  //
+  // @method checkAddressFields
+  /*///*/
+  function checkAddressFields(){
+    if ($('#user-address-street').val() === '') return false
+    if ($('#user-address-city').val()   === '') return false
+    if ($('#user-address-state').val()  === '') return false
+    if ($('#user-address-zip').val()    === '') return false
+    return true
+  }
+
+
+  /*///*/
+  // Make sure user selects a location through Google Places.
+  //
+  // @method ensureGooglePlaceSelected
+  /*///*/
+  function ensureGooglePlaceSelected(){
+    var input = $('#user-address')[0];
+    var $input = $('#user-address');
+
+    if (!googlePlaceSelected) {
+      input.setCustomValidity('You must select an address');
+      $input.siblings('.invalid-feedback').text('You must select an address');
+      return false
+    } else {
+      input.setCustomValidity('');
+      $input.siblings('.invalid-feedback').text('Please enter your address');
+      return true
+    }
+
+  }
+
+
+  /*///*/
   // When the user selects a place, let's track it.
   //
   // @method handleDetailsResult
   /*///*/
-  var handleDetailsResult = function(location, granularity){
+  function handleDetailsResult(location, granularity){
     console.log(
       "We selected the first item from the list automatically " +
       "because the user didn't select anything"
@@ -67,9 +105,12 @@ $(document).ready(function(){
   //
   // @method handleLocationSelection
   /*///*/
-  var handleLocationSelection = function(location, status){
+  function handleLocationSelection(location, status){
     // Change search bar location to address.
     $('#user-address').val(location.formatted_address);
+
+    // Set flag to signal user has selected a place.
+    googlePlaceSelected = true;
 
     // Set hidden address inputs
     setSelectedLocation(location);
@@ -79,6 +120,10 @@ $(document).ready(function(){
 
     // Track location selection.
     // handleDetailsResult(location, granularity);
+
+    // Validate location form input
+    ensureGooglePlaceSelected();
+
   }
 
 
@@ -129,6 +174,7 @@ $(document).ready(function(){
             // There are no suggestions available.
             // The user saw an empty list and hit enter.
             console.log("No results");
+            resetAddressFields();
           } else {
             // Here's the first result that the user saw
             // in the list. We can use it and it'll be just
@@ -149,6 +195,22 @@ $(document).ready(function(){
         }
       )
     }
+  }
+
+
+  /*///*/
+  // Reset input fields when no Google place is selected.
+  //
+  // @method resetAddressFields
+  /*///*/
+  function resetAddressFields(){
+    $('#user-address-street').val('');
+    $('#user-address-city').val('');
+    $('#user-address-state').val('');
+    $('#user-address-zip').val('');
+
+    // Set flag to signal user no longer has a selected place.
+    googlePlaceSelected = false;
   }
 
 
@@ -195,8 +257,9 @@ $(document).ready(function(){
         var region = place.address_components.filter(function(component,i){
           return component.types[0] == "administrative_area_level_1";
         });
+        debugger
         if (region[0] != null){
-          $('#user-address-state').val(region[0].long_name);
+          $('#user-address-state').val(region[0].short_name);
         }
 
         // Look for a postal_code
@@ -225,10 +288,11 @@ $(document).ready(function(){
 
     var input = $('#user-address')[0];
 
-    if (input) {
+    if (input && typeof(google) != 'undefined') {
       var autocomplete = new google.maps.places.Autocomplete(input, options);
 
       google.maps.event.addListener(autocomplete, 'place_changed', function(){
+
         var result = autocomplete.getPlace();
 
         if (result.address_components == null){
@@ -237,28 +301,39 @@ $(document).ready(function(){
         } else {
           handleLocationSelection(result, null);
         }
+      });
+
+      input.addEventListener('blur', function (event) {
+        resetAddressFields();
       })
+
+      var form = $('#user-form')[0]
+      form.addEventListener("submit", function (event) {
+        ensureGooglePlaceSelected();
+      }, false);
+
     }
+
   }
 
 
   function toggleTargetDetails(elem) {
 
-    var $toggleLink     = elem;
-    var $campaignList   = $toggleLink.parents('ul.campaigns');
+    var $toggleLink             = elem;
+    var $allCampaigns           = $toggleLink.parents('div.all-campaigns');
 
-    if ($campaignList.find('li.campaign').length > 1) {
+    var $thisCampaign           = $toggleLink.parents('li.campaign');
+    var $thisCampaignsDetails   = $thisCampaign.find('.petition-details');
 
-      var $thisCampaign   = $toggleLink.parents('li.campaign');
-      var $allToggleLinks = $campaignList.find('a.information-toggle');
 
-      var $allCampaignsDetails  = $campaignList.find('.petition-details');
-      var $thisCampaignsDetails = $thisCampaign.find('.petition-details');
+    if ($allCampaigns.find('li.campaign').length > 1) {
 
-      var $allCampaignsNames = $campaignList.find('.campaign-name');
-      var $thisCampaignsName = $thisCampaign.find('.campaign-name');
+      var $allToggleLinks       = $allCampaigns.find('a.information-toggle');
+      var $allCampaignsDetails  = $allCampaigns.find('.petition-details');
+      var $allPetitionTexts     = $('div.petition-text');
 
-      var $allPetitionTexts   = $('div.petition-text');
+      // var $allCampaignsNames    = $allCampaigns.find('.campaign-name');
+      // var $thisCampaignsName    = $thisCampaign.find('.campaign-name');
 
 
       if ($thisCampaignsDetails.hasClass('d-none')) {
@@ -279,6 +354,14 @@ $(document).ready(function(){
         $(this).find('div.read-more').show();
       })
 
+    } else {
+
+      if ($thisCampaignsDetails.hasClass('d-none')) {
+
+        $thisCampaignsDetails
+          .removeClass('d-none')
+      }
+
     }
 
   }
@@ -287,13 +370,18 @@ $(document).ready(function(){
 
     $('body').on('submit', '#user-form', function(event){
       var form = event.target;
-      if (form.checkValidity() === false) {
+
+      if (!form.checkValidity()) {
         event.preventDefault();
         event.stopPropagation();
+      } else {
+        $('#submit-form').prop('disabled', true)
       }
       form.classList.add('was-validated');
     })
 
   };
 
-})
+}
+
+$(document).on("turbolinks:load", onReviewPageLoad)

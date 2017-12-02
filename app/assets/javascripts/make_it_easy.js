@@ -1,4 +1,6 @@
-var onPageLoad = function(){
+'use strict'
+
+var onHomePageLoad = function(){
 
   var that = this;
 
@@ -125,13 +127,15 @@ var onPageLoad = function(){
 
 
   $('body').on('click', 'div.sign-petitions', function(event){
-    var campaignsToSign = useStorage('read','campaigns_to_sign');
+    if (!$(this).hasClass('disabled')){
+      var selectedCampaigns = getSelectedCampaigns();
 
-    var $petitionData = $(this).find('input#petition-data');
+      var $petitionData = $(this).find('input#petition-data');
 
-    $petitionData.val(JSON.stringify(campaignsToSign));
+      $petitionData.val(JSON.stringify(selectedCampaigns));
 
-    $petitionData.parents('form').submit();
+      $petitionData.parents('form').submit();
+    }
   });
 
 
@@ -150,7 +154,7 @@ var onPageLoad = function(){
 
   $('body').on('click', 'li.filter-button', function(event){
 
-    var searchText = $(this).find('span.sans').html().trim().toLowerCase();
+    var searchText = $(this).find('.search-button').data('search-text').trim().toLowerCase();
 
     // Set typeahead
     $('.form-control.typeahead').typeahead('val', searchText);
@@ -190,7 +194,7 @@ var onPageLoad = function(){
         addOrRemoveCampaign($(this));
       });
 
-    } else {
+    } else if ($button.hasClass('btn-danger')){
       $button.removeClass('btn-danger').addClass('btn-primary');
       $button.html('Add All Campaigns');
 
@@ -213,47 +217,50 @@ var onPageLoad = function(){
     changeSignedDisplay(signCol, !currentState);
 
     // Update list of campaigns
-    changeCampaignsToBeSigned(action, campaignID);
+    changeSelectedCampaigns(action, campaignID);
 
     // Update the footer
-    updateFooter(action);
+    updateStickyFooter(action);
 
     // Update 'Sign All' button
     toggleSignAllButton();
+
+    // Trackasaurus
+    // track(action);
 
     return false
   }
 
 
-  function changeCampaignsToBeSigned(action, id) {
+  function changeSelectedCampaigns(action, id) {
 
     // Get campaigns to be signed.
-    var campaignsToSign = useStorage('read','campaigns_to_sign') || [];
+    var selectedCampaigns = getSelectedCampaigns();
 
     switch (action){
       // Adding a campaign
       case 'add':
         // Add item
-        campaignsToSign.push(id);
-        useStorage('write', 'campaigns_to_sign', campaignsToSign);
+        selectedCampaigns.push(id);
+        setSelectedCampaigns(selectedCampaigns);
         break;
       case 'all':
         // Add all items
-        campaignsToSign = JSON.parse($('#unsigned-campaign-ids').val());
-        useStorage('write', 'campaigns_to_sign', campaignsToSign);
+        selectedCampaigns = JSON.parse($('#unsigned-campaign-ids').val());
+        setSelectedCampaigns(selectedCampaigns);
         break;
       case 'none':
         // Remove all items
-        campaignsToSign = []
-        useStorage('write', 'campaigns_to_sign', campaignsToSign);
+        selectedCampaigns = []
+        setSelectedCampaigns(selectedCampaigns);
         break;
       case 'remove':
         // Remove item
-        const index = campaignsToSign.indexOf(id);
+        const index = selectedCampaigns.indexOf(id);
         if (index !== -1) {
-          campaignsToSign.splice(index, 1)
+          selectedCampaigns.splice(index, 1)
         }
-        useStorage('write', 'campaigns_to_sign', campaignsToSign);
+        setSelectedCampaigns(selectedCampaigns);
         break;
     }
 
@@ -300,7 +307,6 @@ var onPageLoad = function(){
   function updateNotificationBox(action) {
     var $notificationBox  = $(".notification-box");
     var $notificationText = $notificationBox.find('.notification');
-    var campaignsToSign   = useStorage('read', 'campaigns_to_sign') || [];
 
     var add = (action == 'add');
 
@@ -340,38 +346,41 @@ var onPageLoad = function(){
   }
 
 
-  function animatePageFooter() {
-    var $pageFooter      = $('.footer');
-    var campaignsToSign  = useStorage('read', 'campaigns_to_sign') || []
-    var newPosition      = campaignsToSign.length > 0 ? '75px' : '-75px';
+  function animateStickyFooter() {
+    var $stickyFooter     = $('.sticky-footer');
+    var selectedCampaigns = getSelectedCampaigns();
+    var inTransition      = false
 
-
-    if (!$pageFooter.is(':animated')) {
-
-      $pageFooter.animate({
-        bottom: newPosition
-      }, 200, function() {
+    if (!inTransition){
+      if (selectedCampaigns.length > 0) {
+        $stickyFooter.removeClass('retracted').addClass('extended');
 
         setTimeout(function(){
-          var campaignsToSign = useStorage('read', 'campaigns_to_sign') || [];
+          // Get campaigns to be signed.
+          var selectedCampaigns = getSelectedCampaigns();
 
-          $pageFooter.animate({
-            bottom: (campaignsToSign.length > 0 ? '0px' : '-75px')
-          }, 200);
+          $stickyFooter.removeClass('extended');
+
+          if (selectedCampaigns.length == 0){
+            $stickyFooter.removeClass('extended').addClass('retracted');
+          }
 
           that.campaignsJustAdded   = 0;
           that.campaignsJustRemoved = 0;
 
-        }, 1000);
-
-      });
-    } else if (campaignsToSign.length == 0) {
-      $pageFooter.animate({
-        bottom: '-75px'
-      }, 800);
-    } else {
-
+        }, 1500);
+      } else {
+        $stickyFooter.addClass('retracted')
+      }
     }
+
+    $stickyFooter.one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(e) {
+
+      // code to execute after transition ends
+      inTransition = false
+
+    });
+
   }
 
 
@@ -427,10 +436,10 @@ var onPageLoad = function(){
   function loadCampaignsToBeSigned() {
 
     // Get campaigns to be signed.
-    var campaignsToSign = useStorage('read', 'campaigns_to_sign') || [];
+    var selectedCampaigns = getSelectedCampaigns();
 
-    campaignsToSign.forEach(function(campaignID){
-      $elem = $(document.querySelectorAll("[data-campaign-id='" + campaignID.toString() + "']"));
+    selectedCampaigns.forEach(function(campaignID){
+      var $elem = $(document.querySelectorAll("[data-campaign-id='" + campaignID.toString() + "']"));
       changeSignedDisplay($elem.find('div.sign'), true)
     });
 
@@ -476,15 +485,15 @@ var onPageLoad = function(){
     var $allSearchButtons = $('.search-button');
     $allSearchButtons.removeClass('active');
 
-    $('span.sans').each(function( index ) {
-      var buttonText = $(this).html().trim().toLowerCase();
+    $('.search-button').each(function( index ) {
+      var buttonSearchText = $(this).data('search-text').trim().toLowerCase()
 
-      if (buttonText === searchText) {
-        $(this).parents('.search-button').addClass('active')
+      if (buttonSearchText === searchText) {
+        $(this).addClass('active')
       }
 
-      if (buttonText === 'schools' && searchText === 'school') {
-        $(this).parents('.search-button').addClass('active')
+      if (buttonSearchText === 'schools' && searchText === 'school') {
+        $(this).addClass('active')
       }
     });
 
@@ -492,24 +501,30 @@ var onPageLoad = function(){
 
 
   function toggleSignAllButton(){
-    var $allCampaigns      = $('div.campaign-list .campaign');
-    var $matchingCampaigns = $('.campaign-list').not('.not-matching').find('.campaign');
+    var $allUnsignedCampaigns = $('div.campaign-list .campaign').not('.already-signed');
+    var $matchingCampaigns    = $('.campaign-list').not('.not-matching').find('.campaign').not('.already-signed');
 
     var queryPerformed = $('div.campaign-list.matching').exists();
     var $signAllButton = $('div.sign-all button.btn');
 
     // There is no query being performed or query selected all campaigns.
-    if ($allCampaigns.length == $matchingCampaigns.length) {
+    if ($allUnsignedCampaigns.length == $matchingCampaigns.length) {
 
-      if ($allCampaigns.length == $matchingCampaigns.find('div.to-be-signed').length) {
+      if ($allUnsignedCampaigns.length > 0) {
 
-        $signAllButton.html('Remove All Campaigns');
-        $signAllButton.removeClass('btn-primary').addClass('btn-danger');
+        if ($allUnsignedCampaigns.length == $matchingCampaigns.find('div.to-be-signed').length) {
 
-      } else {
+          $signAllButton.html('Remove All Campaigns');
+          $signAllButton.removeClass('btn-primary btn-secondary').addClass('btn-danger');
+          $signAllButton.prop('disabled', false)
 
-        $signAllButton.removeClass('btn-danger').addClass('btn-primary');
-        $signAllButton.html('Add All Campaigns');
+        } else {
+
+          $signAllButton.removeClass('btn-danger btn-secondary').addClass('btn-primary');
+          $signAllButton.html('Add All Campaigns');
+          $signAllButton.prop('disabled', false)
+
+        }
 
       }
 
@@ -517,13 +532,25 @@ var onPageLoad = function(){
 
       if ($matchingCampaigns.length == $matchingCampaigns.find('div.to-be-signed').length) {
 
-        $signAllButton.html('Remove Matching Campaigns');
-        $signAllButton.removeClass('btn-primary').addClass('btn-danger');
+        if ($matchingCampaigns.length == 0) {
+
+          $signAllButton.html('All Campaigns Signed');
+          $signAllButton.removeClass('btn-primary btn-danger').addClass('btn-secondary');
+          $signAllButton.prop('disabled', true)
+
+        } else {
+
+          $signAllButton.html('Remove Matching Campaigns');
+          $signAllButton.removeClass('btn-primary btn-secondary').addClass('btn-danger');
+          $signAllButton.prop('disabled', false)
+
+        }
 
       } else {
 
-        $signAllButton.removeClass('btn-danger').addClass('btn-primary');
+        $signAllButton.removeClass('btn-danger btn-secondary').addClass('btn-primary');
         $signAllButton.html('Add Matching Campaigns');
+        $signAllButton.prop('disabled', false)
 
       }
 
@@ -533,17 +560,16 @@ var onPageLoad = function(){
 
 
   function useStorage(operation, key, value) {
-
     if (operation === 'read') {
-      if (typeof(Storage) !== "undefined") {
+      if (typeof(Storage) !== "undefined" && false) {
         // Push to local storage
         return JSON.parse(localStorage.getItem(key));
       } else {
-        return JSON.parse(Cookies.get(key));
+        return JSON.parse(Cookies.get(key) || null);
       }
 
     } else if (operation === 'write') {
-      if (typeof(Storage) !== "undefined") {
+      if (typeof(Storage) !== "undefined" && false) {
         // Push to local storage
         localStorage.setItem(key, JSON.stringify(value));
       }
@@ -554,12 +580,12 @@ var onPageLoad = function(){
   }
 
 
-  function updateFooter(action){
-    var pageFooter         = $('.footer');
-    var footerText         = pageFooter.find('.footer-text');
-    var footerNumCampaigns = pageFooter.find('.num-campaigns');
-    var footerCampaignText = pageFooter.find('.campaign-word');
-    var campaignsToSign    = useStorage('read', 'campaigns_to_sign') || [];
+  function updateStickyFooter(action){
+    var $stickyFooter       = $('.sticky-footer');
+    // var $footerText         = $stickyFooter.find('.footer-text');
+    var $footerNumCampaigns = $stickyFooter.find('.num-campaigns');
+    var $footerCampaignText = $stickyFooter.find('.campaign-word');
+    var selectedCampaigns   = getSelectedCampaigns();
 
     // var numbersToWords = {};
     // var numbersInEnglish = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
@@ -568,39 +594,48 @@ var onPageLoad = function(){
     //   numbersToWords[i] = numbersInEnglish[i]
     // }
 
-    if (campaignsToSign.length) {
+    if (selectedCampaigns.length) {
+      $stickyFooter.removeClass('disabled');
 
-      pageFooter.css('background-color', '#0dc50d');
-      footerText.css('visibility', 'visible');
-
-      numCampaigns = campaignsToSign.length.toString();
+      var numCampaigns = selectedCampaigns.length.toString();
 
       var numText = null;
       // numText = numbersToWords[numCampaigns];
       numText = numText ? numText : numCampaigns;
 
-      campaignsText = campaignsToSign.length == 1 ? ' petition!' : ' petitions!'
+      var campaignsText = selectedCampaigns.length == 1 ? ' petition!' : ' petitions!'
 
-      footerNumCampaigns.text(numText);
-      footerCampaignText.text(campaignsText);
+      $footerNumCampaigns.text(numText);
+      $footerCampaignText.text(campaignsText);
 
     } else {
-
-      footerText.css('visibility', 'hidden');
-      pageFooter.css('background-color', 'transparent');
-
+      $stickyFooter.addClass('disabled');
     }
 
     // Update the notification box if need be
     updateNotificationBox(action);
 
     // Animate the footer when updates complete
-    animatePageFooter();
+    animateStickyFooter();
+  }
+
+  function getSelectedCampaigns() {
+    // Get campaigns to be signed.
+    let campaignData = useStorage('read', 'campaigns') || {};
+    return (campaignData.selected || [])
+
+  }
+
+  function setSelectedCampaigns(selectedCampaigns){
+    var campaignData = useStorage('read', 'campaigns') || {};
+    campaignData.selected = selectedCampaigns;
+
+    useStorage('write', 'campaigns', campaignData)
   }
 
 };
 
 
 
-$(document).ready(onPageLoad);
+$(document).on("turbolinks:load", onHomePageLoad)
 // $(document).on('page:change', onPageLoad);
