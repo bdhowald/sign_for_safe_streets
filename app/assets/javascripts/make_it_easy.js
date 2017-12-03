@@ -347,13 +347,35 @@ var onHomePageLoad = function(){
 
 
   function animateStickyFooter() {
+    var $staticFooter     = $('.static-footer');
     var $stickyFooter     = $('.sticky-footer');
     var selectedCampaigns = getSelectedCampaigns();
     var inTransition      = false
 
+    var body              = document.body,
+        html              = document.documentElement;
+
+    var height            = Math.max( body.scrollHeight, body.offsetHeight,
+                                      html.clientHeight, html.scrollHeight, html.offsetHeight );
+
     if (!inTransition){
       if (selectedCampaigns.length > 0) {
+
         $stickyFooter.removeClass('retracted').addClass('extended');
+        $staticFooter.addClass('with-padding');
+        //$stickyFooter.css('background-color', '#0dc50d');
+
+        if ($(document).scrollTop() + 35 > (height - html.clientHeight)){
+          // $(document).scrollTop(height - html.clientHeight);
+
+          var scrollDistance = $(document).scrollTop() + 80;
+
+          $("html, body").animate(
+            { scrollTop: scrollDistance.toString() + 'px' }
+          );
+          window.scrollTo(0, scrollDistance  );
+
+        }
 
         setTimeout(function(){
           // Get campaigns to be signed.
@@ -370,7 +392,9 @@ var onHomePageLoad = function(){
 
         }, 1500);
       } else {
-        $stickyFooter.addClass('retracted')
+        $stickyFooter.addClass('retracted');
+        $staticFooter.removeClass('with-padding');//css('padding-bottom', '30px');
+        //$stickyFooter.css('background-color', '#fff');
       }
     }
 

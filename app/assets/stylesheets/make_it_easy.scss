@@ -86,13 +86,14 @@ $transalt-orange: #ff4500;
   right: 0;
   background-color: #0dc50d;
   height: 75px;
+  z-index: 1;
 
   cursor: pointer;
 
-  -webkit-transition: transform 0.8s, background-color 0.2s ease-out;
-     -moz-transition: transform 0.8s, background-color 0.2s ease-out;
-       -o-transition: transform 0.8s, background-color 0.2s ease-out;
-          transition: transform 0.8s, background-color 0.2s ease-out;
+  -webkit-transition: transform 0.8s, background-color 0.5s ease-out;
+     -moz-transition: transform 0.8s, background-color 0.5s ease-out;
+       -o-transition: transform 0.8s, background-color 0.5s ease-out;
+          transition: transform 0.8s, background-color 0.5s ease-out;
 }
 
 // .footer.disabled {
@@ -105,7 +106,7 @@ $transalt-orange: #ff4500;
 }
 
 .sticky-footer.retracted {
-  background-color: #999;
+  background-color: #fff;
   cursor: default;
   transform: translate(0px, 75px);
 }
@@ -141,17 +142,29 @@ $transalt-orange: #ff4500;
 
 .static-footer {
   background-color: #fff;
-  padding: 30px;
+  padding: 30px 30px 30px;
   text-align: center;
+
+  -webkit-transition: padding 0.8s ease-out;
+     -moz-transition: padding 0.8s ease-out;
+       -o-transition: padding 0.8s ease-out;
+          transition: padding 0.8s ease-out;
 }
+
+.static-footer.with-padding {
+  padding-bottom: 150px;
+}
+
+
 
 .static-footer > * {
   display: inline-block;
 }
 
 .static-footer .social-media-links {
-  left: 10px;
+  // left: 10px;
   top: 5px;
+  padding: 0 10px;
   position: relative;
 }
 
@@ -647,7 +660,7 @@ $transalt-orange: #ff4500;
 
 .campaign-list {
   margin: 20px 0 35px;
-  padding: 0 0 35px ;
+  padding: 0;
 }
 
 .campaign-list.matching {
