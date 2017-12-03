@@ -257,7 +257,6 @@ var onReviewPageLoad = function(){
         var region = place.address_components.filter(function(component,i){
           return component.types[0] == "administrative_area_level_1";
         });
-        debugger
         if (region[0] != null){
           $('#user-address-state').val(region[0].short_name);
         }
