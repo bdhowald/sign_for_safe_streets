@@ -191,8 +191,10 @@ var onHomePageLoad = function(){
       // Remove active class
       $searchButton.removeClass('active');
 
-      // Add new term if we don't have it yet
-      currentSearchTerms = currentSearchTerms.filter(e => e !== searchText);
+      // Remove the term
+      currentSearchTerms = currentSearchTerms.filter(function(elem){
+        return elem !== searchText;
+      })
     }
 
     // Put updated value in input
@@ -682,7 +684,7 @@ var onHomePageLoad = function(){
 
   function getSelectedCampaigns() {
     // Get campaigns to be signed.
-    let campaignData = useStorage('read', 'campaigns') || {};
+    var campaignData = useStorage('read', 'campaigns') || {};
     return (campaignData.selected || [])
 
   }
