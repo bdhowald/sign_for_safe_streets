@@ -1,7 +1,5 @@
 class SearchController < ActionController::Base
 
-  require 'lingua/stemmer'
-
   include UserControllerConcern
 
   # include Response
@@ -55,8 +53,6 @@ class SearchController < ActionController::Base
   def campaigns
 
     search_params = params[:search] || {}
-
-    stemmer ||= Lingua::Stemmer.new(:language => "en")
 
 
     respond_to do |format|
@@ -116,27 +112,24 @@ class SearchController < ActionController::Base
 
         elsif search_params[:search_term]
 
-          tag = Tag.find_by(
-            word: search_params[:search_term].downcase
-          ) || Tag.find_by(
-            word: stemmer.stem(search_params[:search_term].downcase)
+          matching_tags = Tag.search_full_text(search_params[:search_term])
+
+          matching_campaigns = matching_tags.present? ?
+            Campaign.find(matching_tags.collect(&:campaign_ids).inject(:&)) :
+            []
+
+          @search_term = search_params[:search_term]
+
+          render(
+            partial: 'application/results',
+            layout: false,
+            locals: {
+              campaigns: matching_campaigns.sort{ |x,y|
+                x.name.length <=> y.name.length
+              },
+              other_campaigns: Campaign.active - matching_campaigns
+            }
           )
-
-          if tag && tag.campaigns.active.present?
-
-            @search_term = search_params[:search_term]
-
-            render(
-              partial: 'application/results',
-              layout: false,
-              locals: {
-                campaigns: tag.campaigns.active.sort{ |x,y|
-                  x.name.length <=> y.name.length
-                },
-                other_campaigns: Campaign.active - tag.campaigns
-              }
-            )
-          end
 
         end
 
@@ -144,17 +137,11 @@ class SearchController < ActionController::Base
 
       format.json do
 
-        stemmer ||= Lingua::Stemmer.new(:language => "en")
-
         # Set json:api headers
         response.headers['Content-Type'] = 'application/vnd.api+json'
 
         if search_params[:suggestion].present?
-          campaigns = Campaign.where(
-            'description LIKE :query OR description LIKE :stem OR name LIKE :query OR name LIKE :query',
-            query: "%#{search_params[:suggestion]}%",
-            stem:  "%#{stemmer.stem(search_params[:suggestion])}%"
-          )
+          campaigns = Campaign.search_full_text(search_params[:suggestion])
         end
 
         @results = {
@@ -209,13 +196,9 @@ class SearchController < ActionController::Base
 
     search_params = params[:search] || {}
 
-    stemmer ||= Lingua::Stemmer.new(:language => "en")
-
     if search_params[:suggestion].present?
-      tags = Tag.where(
-        'word LIKE :query OR word LIKE :stem',
-        query: "%#{search_params[:suggestion].downcase}%",
-        stem:  "%#{stemmer.stem(search_params[:suggestion].downcase)}%"
+      tags = Tag.search_full_text(
+        search_params[:suggestion]
       ).collect do |tag|
         {
           id:         tag.id,

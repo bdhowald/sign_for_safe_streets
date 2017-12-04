@@ -54,9 +54,9 @@ class CampaignKeywordsFilter
             new_tags += [tag]
           end
         else
-          if new_tags.include?(tag)
-            new_tags -= [tag]
-          end
+          # if new_tags.include?(tag)
+          #   new_tags -= [tag]
+          # end
         end
       }
 

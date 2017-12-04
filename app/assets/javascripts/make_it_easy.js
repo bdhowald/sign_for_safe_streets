@@ -87,42 +87,53 @@ var onHomePageLoad = function(){
         suggestion: function (data) {
           return "<div class='tt-suggestion tt-selectable tt-campaign'>" + data.value + "</div>"
         }
-      }
+      },
+      limit: 10
     }
   );
 
 
   $('.form-control.typeahead').bind('change', function(ev) {
-
-    // Open bug for typeahead, should be:
-    // $('.form-control.typeahead').typeahead('val')
-    var $clearSearchButton = $('#filters').find('button.btn-secondary');
-    var curVal            = $('.form-control.typeahead.tt-input').typeahead('val')
-
-    curVal == '' ? $clearSearchButton.hide() : $clearSearchButton.show()
-
+    toggleClearSearchButton();
   })
+
 
   $('.form-control.typeahead').bind('typeahead:select', function(ev) {
+    toggleClearSearchButton();
+  })
 
+  function toggleClearSearchButton() {
     // Open bug for typeahead, should be:
-    // $('.form-control.typeahead').typeahead('val')
+    // $('.form-control.typeahead.tt-input').typeahead('val')
     var $clearSearchButton = $('#filters').find('button.btn-secondary');
-    var curVal            = $('.form-control.typeahead.tt-input').typeahead('val')
+    var curVal             = $('.form-control.typeahead.tt-input').typeahead('val')
 
     curVal == '' ? $clearSearchButton.hide() : $clearSearchButton.show()
-
-  })
+  }
 
 
   $('.form-control.typeahead').bind('typeahead:select', function(ev, suggestion) {
 
-    // Reset search buttons
-    toggleSearchButtons(suggestion.value);
-
     // Search for campaigns
     performSearch(suggestion);
 
+  });
+
+  $('body').on('keyup', '.form-control.typeahead.tt-input', function(e) {
+    if(e.which == 13) {
+      var $typeahead = $('.form-control.typeahead.tt-input');
+      var searchText = $typeahead.typeahead('val').trim().toLowerCase();
+
+      if (Boolean(searchText)) {
+        var $typeahead = $('.form-control.typeahead.tt-input');
+        $typeahead.siblings('.tt-menu').hide();
+
+        $typeahead.triggerHandler('typeahead:select', {
+          type:  'keywords',
+          value: searchText
+        });
+      }
+    }
   });
 
 
@@ -140,8 +151,17 @@ var onHomePageLoad = function(){
 
 
   $('body').on('click', 'button.clear-search', function(event){
+    var $searchTerms   = $('input#search-terms');
+    var $searchButtons = $('.search-button');
+    var newSearchTerms = [];
+
+    $searchTerms.val(JSON.stringify(newSearchTerms))
+
     // Clear search bar
-    $('.form-control.typeahead.tt-input').typeahead('val', '');
+    $('.form-control.typeahead.tt-input').typeahead('val', newSearchTerms.join(' '));
+
+    // Clear search, remove filters
+    $searchButtons.removeClass('active');
 
     $('.form-control.typeahead').triggerHandler('typeahead:select', {
       type:  'all',
@@ -153,17 +173,42 @@ var onHomePageLoad = function(){
 
 
   $('body').on('click', 'li.filter-button', function(event){
+    var $searchTerms        = $('input#search-terms');
+    var $searchButton       = $(this).find('.search-button');
+    var searchText          = $searchButton.data('search-text').trim().toLowerCase();
 
-    var searchText = $(this).find('.search-button').data('search-text').trim().toLowerCase();
+    var currentSearchTerms  = Boolean($searchTerms.val().trim()) ? JSON.parse($searchTerms.val().trim()) : []
+
+    if ((!$searchButton.hasClass('active') && currentSearchTerms.indexOf(searchText) == -1)) {
+
+      // Add active class
+      $searchButton.addClass('active');
+
+      // Add new term if we don't have it yet
+      currentSearchTerms.push(searchText);
+
+    } else {
+      // Remove active class
+      $searchButton.removeClass('active');
+
+      // Add new term if we don't have it yet
+      currentSearchTerms = currentSearchTerms.filter(e => e !== searchText);
+    }
+
+    // Put updated value in input
+    $searchTerms.val(JSON.stringify(currentSearchTerms))
+
+    // Join to get string
+    var newSearchText = currentSearchTerms.join(' ');
 
     // Set typeahead
-    $('.form-control.typeahead').typeahead('val', searchText);
+    $('.form-control.typeahead.tt-input').typeahead('val', newSearchText);
+
+    // create search conditions
+    var searchObject = Boolean(newSearchText) ? {type: 'keywords', value: newSearchText} : {type: 'all', value: true}
 
     // Trigger selection
-    $('.form-control.typeahead').triggerHandler('typeahead:select', {
-      type: 'keywords',
-      value: searchText
-    });
+    $('.form-control.typeahead').triggerHandler('typeahead:select', searchObject);
   })
 
 
@@ -361,19 +406,21 @@ var onHomePageLoad = function(){
     if (!inTransition){
       if (selectedCampaigns.length > 0) {
 
-        $stickyFooter.removeClass('retracted').addClass('extended');
-        $staticFooter.addClass('with-padding');
-        //$stickyFooter.css('background-color', '#0dc50d');
+        $stickyFooter.removeClass( 'retracted'    ).addClass('extended');
+        $staticFooter.addClass(    'with-padding' );
 
-        if ($(document).scrollTop() + 35 > (height - html.clientHeight)){
-          // $(document).scrollTop(height - html.clientHeight);
+        if ($(document).scrollTop() + 75 > (height - html.clientHeight)){
 
-          var scrollDistance = $(document).scrollTop() + 80;
+          setTimeout(function(){
 
-          $("html, body").animate(
-            { scrollTop: scrollDistance.toString() + 'px' }
-          );
-          window.scrollTo(0, scrollDistance  );
+            var scrollDistance = $(document).scrollTop() + 75;
+
+            $("html, body").animate(
+              { scrollTop: scrollDistance.toString() + 'px' }
+            );
+            window.scrollTo(0, scrollDistance );
+
+          }, 400);
 
         }
 
@@ -392,9 +439,8 @@ var onHomePageLoad = function(){
 
         }, 1500);
       } else {
-        $stickyFooter.addClass('retracted');
-        $staticFooter.removeClass('with-padding');//css('padding-bottom', '30px');
-        //$stickyFooter.css('background-color', '#fff');
+        $stickyFooter.addClass(    'retracted'    );
+        $staticFooter.removeClass( 'with-padding' );
       }
     }
 
@@ -504,29 +550,10 @@ var onHomePageLoad = function(){
   }
 
 
-  function toggleSearchButtons(searchText) {
-
-    var $allSearchButtons = $('.search-button');
-    $allSearchButtons.removeClass('active');
-
-    $('.search-button').each(function( index ) {
-      var buttonSearchText = $(this).data('search-text').trim().toLowerCase()
-
-      if (buttonSearchText === searchText) {
-        $(this).addClass('active')
-      }
-
-      if (buttonSearchText === 'schools' && searchText === 'school') {
-        $(this).addClass('active')
-      }
-    });
-
-  }
-
-
   function toggleSignAllButton(){
-    var $allUnsignedCampaigns = $('div.campaign-list .campaign').not('.already-signed');
-    var $matchingCampaigns    = $('.campaign-list').not('.not-matching').find('.campaign').not('.already-signed');
+    var $allUnsignedCampaigns      = $('div.campaign-list .campaign').not('.already-signed');
+    var $matchingCampaigns         = $('.campaign-list').not('.not-matching').find('.campaign')
+    var $unsignedMatchingCampaigns = $matchingCampaigns.not('.already-signed');
 
     var queryPerformed = $('div.campaign-list.matching').exists();
     var $signAllButton = $('div.sign-all button.btn');
@@ -536,7 +563,7 @@ var onHomePageLoad = function(){
 
       if ($allUnsignedCampaigns.length > 0) {
 
-        if ($allUnsignedCampaigns.length == $matchingCampaigns.find('div.to-be-signed').length) {
+        if ($allUnsignedCampaigns.length == unsignedMatchingCampaigns.find('div.to-be-signed').length) {
 
           $signAllButton.html('Remove All Campaigns');
           $signAllButton.removeClass('btn-primary btn-secondary').addClass('btn-danger');
@@ -554,14 +581,24 @@ var onHomePageLoad = function(){
 
     } else {
 
-      if ($matchingCampaigns.length == $matchingCampaigns.find('div.to-be-signed').length) {
+      // No campaigns match.
+      if ($matchingCampaigns.length == 0) {
 
-        if ($matchingCampaigns.length == 0) {
+        $signAllButton.html('No Campaigns Match');
+        $signAllButton.removeClass('btn-primary btn-danger').addClass('btn-secondary');
+        $signAllButton.prop('disabled', true)
+
+      // There are as many unsigned campaigns as campaigns to be signed.
+      } else if ($unsignedMatchingCampaigns.length == $unsignedMatchingCampaigns.find('div.to-be-signed').length) {
+
+        // We signed them all.
+        if ($unsignedMatchingCampaigns.length == 0) {
 
           $signAllButton.html('All Campaigns Signed');
           $signAllButton.removeClass('btn-primary btn-danger').addClass('btn-secondary');
           $signAllButton.prop('disabled', true)
 
+        // Or we have selected them all.
         } else {
 
           $signAllButton.html('Remove Matching Campaigns');
