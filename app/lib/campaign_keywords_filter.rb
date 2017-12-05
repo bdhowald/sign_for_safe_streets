@@ -20,13 +20,22 @@ class CampaignKeywordsFilter
 
       Tag.all.each do |tag|
 
+        exact_word = @stemmer.stem(tag.word) == tag.word
+
         # grab word if it matches stem
-        if (campaign.description =~ / #{@stemmer.stem(tag.word)}/i)
+        if (campaign.description =~ / #{@stemmer.stem(tag.word)}#{exact_word ? ' ' : ''}/i)
           new_tags << tag
         end
 
         # grab word if it matches exactly
-        if (campaign.description =~ / #{tag.word}/i)
+        if (campaign.description =~ / #{tag.word}([[:punct:]]| )/i)
+          if !new_tags.include?(tag)
+            new_tags << tag
+          end
+        end
+
+        # grab word if it matches plural
+        if (campaign.description =~ / #{tag.word.pluralize}([[:punct:]]| )/i)
           if !new_tags.include?(tag)
             new_tags << tag
           end

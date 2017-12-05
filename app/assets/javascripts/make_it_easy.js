@@ -114,12 +114,12 @@ var onHomePageLoad = function(){
   function toggleSearchButtons() {
 
     var $searchTerms        = $('input#search-terms');
-    var $searchButtons      = $('.search-button');
+    var $filterButtons      = $('.filter-button');
     var currentSearchTerms  = Boolean($searchTerms.val().trim()) ? JSON.parse($searchTerms.val().trim()) : []
 
     // Since we are about to determine which should be active,
     // remove active state from all.
-    $searchButtons.removeClass('active')
+    $filterButtons.removeClass('active')
 
     // staten island hack
     if ((currentSearchTerms.indexOf('staten') + currentSearchTerms.indexOf('island')) > 0) {
@@ -131,8 +131,8 @@ var onHomePageLoad = function(){
     }
 
     currentSearchTerms.forEach(function(term){
-      var $matchingbutton   = $searchButtons.filter(function(){
-        var text = $(this).data('search-text')
+      var $matchingbutton   = $filterButtons.filter(function(){
+        var text = $(this).find('.search-button').data('search-text')
         return text.toLowerCase() === term.toLowerCase()
       })
 
@@ -144,6 +144,10 @@ var onHomePageLoad = function(){
 
 
   $('.form-control.typeahead').bind('typeahead:select', function(ev, suggestion) {
+    var $searchTerms   = $('input#search-terms');
+    var newSearchTerms = suggestion.value;
+
+    $searchTerms.val(JSON.stringify(newSearchTerms))
 
     // Search for campaigns
     performSearch(suggestion);
@@ -168,13 +172,10 @@ var onHomePageLoad = function(){
         $typeahead.siblings('.tt-menu').hide();
 
         // Toggle active states
-        toggleSearchButtons();
+        // toggleSearchButtons();
 
         // Perform search
-        $typeahead.triggerHandler('typeahead:select', {
-          type:  'keywords',
-          value: searchText
-        });
+        performSearch();
       }
     }
   });
@@ -195,7 +196,6 @@ var onHomePageLoad = function(){
 
   $('body').on('click', 'button.clear-search', function(event){
     var $searchTerms   = $('input#search-terms');
-    var $searchButtons = $('.search-button');
     var newSearchTerms = [];
 
     $searchTerms.val(JSON.stringify(newSearchTerms));
@@ -204,56 +204,52 @@ var onHomePageLoad = function(){
     $('.form-control.typeahead.tt-input').typeahead('val', newSearchTerms.join(' '));
 
     // Clear search, remove filters
-    toggleSearchButtons();
+    // toggleSearchButtons();
 
-    $('.form-control.typeahead').triggerHandler('typeahead:select', {
-      type:  'all',
-      value: true
-    });
-
+    // Hide 'clear button'
     $(this).hide();
+
+    // Perform search
+    performSearch();
+
   })
 
 
-  $('body').on('click', 'li.filter-button', function(event){
-    var $searchTerms        = $('input#search-terms');
-    var $searchButton       = $(this).find('.search-button');
-    var searchText          = $searchButton.data('search-text').trim().toLowerCase();
+  $('body').on('click', '.filter-button', function(event){
+    // var $searchTerms        = $('input#search-terms');
+    var $filterButton       = $(this);
+    var filterType          = $filterButton.parents('.filter-buttons').hasClass('categories') ? 'categories' : 'locations'
 
-    var currentSearchTerms  = Boolean($searchTerms.val().trim()) ? JSON.parse($searchTerms.val().trim()) : []
+    var $filterTerms        = $('#' + filterType + '-filter');
+    var searchText          = $filterButton.find('.search-button').data('search-text').trim().toLowerCase();
 
-    if ((!$searchButton.hasClass('active') && currentSearchTerms.indexOf(searchText) == -1)) {
+    var currentFilterTerms  = Boolean($filterTerms.val().trim()) ? JSON.parse($filterTerms.val().trim()) : []
+
+    if ((!$filterButton.hasClass('active') && currentFilterTerms.indexOf(searchText) == -1)) {
 
       // Add active class
-      $searchButton.addClass('active');
+      $filterButton.addClass('active');
 
       // Add new term if we don't have it yet
-      currentSearchTerms.push(searchText.toLowerCase());
+      if (currentFilterTerms.indexOf(searchText.toLowerCase() != -1)) {
+        currentFilterTerms.push(searchText.toLowerCase());
+      }
 
     } else {
       // Remove active class
-      $searchButton.removeClass('active');
+      $filterButton.removeClass('active');
 
       // Remove the term
-      currentSearchTerms = currentSearchTerms.filter(function(elem){
+      currentFilterTerms = currentFilterTerms.filter(function(elem){
         return elem !== searchText;
       })
     }
 
     // Put updated value in input
-    $searchTerms.val(JSON.stringify(currentSearchTerms));
+    $filterTerms.val(JSON.stringify(currentFilterTerms));
 
-    // Join to get string
-    var newSearchText = currentSearchTerms.join(' ');
-
-    // Set typeahead
-    $('.form-control.typeahead.tt-input').typeahead('val', newSearchText);
-
-    // create search conditions
-    var searchObject = Boolean(newSearchText) ? {type: 'keywords', value: newSearchText} : {type: 'all', value: true}
-
-    // Trigger selection
-    $('.form-control.typeahead').triggerHandler('typeahead:select', searchObject);
+    // Trigger search
+    performSearch();
   })
 
 
@@ -391,6 +387,31 @@ var onHomePageLoad = function(){
     //   signCol.css('background-color', "rgba(" + rgb + ")");
     // }
 
+  }
+
+
+  // TODO: add docs for methods
+  function getFilterData() {
+    var data = {filters: new Object()};
+
+    $('.filter-terms').each(function(){
+      var $filterTerms       = $(this)
+      var currentFilterTerms = $filterTerms.val()
+      var filterType         = $filterTerms.data('filter-type');
+
+      if (JSON.parse(currentFilterTerms).length > 0) {
+        data['filters'][filterType] = currentFilterTerms
+      }
+    })
+
+    return data
+  }
+
+  // TODO: add docs for methods
+  function getSearchData() {
+    var searchTerms = $('#search-terms');
+
+    return JSON.parse(searchTerms.val());
   }
 
 
@@ -562,19 +583,44 @@ var onHomePageLoad = function(){
 
 
   function performSearch(suggestion){
-
     var url;
+    var searchData;
+    var searchType;
 
-    if (suggestion.type === 'campaigns') {
-      url = '../campaigns.html?search[name]='
-    } else if (suggestion.type === 'keywords') {
-      url = '../campaigns.html?search[search_term]='
-    } else if (suggestion.type === 'all') {
-      url = '../campaigns.html?search[all]='
+    if (suggestion) {
+      searchData = suggestion.value
+      searchType = suggestion.type
+    } else {
+      searchData = getSearchData();
+      searchType = searchData.length > 0 ? 'keywords' : 'all'
     }
 
+    switch(searchType) {
+      case 'all':
+        url = '../campaigns.html?search[all]=' + encodeURIComponent(true);
+        break;
+      case 'campaigns':
+        url = '../campaigns.html?search[name]='  + encodeURIComponent(searchData);
+        break
+      case 'keywords':
+        url = '../campaigns.html?search[search_term]='  + encodeURIComponent(searchData);
+        break;
+      default:
+        url = '../campaigns.html?search[all]=' + encodeURIComponent(true);
+    }
+
+    // Add filters
+    var filterData      = getFilterData();
+    var filterURLString = $.param(filterData)
+
+    if (filterURLString.length > 0){
+      url += ('&' + filterURLString)
+    }
+
+
+
     $.ajax({
-      url:         url + encodeURIComponent(suggestion.value),
+      url:         url,
       type:        'GET',
       contentType: 'text/html; charset=utf-8'
     })
@@ -603,12 +649,13 @@ var onHomePageLoad = function(){
     var queryPerformed = $('div.campaign-list.matching').exists();
     var $signAllButton = $('div.sign-all button.btn');
 
+
     // There is no query being performed or query selected all campaigns.
-    if ($allUnsignedCampaigns.length == $matchingCampaigns.length) {
+    if ($allUnsignedCampaigns.length == $unsignedMatchingCampaigns.length) {
 
       if ($allUnsignedCampaigns.length > 0) {
 
-        if ($allUnsignedCampaigns.length == unsignedMatchingCampaigns.find('div.to-be-signed').length) {
+        if ($allUnsignedCampaigns.length == $unsignedMatchingCampaigns.find('div.to-be-signed').length) {
 
           $signAllButton.html('Remove All Campaigns');
           $signAllButton.removeClass('btn-primary btn-secondary').addClass('btn-danger');

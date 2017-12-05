@@ -30,4 +30,19 @@ module ApplicationHelper
     end
   end
 
+  def assemble_results_string(search_term, location_filter_terms, category_filter_terms)
+
+    results = {}
+
+    if !(combined_terms = (Array.wrap(search_term) + Array.wrap(category_filter_terms))).empty?
+      results[:match_string_parts] = combined_terms
+    end
+
+    if location_filter_terms
+      results[:location_string] = "in #{location_filter_terms.to_sentence}"
+    end
+
+    return results
+  end
+
 end

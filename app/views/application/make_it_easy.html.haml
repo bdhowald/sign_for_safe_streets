@@ -17,22 +17,24 @@
               %span.input-group-btn
                 %button.btn.btn-secondary.clear-search{type: 'button', style: 'display:none'}
                   %i.fa.fa-times
-            %ul.filter-buttons
-              %div.row
-                - [['Cycling', 'bicycle'], ['Walking', 'female'], ['Transit', 'bus'], ['Schools', 'graduation-cap']].each do |button_text|
-                  %li.col-6.col-sm-3.filter-button
-                    %div.search-button{'data-search-text' => button_text[0]}
-                      %i{class: "fa fa-#{button_text[1]}"}
-                      %span.sans
-                        = button_text[0]
 
-            %ul.filter-buttons
-              %div.row
-                - ['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island', 'Citywide', 'Statewide'].each do |button_text|
-                  %li.col.filter-button
-                    %div{class: "search-button borough #{button_text.downcase.strip.gsub(' ', '-')}", 'data-search-text' => button_text}
-                      %span.sans
-                        = borough_abbreviation(button_text)
+            %div.row.filter-buttons.categories
+              - [['Cycling', 'bicycle'], ['Walking', 'female'], ['Transit', 'bus'], ['Schools', 'graduation-cap']].each do |button_text|
+                %div.col.filter-button
+                  %div.search-button{'data-search-text' => button_text[0]}
+                    %i{class: "fa fa-#{button_text[1]}"}
+                    %span.sans
+                      = button_text[0]
+
+
+            %div.row.filter-buttons.locations
+              - ['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island', 'Citywide', 'Statewide'].each do |button_text|
+                %div{class: "col filter-button borough #{button_text.downcase.strip.gsub(' ', '-')}"}
+                  %div.search-button{class: "search-button", 'data-search-text' => button_text}
+                    %span.sans
+                      = borough_abbreviation(button_text)
+
+
 
       %div.row
         %div.col-lg-12
@@ -58,9 +60,14 @@
 
   %div.sticky-footer.sign-petitions{class: "#{'retracted' if !have_selected_campaigns}"}
     = form_tag('/review', method: 'POST') do
+
       %input#petition-data{type: 'hidden', name:'campaigns[selected]'}
       %input#unsigned-campaign-ids{type: 'hidden', value: @all_active_campaigns.collect(&:id).sort}
+
       %input#search-terms{type: 'hidden', value: '[]'}
+      %input#categories-filter.filter-terms{type: 'hidden', value: '[]', 'data-filter-type' => 'categories'}
+      %input#locations-filter.filter-terms{type: 'hidden', value: '[]', 'data-filter-type' => 'locations'}
+
       %div.footer-text
         Sign
         - num_selected_campaigns = (@selected_campaigns || []).count

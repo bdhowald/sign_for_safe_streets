@@ -52,7 +52,17 @@ class SearchController < ActionController::Base
 
   def campaigns
 
-    search_params = params[:search] || {}
+    search_params  = params[:search] || {}
+    search_filters = params[:filters] || {}
+
+    if (cat_filters = search_filters[:categories])
+      category_filters = JSON.parse(cat_filters)
+    end
+    if (loc_filters = search_filters[:locations])
+      location_filters = JSON.parse(loc_filters)
+    end
+
+    @search_term
 
 
     respond_to do |format|
@@ -68,66 +78,61 @@ class SearchController < ActionController::Base
 
           if ActiveRecord::Type::Boolean.new.cast(search_params[:all])
 
-            @search_term = search_params[:all]
+            @search_term = nil
 
-            active_campaigns = Campaign.where(is_active: true)
-
-            render(
-              partial: 'application/results',
-              layout: false,
-              locals: {
-                campaigns: active_campaigns,
-                other_campaigns: []
-              }
-            )
+            matching_campaigns = Campaign.where(is_active: true)
 
           end
+
 
         elsif search_params[:name].present?
 
-          campaign = Campaign.active.where(
+          @search_term = search_params[:name]
+
+          matching_campaigns = Campaign.active.where(
             name: search_params[:name]
           )
 
-          other_campaigns = Campaign.active.where
-            .not(
-              name: search_params[:name]
-            )
-
-          if campaign
-
-            @search_term = search_params[:name]
-
-            render(
-              partial: 'application/results',
-              layout: false,
-              locals: {
-                campaigns: campaign,
-                other_campaigns: other_campaigns
-              }
-            )
-          else
-            return head :ok
-          end
-
         elsif search_params[:search_term]
-
-          matching_campaigns = Campaign.search_full_text(search_params[:search_term])
 
           @search_term = search_params[:search_term]
 
-          render(
-            partial: 'application/results',
-            layout: false,
-            locals: {
-              campaigns: matching_campaigns.sort{ |x,y|
-                x.name.length <=> y.name.length
-              },
-              other_campaigns: Campaign.active - matching_campaigns
-            }
-          )
+          matching_campaigns = Campaign.search_full_text(search_params[:search_term])
 
         end
+
+        if location_filters
+          locations              = location_filters.map{|loc| loc.split.map(&:capitalize).join(' ')}
+          @location_filter_terms = locations
+
+          matching_campaigns     = matching_campaigns.where(borough: locations)
+        end
+
+        if category_filters
+
+          categories             = Category.where(name: category_filters)
+          @category_filter_terms = categories.collect{|cat| cat.name.split.map(&:capitalize).join(' ')}
+
+          cat_tag_ids = categories.collect(&:tag_ids).flatten.uniq
+
+          matching_campaigns = matching_campaigns.select do |cp|
+            cp_tag_ids = cp.tag_ids
+            !(cp_tag_ids & cat_tag_ids).empty?
+          end
+
+        end
+
+
+        render(
+          partial: 'application/results',
+          layout: false,
+          locals: {
+            campaigns: matching_campaigns.sort{ |x,y|
+              x.name.length <=> y.name.length
+            },
+            other_campaigns: Campaign.where.not(id: matching_campaigns.collect(&:id))
+          }
+        )
 
       end
 

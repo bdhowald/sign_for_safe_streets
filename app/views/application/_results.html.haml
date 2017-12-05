@@ -1,13 +1,27 @@
 - campaigns_already_signed = @campaigns_already_signed || []
 - selected_campaigns       = @selected_campaigns || []
+- results_string_parts     = assemble_results_string(@search_term, @location_filter_terms, @category_filter_terms)
 
-- if @search_term.present?
+- if !results_string_parts.empty?
   %div.results-header
     %p
-      = "#{campaigns.count} campaign#{'s' if campaigns.count != 1} matched:"
+      = "#{campaigns.count} campaign#{'s' if campaigns.count != 1} #{'matched:' if results_string_parts[:match_string_parts]}"
       %br
-      %span.search-term
-        = "'#{@search_term}'"
+      - total_match_parts = (results_string_parts[:match_string_parts] || []).count
+      - (results_string_parts[:match_string_parts] || []).each_with_index do |part,i|
+        %span.search-term
+          = "'#{part}'"
+        - case i
+          - when i..(total_match_parts - 3)
+            - if total_match_parts >= 3
+              ,
+          - when total_match_parts - 2
+            - if total_match_parts >= 3
+              , and
+            - else
+              and
+
+      = "#{results_string_parts[:location_string]}"
 
 %div{class: "row campaign-list #{'matching' if !other_campaigns.empty?}"}
   = render partial: 'application/campaign', collection: campaigns.sort{|x,y| x.name.length <=> y.name.length}, cached: -> campaign { [ campaign, campaigns_already_signed.include?(campaign.id), selected_campaigns.include?(campaign.id) ] }

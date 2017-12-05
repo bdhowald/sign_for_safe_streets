@@ -205,39 +205,21 @@ $transalt-orange: #ff4500;
   margin: 15px 0;
 }
 
-@media (max-width: 575px) {
-  #filters .filter-buttons {
-    display: none;
-  }
+
+
+
+#filters .filter-buttons {
+  margin: 15px 0;
 }
 
-#filters .filter-buttons .row {
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-
-#filters .filter-buttons li {
-  color: #fff;
-
-  display: inline-block;
-  text-align: center;
-}
-
-#filters .filter-buttons li div.search-button {
-  padding: 5px;
+#filters .filter-buttons .col {
   cursor: pointer;
+  font-weight: 600;
+  padding: 5px;
 
-  background-color: transparent;
-  border: 1px solid #ff804f;
-  border-radius: .25rem;
-  color: #ff804f;
-
-  font-weight: 400;
-  font-size: 1rem;
-
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
+  // text-align: center;
+  // white-space: nowrap;
+  // vertical-align: middle;
 
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -249,136 +231,167 @@ $transalt-orange: #ff4500;
   transition: all .2s ease-in-out;
 }
 
-#filters .filter-buttons li div.search-button:hover {
+#filters .filter-buttons.categories {
+  border: 1px solid #ff804f;
+  border-radius: .25rem;
+}
+
+#filters .filter-buttons.categories .col {
+  color: #ff804f;
+}
+
+#filters .filter-buttons.categories .col:hover {
+  background-color: #ff804f;
+  color: #fff;
+}
+
+#filters .filter-buttons.categories .col.active {
   color: #fff;
   background-color: #ff804f;
 }
 
-#filters .filter-buttons li div.search-button.active {
-  color: #fff;
-  background-color: #ff804f;
+#filters .filter-buttons.categories .col:not(:last-child) {
+  border-right: 1px solid #ff804f;
 }
 
 @media (max-width: 575px) {
-  #filters .filter-buttons li div.search-button {
-    margin: 10px;
+  #filters .filter-buttons.categories span.sans {
+    display: none;
   }
 }
 
-#filters .filter-buttons li div.search-button.borough {
-  border-radius: .15rem;
-  color: #333;
-  font-weight: 300;
+
+#filters .filter-buttons.locations .col.borough {
+  border-top: 1px solid #999;
+  border-bottom: 1px solid #999;
+  padding: 10px;
 }
 
+#filters .filter-buttons.locations .col.borough:first-child {
+  border-left: 1px solid #999;
+  border-radius: .25rem 0 0 .25rem;
+}
 
-#filters .filter-buttons li div.search-button.borough:hover {
+#filters .filter-buttons.locations .col.borough:last-child {
+  border-right: 1px solid #999;
+  border-radius: 0 .25rem .25rem 0;
+}
+
+#filters .filter-buttons.locations .col.borough:not(:last-child) {
+  border-right: 1px solid #999;
+}
+
+#filters .filter-buttons.locations .col.borough:hover {
   color: #fff;
 }
 
-#filters .filter-buttons li div.search-button.borough.active {
+#filters .filter-buttons.locations .col.borough.active {
   color: #fff;
 }
 
-#filters .filter-buttons li div.search-button.citywide {
+#filters .filter-buttons.locations .col.citywide {
   background-color: rgba(255, 179, 71, 0.25);
-  border: 2px solid rgba(255, 179, 71, 0.25);
+  background-color: transparent;
   color: rgb(225, 149, 41);
 }
 
-#filters .filter-buttons li div.search-button.citywide:hover {
+#filters .filter-buttons.locations .col.citywide:hover {
   background-color: rgba(255, 179, 71, 1);
 }
 
 
-#filters .filter-buttons li div.search-button.citywide.active {
+#filters .filter-buttons.locations .col.citywide.active {
   background-color: rgba(255, 179, 71, 1);
 }
 
-#filters .filter-buttons li div.search-button.statewide {
+#filters .filter-buttons.locations .col.statewide {
   background-color: rgba(0, 119, 200, 0.25);
-  border: 2px solid rgba(0, 119, 200, 0.25);
+  background-color: transparent;
   color: rgb(0, 89, 170);
 }
 
-#filters .filter-buttons li div.search-button.statewide:hover {
+#filters .filter-buttons.locations .col.statewide:hover {
   background-color: rgba(0, 119, 200, 1);
 }
 
-#filters .filter-buttons li div.search-button.statewide.active {
+#filters .filter-buttons.locations .col.statewide.active {
   background-color: rgba(0, 119, 200, 1);
 }
 
-#filters .filter-buttons li div.search-button.bronx {
+#filters .filter-buttons.locations .col.bronx {
   background-color: rgba(245, 199, 184, 0.25);
-  border: 2px solid rgba(245, 199, 184, 0.25);
+  background-color: transparent;
   color: rgb(215, 139, 124);
 }
 
-#filters .filter-buttons li div.search-button.bronx:hover {
+#filters .filter-buttons.locations .col.bronx:hover {
   background-color: rgba(245, 199, 184, 1);
 }
 
-#filters .filter-buttons li div.search-button.bronx.active {
+#filters .filter-buttons.locations .col.bronx.active {
   background-color: rgba(245, 199, 184, 1);
 }
 
-#filters .filter-buttons li div.search-button.brooklyn {
+#filters .filter-buttons.locations .col.brooklyn {
   background-color: rgba(147, 230, 180, 0.25);
-  border: 2px solid rgba(147, 230, 180, 0.25);
+  background-color: transparent;
   color: rgb(117, 200, 150);
 }
 
-#filters .filter-buttons li div.search-button.brooklyn:hover {
+#filters .filter-buttons.locations .col.brooklyn:hover {
   background-color: rgba(147, 230, 180, 1.0);
 }
 
-#filters .filter-buttons li div.search-button.brooklyn.active {
+#filters .filter-buttons.locations .col.brooklyn.active {
   background-color: rgba(147, 230, 180, 1.0);
 }
 
-#filters .filter-buttons li div.search-button.manhattan {
+#filters .filter-buttons.locations .col.manhattan {
   background-color: rgba(0, 200, 238, 0.25);
-  border: 2px solid rgba(0, 200, 238, 0.25);
+  background-color: transparent;
   color: rgb(0, 170, 208);
 }
 
-#filters .filter-buttons li div.search-button.manhattan:hover {
+#filters .filter-buttons.locations .col.manhattan:hover {
   background-color: rgba(0, 200, 238, 1.0);
 }
 
-#filters .filter-buttons li div.search-button.manhattan.active {
+#filters .filter-buttons.locations .col.manhattan.active {
   background-color: rgba(0, 200, 238, 1.0);
 }
 
-#filters .filter-buttons li div.search-button.queens {
+#filters .filter-buttons.locations .col.queens {
   background-color: rgba(243, 234, 161, 0.25);
-  border: 2px solid rgba(243, 234, 161, 0.25);
+  background-color: transparent;
   color: rgb(153, 144, 71);
 }
 
-#filters .filter-buttons li div.search-button.queens:hover {
+#filters .filter-buttons.locations .col.queens:hover {
   background-color: rgba(223, 214, 141, 1.0);
-  border: 2px solid rgba(223, 214, 141, 1.0);
 }
 
-#filters .filter-buttons li div.search-button.queens.active {
+#filters .filter-buttons.locations .col.queens.active {
   background-color: rgba(223, 214, 141, 1.0);
-  border: 2px solid rgba(223, 214, 141, 1.0);
 }
 
-#filters .filter-buttons li div.search-button.staten-island {
+#filters .filter-buttons.locations .col.staten-island {
   background-color: rgba(218, 197, 208, 0.25);
-  border: 2px solid rgba(218, 197, 208, 0.25);
+  background-color: transparent;
   color: rgb(158, 137, 148);
 }
 
-#filters .filter-buttons li div.search-button.staten-island:hover {
+#filters .filter-buttons.locations .col.staten-island:hover {
   background-color: rgba(218, 197, 208, 1.0);
 }
 
-#filters .filter-buttons li div.search-button.staten-island.active {
+#filters .filter-buttons.locations .col.staten-island.active {
   background-color: rgba(218, 197, 208, 1.0);
+}
+
+@media (max-width: 575px) {
+  #filters .filter-buttons.locations .col.borough {
+    padding: 5px 0;
+  }
 }
 
 
