@@ -111,6 +111,37 @@ var onHomePageLoad = function(){
     curVal == '' ? $clearSearchButton.hide() : $clearSearchButton.show()
   }
 
+  function toggleSearchButtons() {
+
+    var $searchTerms        = $('input#search-terms');
+    var $searchButtons      = $('.search-button');
+    var currentSearchTerms  = Boolean($searchTerms.val().trim()) ? JSON.parse($searchTerms.val().trim()) : []
+
+    // Since we are about to determine which should be active,
+    // remove active state from all.
+    $searchButtons.removeClass('active')
+
+    // staten island hack
+    if ((currentSearchTerms.indexOf('staten') + currentSearchTerms.indexOf('island')) > 0) {
+      currentSearchTerms = currentSearchTerms.filter(function(elem){
+        return elem !== 'staten' && elem !== 'island';
+      })
+
+      currentSearchTerms.push('staten island');
+    }
+
+    currentSearchTerms.forEach(function(term){
+      var $matchingbutton   = $searchButtons.filter(function(){
+        var text = $(this).data('search-text')
+        return text.toLowerCase() === term.toLowerCase()
+      })
+
+      if ($matchingbutton.length) {
+        $matchingbutton.addClass('active');
+      }
+    })
+  }
+
 
   $('.form-control.typeahead').bind('typeahead:select', function(ev, suggestion) {
 
@@ -121,13 +152,25 @@ var onHomePageLoad = function(){
 
   $('body').on('keyup', '.form-control.typeahead.tt-input', function(e) {
     if(e.which == 13) {
-      var $typeahead = $('.form-control.typeahead.tt-input');
-      var searchText = $typeahead.typeahead('val').trim().toLowerCase();
+      var $typeahead     = $('.form-control.typeahead.tt-input');
+      var searchText     = $typeahead.typeahead('val').trim().toLowerCase();
+      var $searchButtons = $('.search-button');
+      var $searchTerms   = $('input#search-terms');
+
+      var newSearchTerms = searchText.split(' ');
+
+      $searchTerms.val(JSON.stringify(newSearchTerms))
 
       if (Boolean(searchText)) {
         var $typeahead = $('.form-control.typeahead.tt-input');
+
+        // Hide suggestions
         $typeahead.siblings('.tt-menu').hide();
 
+        // Toggle active states
+        toggleSearchButtons();
+
+        // Perform search
         $typeahead.triggerHandler('typeahead:select', {
           type:  'keywords',
           value: searchText
@@ -155,13 +198,13 @@ var onHomePageLoad = function(){
     var $searchButtons = $('.search-button');
     var newSearchTerms = [];
 
-    $searchTerms.val(JSON.stringify(newSearchTerms))
+    $searchTerms.val(JSON.stringify(newSearchTerms));
 
     // Clear search bar
     $('.form-control.typeahead.tt-input').typeahead('val', newSearchTerms.join(' '));
 
     // Clear search, remove filters
-    $searchButtons.removeClass('active');
+    toggleSearchButtons();
 
     $('.form-control.typeahead').triggerHandler('typeahead:select', {
       type:  'all',
@@ -185,7 +228,7 @@ var onHomePageLoad = function(){
       $searchButton.addClass('active');
 
       // Add new term if we don't have it yet
-      currentSearchTerms.push(searchText);
+      currentSearchTerms.push(searchText.toLowerCase());
 
     } else {
       // Remove active class
@@ -198,7 +241,7 @@ var onHomePageLoad = function(){
     }
 
     // Put updated value in input
-    $searchTerms.val(JSON.stringify(currentSearchTerms))
+    $searchTerms.val(JSON.stringify(currentSearchTerms));
 
     // Join to get string
     var newSearchText = currentSearchTerms.join(' ');

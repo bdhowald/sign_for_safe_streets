@@ -112,11 +112,7 @@ class SearchController < ActionController::Base
 
         elsif search_params[:search_term]
 
-          matching_tags = Tag.search_full_text(search_params[:search_term])
-
-          matching_campaigns = matching_tags.present? ?
-            Campaign.find(matching_tags.collect(&:campaign_ids).inject(:&)) :
-            []
+          matching_campaigns = Campaign.search_full_text(search_params[:search_term])
 
           @search_term = search_params[:search_term]
 
