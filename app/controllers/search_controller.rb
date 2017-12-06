@@ -2,54 +2,6 @@ class SearchController < ActionController::Base
 
   include UserControllerConcern
 
-  # include Response
-  # include ExceptionHandler
-
-  # respond_to :json
-
-  # def search
-  #   # Set json:api headers
-  #   response.headers['Content-Type'] = 'application/vnd.api+json'
-
-
-  #   @results = {}
-
-  #   search_params = params[:search] || {}
-
-  #   if search_params[:keywords].present?
-  #     # if Category.find(search_params[:keywords])
-  #   end
-
-  #   if search_params[:suggestion].present?
-  #     campaigns = Campaign.where(
-  #       'description LIKE :query',
-  #       query: "%#{search_params[:suggestion]}%"
-  #     ).collect do |campaign|
-  #     {
-  #       id:         campaign.id,
-  #       type:       'campaigns',
-  #       attributes: campaign.attributes
-  #     }
-
-  #   end
-
-  #   if search_params[:keywords].present?
-
-  #     raw_data = Campaign.where('name LIKE :query', query: "%#{search_params[:keywords]}%")
-
-  #   end
-
-  #   # format to json:api standard
-  #   formatted_data = raw_data
-
-  #   @results = {
-  #     data: formatted_data
-  #   }
-
-  #   render json: @results, status: :ok
-  # end
-
-
   def campaigns
 
     search_params  = params[:search] || {}
@@ -73,33 +25,29 @@ class SearchController < ActionController::Base
         @selected_campaigns       = unserialized_campaigns_cookie['selected']
         @campaigns_already_signed = unserialized_campaigns_cookie['already_signed']
 
+        query_type  = search_params[:query_type] || 'all'
+        query_terms = search_params[:query_value]
 
-        if search_params[:all].present?
 
-          if ActiveRecord::Type::Boolean.new.cast(search_params[:all])
-
+        case query_type
+          when 'all'
             @search_term = nil
 
             matching_campaigns = Campaign.where(is_active: true)
 
-          end
+          when 'name'
+            @search_term = query_terms
 
+            matching_campaigns = Campaign.active.where(
+              name: query_terms
+            )
 
-        elsif search_params[:name].present?
+          when 'keywords'
+            @search_term = query_terms
 
-          @search_term = search_params[:name]
-
-          matching_campaigns = Campaign.active.where(
-            name: search_params[:name]
-          )
-
-        elsif search_params[:search_term]
-
-          @search_term = search_params[:search_term]
-
-          matching_campaigns = Campaign.search_full_text(search_params[:search_term])
-
+            matching_campaigns = Campaign.search_full_text(query_terms)
         end
+
 
         if location_filters
           locations              = location_filters.map{|loc| loc.split.map(&:capitalize).join(' ')}
@@ -107,6 +55,7 @@ class SearchController < ActionController::Base
 
           matching_campaigns     = matching_campaigns.where(borough: locations)
         end
+
 
         if category_filters
 
@@ -162,33 +111,6 @@ class SearchController < ActionController::Base
     end
 
   end
-
-
-  # def categories
-  #   # Set json:api headers
-  #   response.headers['Content-Type'] = 'application/vnd.api+json'
-
-  #   search_params = params[:search] || {}
-
-  #   if search_params[:suggestion].present?
-  #     categories = Category.where(
-  #       'name LIKE :query',
-  #       query: "%#{search_params[:suggestion]}%"
-  #     ).collect do |category|
-  #       {
-  #         id:         category.id,
-  #         type:       'categories',
-  #         attributes: category.attributes
-  #       }
-  #     end
-  #   end
-
-  #   @results = {
-  #     data: categories
-  #   }
-
-  #   render json: @results, status: :ok
-  # end
 
 
   def tags

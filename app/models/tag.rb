@@ -5,6 +5,11 @@ class Tag < ApplicationRecord
   pg_search_scope :search_full_text,
     against: :word,
     using: {
+      trigram: {
+        only: [
+          :word
+        ]
+      },
       tsearch: {
         any_word: true,
         dictionary: "english",
