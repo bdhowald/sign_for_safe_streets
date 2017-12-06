@@ -240,7 +240,7 @@ $transalt-orange: #ff4500;
   color: #ff804f;
 }
 
-#filters .filter-buttons.categories .col:hover {
+body.hasHover #filters .filter-buttons.categories .col:hover {
   background-color: #ff804f;
   color: #fff;
 }
@@ -281,7 +281,7 @@ $transalt-orange: #ff4500;
   border-right: 1px solid #999;
 }
 
-#filters .filter-buttons.locations .col.borough:hover {
+body.hasHover #filters .filter-buttons.locations .col.borough:hover {
   color: #fff;
 }
 
@@ -295,7 +295,7 @@ $transalt-orange: #ff4500;
   color: rgb(225, 149, 41);
 }
 
-#filters .filter-buttons.locations .col.citywide:hover {
+body.hasHover #filters .filter-buttons.locations .col.citywide:hover {
   background-color: rgba(255, 179, 71, 1);
 }
 
@@ -310,7 +310,7 @@ $transalt-orange: #ff4500;
   color: rgb(0, 89, 170);
 }
 
-#filters .filter-buttons.locations .col.statewide:hover {
+body.hasHover #filters .filter-buttons.locations .col.statewide:hover {
   background-color: rgba(0, 119, 200, 1);
 }
 
@@ -324,7 +324,7 @@ $transalt-orange: #ff4500;
   color: rgb(215, 139, 124);
 }
 
-#filters .filter-buttons.locations .col.bronx:hover {
+body.hasHover #filters .filter-buttons.locations .col.bronx:hover {
   background-color: rgba(245, 199, 184, 1);
 }
 
@@ -338,7 +338,7 @@ $transalt-orange: #ff4500;
   color: rgb(117, 200, 150);
 }
 
-#filters .filter-buttons.locations .col.brooklyn:hover {
+body.hasHover #filters .filter-buttons.locations .col.brooklyn:hover {
   background-color: rgba(147, 230, 180, 1.0);
 }
 
@@ -352,7 +352,7 @@ $transalt-orange: #ff4500;
   color: rgb(0, 170, 208);
 }
 
-#filters .filter-buttons.locations .col.manhattan:hover {
+body.hasHover #filters .filter-buttons.locations .col.manhattan:hover {
   background-color: rgba(0, 200, 238, 1.0);
 }
 
@@ -366,7 +366,7 @@ $transalt-orange: #ff4500;
   color: rgb(153, 144, 71);
 }
 
-#filters .filter-buttons.locations .col.queens:hover {
+body.hasHover #filters .filter-buttons.locations .col.queens:hover {
   background-color: rgba(223, 214, 141, 1.0);
 }
 
@@ -380,7 +380,7 @@ $transalt-orange: #ff4500;
   color: rgb(158, 137, 148);
 }
 
-#filters .filter-buttons.locations .col.staten-island:hover {
+body.hasHover #filters .filter-buttons.locations .col.staten-island:hover {
   background-color: rgba(218, 197, 208, 1.0);
 }
 
@@ -628,43 +628,6 @@ $transalt-orange: #ff4500;
     margin: 0;
   }
 }
-
-/*@media (min-width: 768px) {
-  .card .campaign .card-text:last-child {
-    margin: 0 0 10px;
-  }
-}*/
-
-
-
-
-/*.campaign-collection.panel {
-  margin: 5px 0;
-}
-
-.campaign-collection.panel .panel-heading {
-  background-color: transparent;
-  border: 2px solid #ff4500;
-  border-radius: 3px;
-  color: #ff4500;
-}
-
-.campaign-collection.panel .panel-heading:hover {
-  background-color: #ff4500;
-  color: #fff;
-}
-
-.campaign-collection.panel .panel-heading .panel-title {
-  padding: 10px;
-}
-
-.campaign-collection.panel .panel-heading .panel-title h3 {
-  color: #ff4500;
-}
-
-.campaign-collection.panel .panel-heading .panel-title h3:hover {
-  color: #ffffff;
-}*/
 
 
 .all-campaigns-body {
