@@ -6,8 +6,8 @@ function AnalyticsTracker() {
     var _this = this;
     this.asyncList = [];
 
-
-    mixpanel.init("<%= Rails.application.secrets.mixpanel[:token] %>", {
+    console.log("<%= Rails.env.staging? || Rails.env.production? %>")
+    mixpanel.init("<%= Rails.application.secrets.mixpanel[:token] %>", {cross_subdomain_cookie: <%= Rails.env.staging? || Rails.env.production? %>}, {
       loaded: function() {
         for (var i = 0; i < _this.asyncList.length; i++) {
           func = _this.asyncList[i];
