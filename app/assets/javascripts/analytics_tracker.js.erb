@@ -6,6 +6,7 @@ function AnalyticsTracker() {
     var _this = this;
     this.asyncList = [];
 
+    console.log("<%= Rails.application.secrets.mixpanel[:token] %>")
     mixpanel.init("<%= Rails.application.secrets.mixpanel[:token] %>", {
       loaded: function() {
         console.log("loaded!")
