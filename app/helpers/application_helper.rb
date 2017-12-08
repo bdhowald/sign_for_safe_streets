@@ -39,7 +39,27 @@ module ApplicationHelper
     end
 
     if location_filter_terms
-      results[:location_string] = "in #{location_filter_terms.to_sentence}"
+
+      if location_filter_terms.include?("Bronx")
+        location_filter_terms.collect!{|elem|
+          elem == 'Bronx' ? 'the Bronx' : elem
+        }
+      end
+
+      if location_filter_terms.any?{|elem| elem =~ /wide/}
+        location_filter_terms.collect!{|elem|
+          elem =~ /wide/ ? elem.downcase : elem
+        }
+      end
+
+      location_filter_terms.sort_by! { |term| ['citywide', 'statewide'].include?(term) ? 0 : -1 }
+
+
+      results[:location_string] = if (location_filter_terms - ['citywide', 'statewide']).empty?
+        location_filter_terms.to_sentence
+      else
+        "in #{location_filter_terms.to_sentence}"
+      end
     end
 
     return results
