@@ -1,21 +1,22 @@
-- signed_petitions = (@recently_signed_petitions || []) + (@already_signed_campaigns || [])
-- signed           = signed_petitions.include?(petition)
-- errors           = (@errors || {})[petition.id]
-- has_errors       = !errors.blank?
+- previously_signed_petitions = (@recently_signed_petitions || []) + (@already_signed_campaigns || [])
+- previously_signed           = previously_signed_petitions.include?(petition)
+- just_signed_petitions       = (@just_signed_campaigns || [])
+- errors                      = (@errors || {})[petition.id]
+- has_errors                  = !errors.blank?
 
-- show_detail      = petition.id == petition_to_expand
-- show_share_links = signed_petitions.include?(petition) && current_page?(:controller => 'application', :action => 'thank_you')
+- show_detail                 = petition.id == petition_to_expand
+- show_share_links            = (previously_signed_petitions + just_signed_petitions).include?(petition) && current_page?(:controller => 'application', :action => 'thank_you')
 
-- campaign_domain  = 'https://campaigns.transalt.org'
+- campaign_domain             = 'https://campaigns.transalt.org'
 
 
-%li.campaign.list-group-item{class: "#{petition.borough.downcase.strip.gsub(' ', '-')} #{'signed' if signed}", 'data-campaign-id' => petition.id}
+%li.campaign.list-group-item{class: "#{petition.borough.downcase.strip.gsub(' ', '-')} #{'signed' if previously_signed}", 'data-campaign-id' => petition.id}
   %a.information-toggle{href: '#'}
     %div.card-body
       %div.campaign-name
         = petition.name
       %div.borough
-        - if signed
+        - if previously_signed
           %i.fa.fa-check
         - elsif has_errors
           %i.fa.fa-refresh
@@ -33,7 +34,7 @@
 
     %div.target-details
       %div.petition-delivery
-        - if signed
+        - if previously_signed
           This petition was delivered to:
         - else
           This petition will be delivered to:
@@ -50,7 +51,7 @@
       %div.social-media-share-links
         %span.share-text
 
-        %a.social-media-share-link.twitter-link{'href' => "https://twitter.com/intent/tweet?status=Sign the petition #{petition.name}%0A#{campaign_domain}#{petition.link}", 'target' => '_blank'}
+        %a.social-media-share-link.twitter-link{'href' => "https://twitter.com/intent/tweet?status=I just signed the petition '#{petition.name}'%0A#{campaign_domain}#{petition.link}! You should, too!", 'target' => '_blank'}
           %i.fa.fa-2x.fa-twitter-square
 
         %a.social-media-share-link.facebook-link{'href' => "https://www.facebook.com/sharer/sharer.php?u=#{campaign_domain}#{petition.link}&title=#{petition.name}", 'target' => '_blank'}
