@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171208073446) do
+ActiveRecord::Schema.define(version: 20171208075359) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,8 @@ ActiveRecord::Schema.define(version: 20171208073446) do
   create_table "campaigns_tags", id: false, force: :cascade do |t|
     t.integer "campaign_id"
     t.integer "tag_id"
+    t.index ["campaign_id", "tag_id"], name: "index_campaigns_tags_on_campaign_id_and_tag_id", unique: true
+    t.index ["tag_id"], name: "index_campaigns_tags_on_tag_id"
   end
 
   create_table "campaigns_users", id: false, force: :cascade do |t|
