@@ -202,6 +202,10 @@ body.hasHover #filters .filter-buttons.categories .col:hover {
 }
 
 @media (max-width: 575px) {
+  #filters .filter-buttons.categories .col.filter-button {
+    padding: 5px 0;
+  }
+
   #filters .filter-buttons.categories span.sans {
     display: none;
   }
