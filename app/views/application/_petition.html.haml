@@ -2,7 +2,12 @@
 - signed           = signed_petitions.include?(petition)
 - errors           = (@errors || {})[petition.id]
 - has_errors       = !errors.blank?
+
 - show_detail      = petition.id == petition_to_expand
+- show_share_links = signed_petitions.include?(petition) && current_page?(:controller => 'application', :action => 'thank_you')
+
+- campaign_domain  = 'https://campaigns.transalt.org'
+
 
 %li.campaign.list-group-item{class: "#{petition.borough.downcase.strip.gsub(' ', '-')} #{'signed' if signed}", 'data-campaign-id' => petition.id}
   %a.information-toggle{href: '#'}
@@ -39,3 +44,15 @@
             = remove_targets_abbreviations(target.strip)
           %li.target.narrow-display
             = abbreviate_targets(target.strip)
+
+
+    - if show_share_links
+      %div.social-media-share-links
+        %span.share-text
+
+        %a.social-media-share-link.twitter-link{'href' => "https://twitter.com/intent/tweet?status=Sign the petition #{petition.name}%0A#{campaign_domain}#{petition.link}", 'target' => '_blank'}
+          %i.fa.fa-2x.fa-twitter-square
+
+        %a.social-media-share-link.facebook-link{'href' => "https://www.facebook.com/sharer/sharer.php?u=#{campaign_domain}#{petition.link}&title=#{petition.name}", 'target' => '_blank'}
+          %i.fa.fa-2x.fa-facebook-square
+
