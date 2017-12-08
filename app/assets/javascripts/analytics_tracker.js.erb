@@ -1,13 +1,14 @@
 function AnalyticsTracker() {
 
   this.initialize = function() {
-    console.log('AnalyticsTracker initializing...');
+    // console.log('AnalyticsTracker initializing...');
 
     var _this = this;
     this.asyncList = [];
 
-    mixpanel.init("3f9ed715a30d310093e324e07cac1f30", {
+    mixpanel.init("<%= Rails.application.secrets.mixpanel[:token] %>", {
       loaded: function() {
+        console.log("loaded!")
         for (var i = 0; i < _this.asyncList.length; i++) {
           func = _this.asyncList[i];
           func()
@@ -19,7 +20,7 @@ function AnalyticsTracker() {
     // this.currentUser = currentUser
     // this.setUpUser();
 
-    console.log('AnalyticsTracker initialized');
+    // console.log('AnalyticsTracker initialized');
   }
 
   this.alias = function(newId, oldId){
