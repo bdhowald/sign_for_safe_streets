@@ -70,7 +70,7 @@ module CampaignHelper
     new_letter = letter.dup
     new_letter.gsub!(/\n/, '<br>')
 
-    new_letter.html_safe
+    new_letter = "\"" + new_letter + "\""
   end
 
 
