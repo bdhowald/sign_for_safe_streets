@@ -4,18 +4,28 @@ var onHomePageLoad = function(){
 
   var that = this;
 
-  // that.numbersToWords       = new Object();
-  // that.numbersInEnglish     = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
-  that.campaignsJustAdded   = 0;
-  that.campaignsJustRemoved = 0;
+  initialize();
 
-  // for (var i = 0; i < _this.numbersInEnglish.length; i++) {
-  //   _this.numbersToWords[i] = _this.numbersInEnglish
-  // }
+  /**
+   * Sets up all js functions on this page.
+   * @name initialize
+   */
+  function initialize() {
+    // that.numbersToWords       = new Object();
+    // that.numbersInEnglish     = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
+    that.campaignsJustAdded   = 0;
+    that.campaignsJustRemoved = 0;
+    that.tracker              = window.tracker;
 
-  loadCampaignsToBeSigned();
-  watchForHover();
-  setUpTypeahead();
+    // for (var i = 0; i < _this.numbersInEnglish.length; i++) {
+    //   _this.numbersToWords[i] = _this.numbersInEnglish
+    // }
+
+    determineFingerprint();
+    loadCampaignsToBeSigned();
+    setUpTypeahead();
+    watchForHover();
+  }
 
 
   $.fn.exists = function () {
@@ -25,11 +35,15 @@ var onHomePageLoad = function(){
 
   $('.form-control.typeahead').bind('change', function(event) {
     toggleClearSearchButton();
+
+    return false
   })
 
 
   $('.form-control.typeahead').bind('typeahead:select', function(event) {
     toggleClearSearchButton();
+
+    return false
   })
 
 
@@ -47,43 +61,44 @@ var onHomePageLoad = function(){
 
 
   $('body').on('click', 'div.sign-petitions', function(event){
-    signPetitions($(this));
+    signPetitions(this);
 
     return false;
   });
 
 
   $('body').on('click', 'button.clear-search', function(event){
-    clearSearch($(this));
+    clearSearch(this);
 
     return false;
-  })
+  });
 
 
-  $('body').on('click', '.filter-button', function(event){
-    addOrRemoveFilter($(this));
+  $('body').on('click', '.filter-button', function(){
+    addOrRemoveFilter(this);
 
     return false;
-  })
+  });
+
 
   // Click to sign or remove a campaign.
   $('body').on('click', 'div.sign, div.to-be-signed', function(event){
     // Delegate to function.
-    addOrRemoveCampaign($(this));
+    addOrRemoveCampaign(this);
 
     return false;
-  })
+  });
 
   // Expand a campaign's description.
-  $('body').on('click', 'a.expand-campaign', function(){
-    expandCampaign($(event.target));
+  $('body').on('click', 'a.expand-campaign', function(event){
+    expandCampaign(this);
 
     return false;
   })
 
   // Detect click on sign-all button.
-  $('body').on('click', '.sign-all button', function() {
-    addOrRemoveAllCampaigns($(this));
+  $('body').on('click', '.sign-all button', function(event) {
+    addOrRemoveAllCampaigns(this);
 
     return false;
   });
@@ -92,10 +107,10 @@ var onHomePageLoad = function(){
   /**
    * Delegation function that handles the addition or removal of all campaigns.
    * @name  addOrRemoveAllCampaigns
-   * @param signAllButton - the sign all button.
+   * @param {Object} elem - sign all button html element.
    */
-  function addOrRemoveAllCampaigns(signAllButton) {
-    var $button = signAllButton;
+  function addOrRemoveAllCampaigns(elem) {
+    var $button = $(elem);
 
     if ($button.hasClass('btn-primary')) {
       $button.removeClass('btn-primary').addClass('btn-danger');
@@ -121,15 +136,17 @@ var onHomePageLoad = function(){
   /**
    * Delegation function that receives request to add or remove a campaign and calls necessary functions.
    * @name  addOrRemoveCampaign
-   * @param signCol - the button the user clicked to add or remove a campaign.
+   * @param {Object} elem - add button html element for campaign
    */
-  function addOrRemoveCampaign(signCol) {
-    var action       = signCol.hasClass('sign') ? 'add' : 'remove';
-    var campaignID   = signCol.parents('.campaign').data('campaign-id');
-    var currentState = signCol.data('sign');
+  function addOrRemoveCampaign(elem) {
+    var $signCol     = $(elem);
+
+    var action       = $signCol.hasClass('sign') ? 'add' : 'remove';
+    var campaignID   = $signCol.parents('.campaign').data('campaign-id');
+    var currentState = $signCol.data('sign');
 
     // Update the campaign
-    changeSignedDisplay(signCol, !currentState);
+    changeSignedDisplay($signCol, !currentState);
 
     // Update list of campaigns
     changeSelectedCampaigns(action, campaignID);
@@ -141,7 +158,7 @@ var onHomePageLoad = function(){
     toggleSignAllButton();
 
     // Trackasaurus
-    // track(action);
+    that.tracker.track(action == 'add' ? 'Campaign added' : "Campaign removed", {campaignID: campaignID});
 
     return false
   }
@@ -150,11 +167,10 @@ var onHomePageLoad = function(){
   /**
    * Adds or removes a filter when it has been clickded. Updates filter terms then performs a search.
    * @name  addOrRemoveFilter
-   * @param filterButton - the clicked filter
+   * @param {Object} elem - filter button html element
    */
-  function addOrRemoveFilter(filterButton) {
-    // var $searchTerms        = $('input#search-terms');
-    var $filterButton       = filterButton;
+  function addOrRemoveFilter(elem) {
+    var $filterButton       = $(elem);
     var filterType          = $filterButton.parents('.filter-buttons').hasClass('categories') ? 'categories' : 'locations'
 
     var $filterTerms        = $('#' + filterType + '-filter');
@@ -261,8 +277,8 @@ var onHomePageLoad = function(){
   /**
    * Updates selected campaigns by adding or removing campaigns. Can also add and remove all at once.
    * @name  changeSelectedCampaigns
-   * @param action - whether to add, remove, add all, or delete all.
-   * @param elem   - the id of the campaign to add or remove if not all.
+   * @param {string} action - whether to add, remove, add all, or delete all.
+   * @param {number} id     - the id of the campaign to add or remove if not all.
    */
   function changeSelectedCampaigns(action, id) {
 
@@ -302,8 +318,8 @@ var onHomePageLoad = function(){
   /**
    * Updates display for campaign when user agrees to sign it or removes it.
    * @name  changeSignedDisplay
-   * @param elem   - the clicked sign button
-   * @param signed - current state (to be signed or not)
+   * @param {Object}  elem   - the clicked sign button
+   * @param {boolean} signed - current state (to be signed or not)
    */
   function changeSignedDisplay(elem, signed) {
 
@@ -345,10 +361,10 @@ var onHomePageLoad = function(){
   /**
    * Clears the search and updates the related hidden input.
    * @name  clearSearch
-   * @param clearButton - the button used to clear the search.
+   * @param {Object} elem - clear search html element
    */
-  function clearSearch(clearButton) {
-    var $clearButton   = clearButton
+  function clearSearch(elem) {
+    var $clearButton   = $(elem);
     var $searchTerms   = $('input#search-terms');
     var newSearchTerms = [];
 
@@ -368,7 +384,7 @@ var onHomePageLoad = function(){
   /**
    * Expands the details of a selected campaign that are normally hidden in mobile view.
    * @name  expandCampaign
-   * @param {Object} elem - the clicked link
+   * @param {Object} elem - see more link html element of a campaign.
    */
   function expandCampaign(elem) {
 
@@ -417,6 +433,26 @@ var onHomePageLoad = function(){
       );
 
     }
+
+  }
+
+
+  /**
+   * Calculates users fingerprint and adds it to data to be
+   * @name determineFingerprint
+   */
+  function determineFingerprint() {
+
+    new Fingerprint2().get(function(result, components){
+      useStorage('write', 'fingerprint_id', result)
+    });
+
+    // hack due to macbook pro GPU rendering issue
+    setTimeout(function(){
+      new Fingerprint2().get(function(result, components){
+        useStorage('write', 'fingerprint_id', result)
+      });
+    }, 5000)
 
   }
 
@@ -560,7 +596,7 @@ var onHomePageLoad = function(){
    * Handles selection of typeahead suggestion.
    * and updates selected campaign list.
    * @name  selectTypeaheadSuggestion
-   * @param suggestion - the typeahead suggestion
+   * @param {Object} suggestion - the typeahead suggestion
    */
   function selectTypeaheadSuggestion(suggestion) {
     var $searchTerms   = $('input#search-terms');
@@ -588,7 +624,7 @@ var onHomePageLoad = function(){
 
   /**
    * Initializes typeahead and bloodhound functions for search.
-   * @name  setUpTypeahead
+   * @name setUpTypeahead
    */
   function setUpTypeahead() {
     var campaignEngine = new Bloodhound({
@@ -666,13 +702,12 @@ var onHomePageLoad = function(){
   /**
    * Updates display for campaign when user agrees to sign it or removes it.
    * @name  signPetitions
-   * @param elem   - the clicked sign button
-   * @param signed - current state (to be signed or not)
+   * @param {Object} elem - 'div.sign-petitions' html element
    */
-  function signPetitions(stickyFooter){
-    var $stickyFooter = stickyFooter;
+  function signPetitions(elem){
+    var $stickyFooter = $(elem);
 
-    if (!stickyFooter.hasClass('disabled')){
+    if (!$stickyFooter.hasClass('disabled')){
       var selectedCampaigns = getSelectedCampaigns();
 
       var $petitionData = $stickyFooter.find('input#petition-data');
@@ -929,7 +964,7 @@ var onHomePageLoad = function(){
 
     document.addEventListener('touchstart', updateLastTouchTime, true);
     document.addEventListener('touchstart', disableHover, true);
-    document.addEventListener('mousemove', enableHover, true);
+    document.addEventListener('mousemove',  enableHover, true);
 
     enableHover();
   }

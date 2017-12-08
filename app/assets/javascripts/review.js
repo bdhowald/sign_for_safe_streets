@@ -4,65 +4,68 @@ var onReviewPageLoad = function(){
 
   var that = this;
 
-  setUpGoogleListeners();
-  setUpValidations();
+  initialize();
 
-  var googlePlaceSelected = checkAddressFields()
+  /**
+   * Sets up all js functions on this page.
+   * @name initialize
+   */
+  function initialize(){
+    setUpGoogleListeners();
+    that.googlePlaceSelected = checkAddressFields();
+  }
 
 
-  $('body').on('click', 'a.information-toggle', function(){
+  $('body').on('click', 'a.information-toggle', function(event){
     // Expand a campaign's description.
-    var $clickedElement = $(event.target);
-    toggleTargetDetails($clickedElement);
+    toggleTargetDetails(event);
 
     return false;
   })
 
 
   $('body').on('submit', '#user-form', function(){
-    var campaignIds = $('li.campaign').not('.signed').map(function() {
-      return $(this).data('campaign-id')
-    })
-    $('#petition-data').val(JSON.stringify(campaignIds.get()));
+    // Gather ids of campaigns to sign and serialize them for submission.
+    gatherCampaignIdsForSubmission();
   })
 
 
-  $('body').on('click', 'div.read-more', function(){
-    var $thisPetitionText = $(this).parents('.petition-text');
-    var $thisBlockquote = $thisPetitionText.find('blockquote.blockquote');
+  $('body').on('click', 'div.read-more', function(event){
+    // Show the full petition letter of a campaign.
+    showFullLetter(event)
 
-    $thisBlockquote.html($thisBlockquote.data('full-letter'));
+    return false;
+  })
 
-    // hide '(read more)'
-    $(this).hide();
+  $('body').on('submit', '#user-form', function(event){
+    // Validate the user form.
+    validateForm(event);
   })
 
 
-  /*///*/
-  // If user address info is complete, a Google
-  // place has been selected.
-  //
-  // @method checkAddressFields
-  /*///*/
+  /**
+   * If user address info is complete, a Google place has been selected.
+   * @name  checkAddressFields
+   */
   function checkAddressFields(){
     if ($('#user-address-street').val() === '') return false
     if ($('#user-address-city').val()   === '') return false
     if ($('#user-address-state').val()  === '') return false
     if ($('#user-address-zip').val()    === '') return false
+
     return true
   }
 
 
-  /*///*/
-  // Make sure user selects a location through Google Places.
-  //
-  // @method ensureGooglePlaceSelected
-  /*///*/
+  /**
+   * Make sure user selects a location through Google Places.
+   * @name  ensureGooglePlaceSelected
+   */
   function ensureGooglePlaceSelected(){
     var input = $('#user-address')[0];
     var $input = $('#user-address');
 
-    if (!googlePlaceSelected) {
+    if (!that.googlePlaceSelected) {
       input.setCustomValidity('You must select an address');
       $input.siblings('.invalid-feedback').text('You must select an address');
       return false
@@ -75,11 +78,24 @@ var onReviewPageLoad = function(){
   }
 
 
-  /*///*/
-  // When the user selects a place, let's track it.
-  //
-  // @method handleDetailsResult
-  /*///*/
+  /**
+   * Ensure campaign ids to sign are serialized in hidden input for submission.
+   * @name gatherCampaignIdsForSubmission
+   */
+  function gatherCampaignIdsForSubmission(){
+    var campaignIds = $('li.campaign').not('.signed').map(function() {
+      return $(this).data('campaign-id')
+    })
+    $('#petition-data').val(JSON.stringify(campaignIds.get()));
+  }
+
+
+  /**
+   * When the user selects a place, let's track it.
+   * @name  handleDetailsResult
+   * @param {Object} location - Google place object
+   * @param {string} granularity - honestly I don't know.
+   */
   function handleDetailsResult(location, granularity){
     console.log(
       "We selected the first item from the list automatically " +
@@ -98,25 +114,21 @@ var onReviewPageLoad = function(){
   }
 
 
-  /*///*/
-  // When the user selects a place,
-  // we need to determine the granularity,
-  // track it, and recenter the map.
-  //
-  // @method handleLocationSelection
-  /*///*/
+  /**
+   * When the user selects a place, we need to determine the granularity, track it, and recenter the map.
+   * @name  handleLocationSelection
+   * @param {Object} location - Google place object
+   * @param {string} status - status of request, honestly I don't know.
+   */
   function handleLocationSelection(location, status){
     // Change search bar location to address.
     $('#user-address').val(location.formatted_address);
 
     // Set flag to signal user has selected a place.
-    googlePlaceSelected = true;
+    that.googlePlaceSelected = true;
 
     // Set hidden address inputs
     setSelectedLocation(location);
-
-    // // Trigger the search.
-    // performSearch();
 
     // Track location selection.
     // handleDetailsResult(location, granularity);
@@ -126,14 +138,11 @@ var onReviewPageLoad = function(){
 
   }
 
-
-  /*///*/
-  // Determines the user's place
-  // selection if they click enter
-  // instead of clicking on a place.
-  //
-  // @method inferUserChoice
-  /*///*/
+  /**
+   * Determines the user's place selection if they click enter instead of clicking on a place.
+   * @name  inferUserChoice
+   * @param {object} result - Google place object
+   */
   function inferUserChoice(result){
     var _this = this;
 
@@ -144,12 +153,13 @@ var onReviewPageLoad = function(){
   }
 
 
-  /*///*/
-  // Code that obtains google geocoded
-  // data from a text search for a place.
-  //
-  // performGoogleSearch
-  /*///*/
+  /**
+   * Code that obtains google geocoded data from a text search for a place.
+   * @name  performGoogleSearch
+   * @param {object} place - Google place object
+   * @param {object} input - address field object
+   * @param {requestCallback} callback - callback to trigger on place selection.
+   */
   function performGoogleSearch(place, input, callback){
     if (place.name != ""){
       // The user pressed enter in the input
@@ -198,11 +208,10 @@ var onReviewPageLoad = function(){
   }
 
 
-  /*///*/
-  // Reset input fields when no Google place is selected.
-  //
-  // @method resetAddressFields
-  /*///*/
+  /**
+   * Reset input fields when no Google place is selected.
+   * @name resetAddressFields
+   */
   function resetAddressFields(){
     $('#user-address-street').val('');
     $('#user-address-city').val('');
@@ -210,15 +219,15 @@ var onReviewPageLoad = function(){
     $('#user-address-zip').val('');
 
     // Set flag to signal user no longer has a selected place.
-    googlePlaceSelected = false;
+    that.googlePlaceSelected = false;
   }
 
 
-  /*///*/
-  // Set input fields when user selects location.
-  //
-  // @method setSelectedLocation
-  /*///*/
+  /**
+   * Sets hidden address fields on place selection.
+   * @name  setSelectedLocation
+   * @param {Object} place - Google Places object
+   */
   function setSelectedLocation(place){
 
     if (typeof place !== "undefined" && place !== null) {
@@ -274,39 +283,47 @@ var onReviewPageLoad = function(){
   }
 
 
-  /*///*/
-  // Set up google event listeners.
-  //
-  // @method setUpGoogleListeners
-  /*///*/
+
+  /**
+   * Set up google event listeners.
+   * @name  setUpGoogleListeners
+   */
   function setUpGoogleListeners(){
     var options = {
       types: ['geocode'],//['(cities)']
       componentRestrictions: {country: 'us'}
     }
 
+    // Typeahead input
     var input = $('#user-address')[0];
 
+    // If the input exists
     if (input && typeof(google) != 'undefined') {
       var autocomplete = new google.maps.places.Autocomplete(input, options);
 
+      // attach event listener.
       google.maps.event.addListener(autocomplete, 'place_changed', function(){
 
         var result = autocomplete.getPlace();
 
         if (result.address_components == null){
+          // If user didn't pick a place, choose one from the list.
           console.log("User did not click on an option");
           inferUserChoice(result);
         } else {
+          // Handle user's choice.
           handleLocationSelection(result, null);
         }
       });
 
-      input.addEventListener('blur', function (event) {
+      input.addEventListener('change', function (event) {
+        // If user changes input, reset hidden address fields
         resetAddressFields();
       })
 
-      var form = $('#user-form')[0]
+      // Make sure a google place has been selected on form submission
+      var form = $('#user-form')[0];
+
       form.addEventListener("submit", function (event) {
         ensureGooglePlaceSelected();
       }, false);
@@ -316,9 +333,31 @@ var onReviewPageLoad = function(){
   }
 
 
-  function toggleTargetDetails(elem) {
+  /**
+   * Shows the full letter when user clicks 'read more'
+   * @name  showFullLetter
+   * @param {Object} event - jQuery event object
+   */
+  function showFullLetter(event) {
+    var $readMoreLink     = $(event.target);
 
-    var $toggleLink             = elem;
+    var $thisPetitionText = $readMoreLink.parents('.petition-text');
+    var $thisBlockquote   = $thisPetitionText.find('blockquote.blockquote');
+
+    $thisBlockquote.html($thisBlockquote.data('full-letter'));
+
+    // hide '(read more)'
+    $readMoreLink.hide();
+   }
+
+
+  /**
+   * Hides petition text and targets list for all campaigns except the selected one.
+   * @name  toggleTargetDetails
+   * @param {Object} event - jQuery event of click on link header for selected campaign.
+   */
+  function toggleTargetDetails(event) {
+    var $toggleLink             = $(event.target);
     var $allCampaigns           = $toggleLink.parents('div.all-campaigns');
 
     var $thisCampaign           = $toggleLink.parents('li.campaign');
@@ -326,6 +365,7 @@ var onReviewPageLoad = function(){
 
 
     if ($allCampaigns.find('li.campaign').length > 1) {
+      // If we have more than one campaign
 
       var $allToggleLinks       = $allCampaigns.find('a.information-toggle');
       var $allCampaignsDetails  = $allCampaigns.find('.petition-details');
@@ -336,20 +376,27 @@ var onReviewPageLoad = function(){
 
 
       if ($thisCampaignsDetails.hasClass('d-none')) {
+        // If this campaign's details are hidden, hide those for other campaigns.
         $allCampaignsDetails
           .addClass('d-none')
 
+        // Show this campaign's details.
         $thisCampaignsDetails
           .removeClass('d-none')
       } else {
+        // If this campaign's details are visible, hide them.
         $thisCampaignsDetails
           .addClass('d-none')
       }
 
       $allPetitionTexts.each(function(){
+        // Find all blockQuotes...
         var $thisBlockquote = $(this).find('blockquote.blockquote');
 
+        // Replace text with shortened text
         $thisBlockquote.html($thisBlockquote.data('shortened-letter'));
+
+        // Show the 'read more' link, if one exists
         $(this).find('div.read-more').show();
       })
 
@@ -357,6 +404,7 @@ var onReviewPageLoad = function(){
 
       if ($thisCampaignsDetails.hasClass('d-none')) {
 
+        // If we only have one campaign, always show it
         $thisCampaignsDetails
           .removeClass('d-none')
       }
@@ -365,19 +413,32 @@ var onReviewPageLoad = function(){
 
   }
 
-  function setUpValidations() {
 
-    $('body').on('submit', '#user-form', function(event){
-      var form = event.target;
+  /**
+   * Validates form and stops event propogation if invalid
+   * @name  validateForm
+   * @param {Object} event -  jQuery form submission event.
+   */
+  function validateForm(event) {
 
-      if (!form.checkValidity()) {
-        event.preventDefault();
-        event.stopPropagation();
-      } else {
-        $('#submit-form').prop('disabled', true)
-      }
-      form.classList.add('was-validated');
-    })
+    var form = event.target;
+
+    if (!form.checkValidity()) {
+      // If form is invalid...
+      event.preventDefault();
+      event.stopPropagation();
+    } else {
+      // If form is valid...
+      var $submitFormButton = $('#submit-form-button');
+
+      // Disable form submission button
+      $submitFormButton.prop('disabled', true);
+
+      // Hide button text and show loading indicator.
+      $submitFormButton.find('#submit-button-text').hide();
+      $submitFormButton.find('i.zmdi').show();
+    }
+    form.classList.add('was-validated');
 
   };
 
