@@ -56,27 +56,16 @@ body {
 $transalt-orange: #ff4500;
 
 
+main {
+  margin: 30px 0 0;
+}
 
 /*#main_container {
   width: 768px;
 }*/
 
-#page_header {
-  margin-right: auto;
-  margin-left: auto;
-  padding-right: 15px;
-  padding-left: 15px;
-  width: 100%;
-  background-color: #fff;
-}
-
-#page_header h1.title {
-  color: green;
-  font-size: 20px;
-}
-
-#page_header .container .row {
-  margin: 15px 0;
+#home-page-header {
+  text-align: center;
 }
 
 .sticky-footer {
@@ -111,7 +100,7 @@ $transalt-orange: #ff4500;
   transform: translate(0px, 75px);
 }
 
-.footer-text {
+.sticky-footer .footer-text {
   color: #fff;
   font-size: 18pt;
   font-weight: 600;
@@ -120,17 +109,17 @@ $transalt-orange: #ff4500;
   line-height: 75px;
 }
 
-.footer-text a {
+.sticky-footer .footer-text a {
   color: #fff;
 }
 
 
-.notification-box {
+.sticky-footer .notification-box {
   background-color: #29b9e7;
   height: 75px;
 }
 
-.notification-box .notification {
+.sticky-footer .notification-box .notification {
   color: #fff;
   font-size: 18pt;
   font-weight: 400;
@@ -140,61 +129,13 @@ $transalt-orange: #ff4500;
 }
 
 
-.static-footer {
-  background-color: #fff;
-  padding: 30px 30px 30px;
-  text-align: center;
-
-  -webkit-transition: padding 0.8s ease-out;
-     -moz-transition: padding 0.8s ease-out;
-       -o-transition: padding 0.8s ease-out;
-          transition: padding 0.8s ease-out;
-}
-
-.static-footer.with-padding {
-  padding-bottom: 105px;
-}
-
-
-
-.static-footer > * {
-  display: inline-block;
-}
-
-.static-footer .social-media-links {
-  // left: 10px;
-  top: 5px;
-  padding: 0 10px;
-  position: relative;
-}
-
-.static-footer .social-media-links i {
-  padding: 0px 3px;
-}
-
-.static-footer .social-media-links i.fa-twitter {
-  color: #1da1f2;
-}
-
-.static-footer .social-media-links i.fa-github {
-  color: #444;
-}
-
-.static-footer .social-media-links i.fa-linkedin {
-  color: #007bb6
-}
-
-.static-footer .social-media-links i.fa-instagram {
-  color: #000;
-}
-
 
 #filters {
-  margin: 30px 0px;
+  margin: 0 0 30px;
 }
 
 #filters .input-group {
-  margin: 15px 0;
+  margin: 0 0 30px;
 }
 
 #filters .twitter-typeahead, #filters .tt-input {

@@ -1,0 +1,31 @@
+- have_selected_campaigns = have_selected_campaigns || false
+
+
+%div{'class' => "static-footer #{'with-padding' if have_selected_campaigns}"  }
+  %div.container
+    %div.row
+      %div.col-lg-12
+        %div.footer-row
+          %p
+            © Brian Howald 2017
+          %div.social-media-links
+            %a{'href' => 'https://twitter.com/bdhowald', 'target' => '_blank'}
+              %i.fa.fa-2x.fa-twitter
+            %a{'href' => 'https://github.com/bdhowald', 'target' => '_blank'}
+              %i.fa.fa-2x.fa-github
+            %a{'href' => 'https://linkedin.com/in/bdhowald', 'target' => '_blank'}
+              %i.fa.fa-2x.fa-linkedin
+            %a{'href' => 'https://instagram/bdhowald', 'target' => '_blank'}
+              %i.fa.fa-2x.fa-instagram
+
+        %div.footer-row
+
+          %p.site-link
+            %a{href: '/privacy'}
+              Privacy Policy
+
+          &middot;
+
+          %p.site-link
+            %a{href: '/acknowledgments'}
+              Acknowledgments

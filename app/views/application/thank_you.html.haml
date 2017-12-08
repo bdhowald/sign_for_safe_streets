@@ -2,7 +2,7 @@
 - already_signed_campaigns = @already_signed_campaigns || []
 
 %main
-  %div.header#page-header
+  %div.header#thank-you-page-header
     - 5.times.each do
       %div.balloon
         %p
@@ -46,6 +46,5 @@
                   %ul.campaigns.list-group.list-group-flush
                     = render partial: 'application/petition', collection: already_signed_campaigns, locals: { petition_to_expand: -1 }, cached: -> petition { [ petition, just_signed_campaigns.include?(petition.id), true ] }
 
-  %div.thank-you-page-footer
-    %a{'href' => 'https://codepen.io/JeffreyTaylor'}
-      Balloon animation by Jeffrey Taylor
+
+  = render partial: 'layouts/footer'

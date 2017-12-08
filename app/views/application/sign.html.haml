@@ -1,13 +1,17 @@
 %main
-  %div.header#page-header
+  %div.header#review-page-header
     %div.container
       %div.row
         %div.col-lg-12
           %div#directions
             %h1#encouragement
-              Uh oh! That didn't work.
+              %span.uh-oh
+                Uh oh!
+              That didn't work.
             %h5#ps
               (Don't worry! Just try again.)
 
 
   = render partial: 'signing_panel'
+
+  = render partial: 'layouts/footer'

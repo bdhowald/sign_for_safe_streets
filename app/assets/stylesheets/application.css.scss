@@ -11,11 +11,16 @@
  * It is generally better to create a new file per style scope.
  */
 
- @import "bootstrap";
- @import "font-awesome-sprockets";
- @import "font-awesome";
+ @import 'acknowledgments';
+ @import 'bootstrap';
+ @import 'font-awesome-sprockets';
+ @import 'font-awesome';
+ @import 'footer';
  @import 'make_it_easy';
+ @import 'material-design-iconic-font.min';
+ @import 'privacy';
  @import 'review';
+ @import 'site-header';
  @import 'thank_you';
  @import 'campaigns_chunk';
  @import 'user_fields';

@@ -81,8 +81,10 @@
           %div.invalid-feedback
             Please enter a valid email address
 
-        %button.btn.btn-primary.btn-lg.btn-block{type: 'submit', id: 'submit-form'}
+      %button.btn.btn-primary.btn-lg.btn-block{type: 'submit', id: 'submit-form-button'}
+        %span#submit-button-text
           = "Sign #{@petitions_to_sign.count} Petition#{'s' if @petitions_to_sign.count > 1}"
+        %i.zmdi.zmdi-rotate-right.zmdi-hc-spin
 
 
       %input#petition-data{type: 'hidden', name:'campaigns[selected]'}

@@ -4,7 +4,7 @@
 
 %main
 
-  %div.header#page-header
+  %div.header#home-page-header
 
     %div.container
       %div.row
@@ -19,10 +19,10 @@
                   %i.fa.fa-times
 
             %div.row.filter-buttons.categories
-              - [['Cycling', 'bicycle'], ['Walking', 'female'], ['Transit', 'bus'], ['Schools', 'graduation-cap']].each do |button_text|
+              - [['Cycling', 'bike'], ['Walking', 'walk'], ['Transit', 'directions-bus'], ['Schools', 'graduation-cap']].each do |button_text|
                 %div.col.filter-button
                   %div.search-button{'data-search-text' => button_text[0]}
-                    %i{class: "fa fa-#{button_text[1]}"}
+                    %i{class: "zmdi zmdi-#{button_text[1]} zmdi-hc-lg"}
                     %span.sans
                       = button_text[0]
 
@@ -67,6 +67,7 @@
       %input#search-terms{type: 'hidden', value: '[]'}
       %input#categories-filter.filter-terms{type: 'hidden', value: '[]', 'data-filter-type' => 'categories'}
       %input#locations-filter.filter-terms{type: 'hidden', value: '[]', 'data-filter-type' => 'locations'}
+      / %input#fingerprint-id{type: 'hidden', name: 'user[fingerprint_id]'}
 
       %div.footer-text
         Sign
@@ -79,25 +80,19 @@
         %div.notification
           Campaign added!
 
-  %div{'class' => "static-footer #{'with-padding' if have_selected_campaigns}"  }
-    %p
-      © Brian Howald 2017
-    %div.social-media-links
-      %a{'href' => 'https://twitter.com/bdhowald', 'target' => '_blank'}
-        %i.fa.fa-2x.fa-twitter
-      %a{'href' => 'https://github.com/bdhowald', 'target' => '_blank'}
-        %i.fa.fa-2x.fa-github
-      %a{'href' => 'https://linkedin.com/in/bdhowald', 'target' => '_blank'}
-        %i.fa.fa-2x.fa-linkedin
-      %a{'href' => 'https://instagram/bdhowald', 'target' => '_blank'}
-        %i.fa.fa-2x.fa-instagram
-
-    %p
-      %a
-        Privacy Policy
+  = render partial: 'layouts/footer', locals: {have_selected_campaigns: have_selected_campaigns}
 
 :javascript
   mixpanel.track('Campaign catalog viewed');
+
+
+
+
+
+
+
+
+
 
 
 

@@ -19,10 +19,12 @@
 
   %div{class: "petition-details #{'d-none' unless show_detail}"}
     %div.petition-text
-      %blockquote.blockquote{'data-full-letter' => format_letter(petition.letter.gsub('\'', '')), 'data-shortened-letter' => string_with_ellipses(format_letter(petition.letter.gsub('\'', '')))}
-        = "\"#{string_with_ellipses(format_letter(petition.letter.gsub('\'', '')), 200)}\""
-      %div.read-more
-        (read more)
+      - shortened_string = string_with_ellipses(format_letter(petition.letter.gsub('\'', '')), 200)
+      %blockquote.blockquote{'data-full-letter' => format_letter(petition.letter.gsub('\'', '')), 'data-shortened-letter' => shortened_string}
+        = shortened_string.html_safe
+      - if shortened_string.length > 200
+        %div.read-more
+          (read more)
 
     %div.target-details
       %div.petition-delivery
