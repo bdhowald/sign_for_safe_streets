@@ -17,6 +17,9 @@ var onHomePageLoad = function(){
     that.campaignsJustRemoved = 0;
     that.tracker              = window.tracker;
 
+    // Trackasaurus
+    that.tracker.track('Homepage loaded');
+
     // for (var i = 0; i < _this.numbersInEnglish.length; i++) {
     //   _this.numbersToWords[i] = _this.numbersInEnglish
     // }
