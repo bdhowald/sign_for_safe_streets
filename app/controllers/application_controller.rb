@@ -91,117 +91,122 @@ class ApplicationController < ActionController::Base
         Thread.new(petitions_to_sign) do |petitions|
           while petition = mutex.synchronize { petitions.pop }
 
-            # success = {"success"=>'success',
-            #  "message"=>"Success",
-            #  "signerinfo"=>"Brian H. of Brooklyn",
-            #  "loginteraction"=>
-            #   {"code"=>"4",
-            #    "message"=>"Request not allowed from source IP address '104.154.160.53'."},
-            #  "submitsalert"=>
-            #   {"interaction"=>
-            #     {"interactionId"=>"161798",
-            #      "interacted"=>"2017-10-28T17:21:54.370-04:00",
-            #      "alert"=>
-            #       {"alertId"=>"221",
-            #        "type"=>"action",
-            #        "status"=>"active",
-            #        "priority"=>"medium",
-            #        "url"=>
-            #         "https://secure.transalt.org/site/Advocacy?pagename=homepage&id=221",
-            #        "interactionCount"=>"4438",
-            #        "title"=>"Fix 5th and 6th",
-            #        "thumbnail"=>{},
-            #        "internalName"=>
-            #         "5th and 6th Forward: We Support Bicycle, Pedestrian and Transit Improvements on 5th and 6th Avenues",
-            #        "description"=>
-            #         "We support the installation of protected bike lanes and pedestrian safety improvements on 5th and 6th Avenues, starting at 59th Street and continuing south.",
-            #        "category"=>"General",
-            #        "issues"=>{"issue"=>"5thand6th"},
-            #        "restrictByState"=>{},
-            #        "modified"=>"2016-09-07T11:41:00.000-04:00",
-            #        "publish"=>"2012-08-01T14:54:41.277-04:00",
-            #        "expire"=>{},
-            #        "targets"=>
-            #         {"target"=>
-            #           ["Manhattan Community Boards 2, 4 and 5",
-            #            "Joseph Borelli",
-            #            "Mitchell Silver"]},
-            #        "messageSubject"=>"Stand Up for Safer 5th and 6th Avenues",
-            #        "messageSubjectEditable"=>"optional",
-            #        "messageGreeting"=>"Dear",
-            #        "messageOpening"=>{},
-            #        "messageBody"=>
-            #         "When you make part of Sixth Avenue safe, don't leave me stranded! Make Fifth Avenue, and the rest of Sixth Avenue, safe with a protected bike lane, too.",
-            #        "messageBodyEditable"=>"optional",
-            #        "messageClosing"=>{},
-            #        "messageSignature"=>"Sincerely,",
-            #        "letterLimit"=>"0",
-            #        "wordLimit"=>"0",
-            #        "position"=>"none",
-            #        "yeaCount"=>"0",
-            #        "nayCount"=>"0",
-            #        "abstainCount"=>"0",
-            #        "notPresentCount"=>"0"},
-            #      "recipients"=>
-            #       {"recipient"=>
-            #         {"recipientId"=>"other.110",
-            #          "title"=>"Council Member",
-            #          "name"=>"Joseph Borelli",
-            #          "interactive"=>"false",
-            #          "deliveryOptions"=>{"delivery"=>["all", "internet", "fax"]},
-            #          "position"=>"Council Member",
-            #          "representing"=>{},
-            #          "party"=>{}}},
-            #      "subject"=>"Fix 5th and 6th",
-            #      "body"=>
-            #       "When you make part of Sixth Avenue safe, don't leave me stranded! Make Fifth Avenue, and the rest of Sixth Avenue, safe with a protected bike lane, too.",
-            #      "called"=>{},
-            #      "contactPosition"=>{},
-            #      "contactName"=>{},
-            #      "reply"=>{},
-            #      "note"=>{}}},
-            #  "outgoingip"=>"10.128.1.14"}
+            if Rails.env.production?
 
-            # failure = {"success"=>false,
-            #   "errors"=>{"address"=>"Address is required.", "zip"=>"ZIP code is required."}}
+              res = RestClient.post(
+                trans_alt_url,
+                title:      user_params['title'],
+                firstname:  user_params['first_name'],
+                lastname:   user_params['last_name'],
+                email:      user_params['email'],
+                address:    user_params['address'].try(:[], 'street'),
+                zip:        user_params['address'].try(:[], 'zip'),
+                phone:      user_params['phone'].try(:gsub, /\D/, ''),
+                city:       user_params['address'].try(:[], 'city'),
+                state:      user_params['address'].try(:[], 'state'),
 
-            res = RestClient.post(
-              trans_alt_url,
-              title:      user_params['title'],
-              firstname:  user_params['first_name'],
-              lastname:   user_params['last_name'],
-              email:      user_params['email'],
-              address:    user_params['address'].try(:[], 'street'),
-              zip:        user_params['address'].try(:[], 'zip'),
-              phone:      user_params['phone'].try(:gsub, /\D/, ''),
-              city:       user_params['address'].try(:[], 'city'),
-              state:      user_params['address'].try(:[], 'state'),
+                body:       petition.letter,
+                subject:    petition.name,
+                nodeid:     petition.node_id,
+                alertid:    petition.alert_id,
+                offlineid:  petition.offline_id,
+                offlinenum: petition.offline_id
+              )
 
-              body:       petition.letter,
-              subject:    petition.name,
-              nodeid:     petition.node_id,
-              alertid:    petition.alert_id,
-              offlineid:  petition.offline_id,
-              offlinenum: petition.offline_id
-            )
+            else
 
-            # res = if Kernel.rand(2) == 1
-            #   success
-            # else
-            #   failure
-            # end
+              success = {"success"=>'success',
+               "message"=>"Success",
+               "signerinfo"=>"Brian H. of Brooklyn",
+               "loginteraction"=>
+                {"code"=>"4",
+                 "message"=>"Request not allowed from source IP address '104.154.160.53'."},
+               "submitsalert"=>
+                {"interaction"=>
+                  {"interactionId"=>"161798",
+                   "interacted"=>"2017-10-28T17:21:54.370-04:00",
+                   "alert"=>
+                    {"alertId"=>"221",
+                     "type"=>"action",
+                     "status"=>"active",
+                     "priority"=>"medium",
+                     "url"=>
+                      "https://secure.transalt.org/site/Advocacy?pagename=homepage&id=221",
+                     "interactionCount"=>"4438",
+                     "title"=>"Fix 5th and 6th",
+                     "thumbnail"=>{},
+                     "internalName"=>
+                      "5th and 6th Forward: We Support Bicycle, Pedestrian and Transit Improvements on 5th and 6th Avenues",
+                     "description"=>
+                      "We support the installation of protected bike lanes and pedestrian safety improvements on 5th and 6th Avenues, starting at 59th Street and continuing south.",
+                     "category"=>"General",
+                     "issues"=>{"issue"=>"5thand6th"},
+                     "restrictByState"=>{},
+                     "modified"=>"2016-09-07T11:41:00.000-04:00",
+                     "publish"=>"2012-08-01T14:54:41.277-04:00",
+                     "expire"=>{},
+                     "targets"=>
+                      {"target"=>
+                        ["Manhattan Community Boards 2, 4 and 5",
+                         "Joseph Borelli",
+                         "Mitchell Silver"]},
+                     "messageSubject"=>"Stand Up for Safer 5th and 6th Avenues",
+                     "messageSubjectEditable"=>"optional",
+                     "messageGreeting"=>"Dear",
+                     "messageOpening"=>{},
+                     "messageBody"=>
+                      "When you make part of Sixth Avenue safe, don't leave me stranded! Make Fifth Avenue, and the rest of Sixth Avenue, safe with a protected bike lane, too.",
+                     "messageBodyEditable"=>"optional",
+                     "messageClosing"=>{},
+                     "messageSignature"=>"Sincerely,",
+                     "letterLimit"=>"0",
+                     "wordLimit"=>"0",
+                     "position"=>"none",
+                     "yeaCount"=>"0",
+                     "nayCount"=>"0",
+                     "abstainCount"=>"0",
+                     "notPresentCount"=>"0"},
+                   "recipients"=>
+                    {"recipient"=>
+                      {"recipientId"=>"other.110",
+                       "title"=>"Council Member",
+                       "name"=>"Joseph Borelli",
+                       "interactive"=>"false",
+                       "deliveryOptions"=>{"delivery"=>["all", "internet", "fax"]},
+                       "position"=>"Council Member",
+                       "representing"=>{},
+                       "party"=>{}}},
+                   "subject"=>"Fix 5th and 6th",
+                   "body"=>
+                    "When you make part of Sixth Avenue safe, don't leave me stranded! Make Fifth Avenue, and the rest of Sixth Avenue, safe with a protected bike lane, too.",
+                   "called"=>{},
+                   "contactPosition"=>{},
+                   "contactName"=>{},
+                   "reply"=>{},
+                   "note"=>{}}},
+               "outgoingip"=>"10.128.1.14"}
 
-            # res = if (petitions.count == 1 || true)
-            #   failure
-            # else
-            #   success
-            # end
+              failure = {"success"=>false,
+                "errors"=>{"address"=>"Address is required.", "zip"=>"ZIP code is required."}}
 
-            # res = if (responses.keys.count % 2 == 0 && false)
-            #   failure
-            # else
-            #   success
-            # end
+              res = if Kernel.rand(2) == 1
+                success
+              else
+                failure
+              end
+
+              # res = if (petitions.count == 1 || true)
+              #   failure
+              # else
+              #   success
+              # end
+
+              # res = if (responses.keys.count % 2 == 0 && false)
+              #   failure
+              # else
+              #   success
+              # end
+            end
 
             mutex.synchronize { responses[petition.id] = res }
 
