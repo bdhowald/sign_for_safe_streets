@@ -109,8 +109,6 @@ var onHomePageLoad = function(){
   // Track potential shares to social media.
   $('body').on('click', '.social-media-list-item .social-media-share-link', function(event) {
     trackSocialMediaShareClick(this);
-
-    return false;
   });
 
 
