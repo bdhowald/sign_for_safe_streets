@@ -1,8 +1,6 @@
 module UserControllerConcern
   extend ActiveSupport::Concern
 
-  MOVE_THIS = "mp_3f9ed715a30d310093e324e07cac1f30_mixpanel"
-
   included do
     helper_method :current_user
   end
@@ -15,8 +13,10 @@ module UserControllerConcern
 
     user = User.new
 
-    if cookies[MOVE_THIS]
-      mixpanel_cookie  = JSON.parse(cookies[MOVE_THIS])
+    mixpanel_token = "mp_#{Rails.application.secrets.mixpanel[:token]}_mixpanel"
+
+    if cookies[mixpanel_token]
+      mixpanel_cookie  = JSON.parse(cookies[mixpanel_token])
       user.mixpanel_id = mixpanel_cookie['distinct_id']
     end
 
@@ -31,8 +31,10 @@ module UserControllerConcern
 
   def current_user
 
-    if cookies[MOVE_THIS]
-      mixpanel_cookie = JSON.parse(cookies[MOVE_THIS])
+    mixpanel_token = "mp_#{Rails.application.secrets.mixpanel[:token]}_mixpanel"
+
+    if cookies[mixpanel_token]
+      mixpanel_cookie = JSON.parse(cookies[mixpanel_token])
       mixpanel_id     = mixpanel_cookie['distinct_id']
 
       if (user = User.find_by(mixpanel_id: mixpanel_id))
