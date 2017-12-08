@@ -13,6 +13,8 @@ var onReviewPageLoad = function(){
   function initialize(){
     setUpGoogleListeners();
     that.googlePlaceSelected = checkAddressFields();
+
+    that.tracker             = window.tracker;
   }
 
 
@@ -103,14 +105,6 @@ var onReviewPageLoad = function(){
     );
     console.log(location);
 
-
-    // Trackasaurus
-    // trackEvent(
-    //   'deals_page',
-    //   'search',
-    //   "#{granularity}|#{location.formatted_address}",
-    //   null
-    // )
   }
 
 
@@ -341,10 +335,15 @@ var onReviewPageLoad = function(){
   function showFullLetter(event) {
     var $readMoreLink     = $(event.target);
 
+    var $thisCampaign     = $readMoreLink.parents('li.campaign');
+
     var $thisPetitionText = $readMoreLink.parents('.petition-text');
     var $thisBlockquote   = $thisPetitionText.find('blockquote.blockquote');
 
     $thisBlockquote.html($thisBlockquote.data('full-letter'));
+
+    // Trackasaurus
+    that.tracker.track('Campaign full letter viewed', {campaignID: $thisCampaign.data('campaign-id')});
 
     // hide '(read more)'
     $readMoreLink.hide();
@@ -373,6 +372,9 @@ var onReviewPageLoad = function(){
 
       // var $allCampaignsNames    = $allCampaigns.find('.campaign-name');
       // var $thisCampaignsName    = $thisCampaign.find('.campaign-name');
+
+      // Trackasaurus
+      that.tracker.track('Campaign details viewed', {campaignID: $thisCampaign.data('campaign-id')});
 
 
       if ($thisCampaignsDetails.hasClass('d-none')) {
@@ -437,6 +439,15 @@ var onReviewPageLoad = function(){
       // Hide button text and show loading indicator.
       $submitFormButton.find('#submit-button-text').hide();
       $submitFormButton.find('i.zmdi').show();
+
+      var petitionsToSign = $('input#petition-data').val();
+      if (petitionsToSign != '') {
+        var campaignIDs = JSON.parse(petitionsToSign);
+
+        // Trackasaurus
+        that.tracker.track('User attempted to sign campaigns', {campaignIDs: campaignIDs});
+
+      }
     }
     form.classList.add('was-validated');
 

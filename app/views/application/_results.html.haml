@@ -7,8 +7,12 @@
   %div.results-header
     %p
       = "#{campaigns.count} campaign#{'s' if campaigns.count != 1} #{'matched:' if results_string_parts[:match_string_parts]}"
-      %br
+
       - total_match_parts = (results_string_parts[:match_string_parts] || []).count
+
+      - if total_match_parts > 0
+        %br
+
       - (results_string_parts[:match_string_parts] || []).each_with_index do |part,i|
         %span.search-term
           = "'#{part}'"

@@ -55,10 +55,10 @@
         %li.list-group-item.d-none.d-md-block.social-media-list-item
           %span.share-text
 
-          %a{'href' => "https://twitter.com/intent/tweet?status=Sign the petition #{campaign.name}%0A#{campaign_domain}#{campaign.link}", 'target' => '_blank'}
+          %a.social-media-share-link.twitter-link{'href' => "https://twitter.com/intent/tweet?status=Sign the petition #{campaign.name}%0A#{campaign_domain}#{campaign.link}", 'target' => '_blank'}
             %i.fa.fa-2x.fa-twitter-square
 
-          %a{'href' => "https://www.facebook.com/sharer/sharer.php?u=#{campaign_domain}#{campaign.link}&title=#{campaign.name}", 'target' => '_blank'}
+          %a.social-media-share-link.facebook-link{'href' => "https://www.facebook.com/sharer/sharer.php?u=#{campaign_domain}#{campaign.link}&title=#{campaign.name}", 'target' => '_blank'}
             %i.fa.fa-2x.fa-facebook-square
 
 

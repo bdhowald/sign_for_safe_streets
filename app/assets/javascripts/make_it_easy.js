@@ -103,6 +103,13 @@ var onHomePageLoad = function(){
     return false;
   });
 
+  // Track potential shares to social media.
+  $('body').on('click', '.social-media-list-item .social-media-share-link', function(event) {
+    trackSocialMediaShareClick(this);
+
+    return false;
+  });
+
 
   /**
    * Delegation function that handles the addition or removal of all campaigns.
@@ -113,6 +120,10 @@ var onHomePageLoad = function(){
     var $button = $(elem);
 
     if ($button.hasClass('btn-primary')) {
+
+      // Trackasaurus
+      that.tracker.track('All campaigns added');
+
       $button.removeClass('btn-primary').addClass('btn-danger');
       $button.html('Remove All Campaigns');
 
@@ -122,6 +133,10 @@ var onHomePageLoad = function(){
       });
 
     } else if ($button.hasClass('btn-danger')){
+
+      // Trackasaurus
+      that.tracker.track('All campaigns removed');
+
       $button.removeClass('btn-danger').addClass('btn-primary');
       $button.html('Add All Campaigns');
 
@@ -188,6 +203,9 @@ var onHomePageLoad = function(){
         currentFilterTerms.push(searchText.toLowerCase());
       }
 
+      // Trackasaurus
+      that.tracker.track('Filter added');
+
     } else {
       // Remove active class
       $filterButton.removeClass('active');
@@ -196,6 +214,9 @@ var onHomePageLoad = function(){
       currentFilterTerms = currentFilterTerms.filter(function(elem){
         return elem !== searchText;
       })
+
+      // Trackasaurus
+      that.tracker.track('Filter removed');
     }
 
     // Put updated value in input
@@ -394,6 +415,9 @@ var onHomePageLoad = function(){
 
     if (mq.matches) {
 
+      // Trackasaurus
+      that.tracker.track('Campaign expanded');
+
       var $learnMoreLink = $clickedLink;
 
       var $campaignList      = $learnMoreLink.parents('.campaign-list');
@@ -535,6 +559,9 @@ var onHomePageLoad = function(){
 
         // Hide suggestions
         $typeahead.siblings('.tt-menu').hide();
+
+        // Trackasaurus
+        that.tracker.track('Free text search', {searchTerms: searchText});
 
         // Perform search
         performSearch();
@@ -710,6 +737,9 @@ var onHomePageLoad = function(){
     if (!$stickyFooter.hasClass('disabled')){
       var selectedCampaigns = getSelectedCampaigns();
 
+      // Trackasaurus
+      that.tracker.track('User will sign petitions', {campaignIDs: selectedCampaigns})
+
       var $petitionData = $stickyFooter.find('input#petition-data');
 
       $petitionData.val(JSON.stringify(selectedCampaigns));
@@ -809,6 +839,26 @@ var onHomePageLoad = function(){
 
     }
 
+  }
+
+
+  /**
+   * Track clicks to share campaigns to social media
+   * @name  trackSocialMediaShareClick
+   * @param {Object} elem - the clicked html link to share
+   */
+  function trackSocialMediaShareClick(elem){
+    var $shareLink = $(elem);
+    var $campaign  = $shareLink.parents('.campaign')
+    var campaignID = $campaign.data('campaign-id')
+
+    if ($shareLink.hasClass('twitter-link')) {
+      // Trackasaurus
+      that.tracker.track('Twitter share link clicked', {campaignID: campaignID});
+    } else if ($shareLink.hasClass('facebook-link')) {
+      // Trackasaurus
+      that.tracker.track('Facebook share link clicked', {campaignID: campaignID});
+    }
   }
 
 
