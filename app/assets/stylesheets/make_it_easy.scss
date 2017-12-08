@@ -129,10 +129,16 @@ main {
 }
 
 
-
-#filters {
-  margin: 0 0 30px;
+#home-page-header .container {
+  margin-top: 30px;
+  margin-bottom: 30px;
 }
+
+#home-page-header .container .row {
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
 
 #filters .input-group {
   margin: 0 0 30px;
@@ -336,12 +342,6 @@ body.hasHover #filters .filter-buttons.locations .col.staten-island:hover {
 }
 
 
-
-
-
-.sign-all {
-  margin: 0 0 30px;
-}
 
 .sign-all button {
   -webkit-transition: all 0.5s ease;
