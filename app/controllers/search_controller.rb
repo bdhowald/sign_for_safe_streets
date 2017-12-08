@@ -62,12 +62,7 @@ class SearchController < ActionController::Base
           categories             = Category.where(name: category_filters)
           @category_filter_terms = categories.collect{|cat| cat.name.split.map(&:capitalize).join(' ')}
 
-          cat_tag_ids = categories.collect(&:tag_ids).flatten.uniq
-
-          matching_campaigns = matching_campaigns.select do |cp|
-            cp_tag_ids = cp.tag_ids
-            !(cp_tag_ids & cat_tag_ids).empty?
-          end
+          matching_campaigns = matching_campaigns.where(id: categories.collect(&:campaign_ids).flatten.uniq)
 
         end
 
