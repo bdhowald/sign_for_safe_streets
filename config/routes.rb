@@ -3,6 +3,10 @@ Rails.application.routes.draw do
 
   get '/', to: 'application#make_it_easy', as: 'homepage'
 
+  get '/acknowledgments', to: 'application#acknowledgments'
+
+  get '/privacy', to: 'application#privacy'
+
   post '/review', to: 'application#review'
   get '/review', to: 'application#review'
 
