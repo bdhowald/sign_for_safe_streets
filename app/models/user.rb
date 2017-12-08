@@ -1,10 +1,3 @@
-class User
-
-  def initialize(id)
-    @id = id
-  end
-
-  def id
-    @id
-  end
+class User < ApplicationRecord
+  has_and_belongs_to_many :campaigns
 end

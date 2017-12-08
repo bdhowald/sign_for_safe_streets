@@ -29,6 +29,7 @@ class Campaign < ApplicationRecord
 
 
   has_and_belongs_to_many :tags
+  has_and_belongs_to_many :users
   has_many :categories, through: :tags
 
   scope :active, -> { where(is_active: true) }
