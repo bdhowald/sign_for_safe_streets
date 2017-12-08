@@ -14,4 +14,4 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules')
 # Rails.application.config.assets.precompile += %w( admin.js admin.css )
 Rails.application.config.assets.precompile += %w( mixpanel.js fingerprintjs2 typeahead.js )
 
-Rails.application.config.assets.paths << Rails.root.join("app", "assets", "icons")
+Rails.application.config.assets.paths << Rails.root.join("app", "assets", "fonts")
