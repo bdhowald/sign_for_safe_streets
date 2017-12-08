@@ -189,7 +189,7 @@ class ApplicationController < ActionController::Base
               failure = {"success"=>false,
                 "errors"=>{"address"=>"Address is required.", "zip"=>"ZIP code is required."}}
 
-              res = if Kernel.rand(2) == 1
+              res = if Kernel.rand > 0.1
                 success
               else
                 failure
