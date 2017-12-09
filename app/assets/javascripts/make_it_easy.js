@@ -118,6 +118,9 @@ var onHomePageLoad = function(){
    * @param {Object} elem - sign all button html element.
    */
   function addOrRemoveAllCampaigns(elem) {
+    // var time = new Date().getTime();
+    // console.log('starting timer: ' + 0);
+
     var $button = $(elem);
 
     if ($button.hasClass('btn-primary')) {
@@ -128,10 +131,18 @@ var onHomePageLoad = function(){
       $button.removeClass('btn-primary').addClass('btn-danger');
       $button.html('Remove All Campaigns');
 
+      // console.log('beginning adding all campaigns: ' + (new Date().getTime() - time) );
       // Update campaigns to be signed
-      $('div.campaign-list').not('.not-matching').find('div.sign').each(function(){
-        addOrRemoveCampaign($(this));
-      });
+      // $('div.campaign-list').not('.not-matching').find('div.sign').each(function(){
+      //   // var timer = new Date().getTime()
+      //   // console.log('beginning adding a campaign: ' + (new Date().getTime() - time) );
+      //   addOrRemoveCampaign($(this));
+      //   // console.log('finishing adding a campaign: ' + (new Date().getTime() - time) );
+      //   // console.log('time to add a campaign: ' + (new Date().getTime() - timer) )
+      // });
+      var campaignsToAdd = $('div.campaign-list').not('.not-matching').find('.campaign').not('.already-signed, .to-be-signed');
+      addOrRemoveCampaigns(campaignsToAdd, 'add');
+      // console.log('finished adding all campaigns: ' + (new Date().getTime() - time) );
 
     } else if ($button.hasClass('btn-danger')){
 
@@ -142,41 +153,88 @@ var onHomePageLoad = function(){
       $button.html('Add All Campaigns');
 
       // Update campaigns to be signed
-      $('div.campaign-list').not('.not-matching').find('div.to-be-signed').each(function(){
-        addOrRemoveCampaign($(this));
-      });
+      // console.log('beginning removing all campaigns: ' + (new Date().getTime() - time) );
+      // $('div.campaign-list').not('.not-matching').find('div.to-be-signed').each(function(){
+      //   // var timer = new Date().getTime()
+      //   // console.log('beginning removing a campaign: ' + (new Date().getTime() - time) );
+      //   addOrRemoveCampaign($(this));
+      //   // console.log('finishing removing a campaign: ' + (new Date().getTime() - time) );
+      //   // console.log('time to remove a campaign: ' + (new Date().getTime() - timer) )
+      // });
+      var campaignsToRemove = $('div.campaign-list').not('.not-matching').find('.campaign.to-be-signed');
+      addOrRemoveCampaigns(campaignsToRemove, 'remove');
+      // console.log('finished removing all campaigns: ' + (new Date().getTime() - time) );
     }
+
+    // console.log('timer finished!: ' + (new Date().getTime() - time) );
+  }
+
+
+  /**
+   * Exists to wrap adding or removing a single campaign to addOrRemoveCampaigns
+   * @name  addOrRemoveCampaign
+   * @param {Object} elem - add button html element for campaign
+   */
+  function addOrRemoveCampaign(elem) {
+    var $signCol = $(elem);
+    var action   = $signCol.data('sign') == true ? 'remove' : 'add';
+
+    addOrRemoveCampaigns($signCol.parents('.campaign'), action);
   }
 
 
   /**
    * Delegation function that receives request to add or remove a campaign and calls necessary functions.
-   * @name  addOrRemoveCampaign
-   * @param {Object} elem - add button html element for campaign
+   * @name  addOrRemoveCampaigns
+   * @param {Object} $campaigns - jQuery object of all matching campaigns
+   * @param {string} action     - add or remove
    */
-  function addOrRemoveCampaign(elem) {
-    var $signCol     = $(elem);
+  function addOrRemoveCampaigns($campaigns, action) {
+    var start = new Date().getTime();
+    console.log('starting timer: ' + 0)
+    var campaignIDs = $.map($campaigns, function(elem){
+      return parseInt(elem.dataset.campaignId);
+    });
 
-    var action       = $signCol.hasClass('sign') ? 'add' : 'remove';
-    var campaignID   = $signCol.parents('.campaign').data('campaign-id');
-    var currentState = $signCol.data('sign');
+    // var timePoint1 = new Date().getTime();
+    // console.log('calling subfunctions...: ' + (timePoint1 - start))
 
     // Update the campaign
-    changeSignedDisplay($signCol, !currentState);
+    changeSignedDisplay($campaigns, action);
+
+    // var timePoint2 = new Date().getTime();
+    // console.log('called changeSignedDisplay...: ' + (timePoint2 - timePoint1))
 
     // Update list of campaigns
-    changeSelectedCampaigns(action, campaignID);
+    changeSelectedCampaigns(campaignIDs, action);
+
+    // var timePoint3 = new Date().getTime();
+    // console.log('called changeSelectedCampaigns...: ' + (timePoint3 - timePoint2))
 
     // Update the footer
-    updateStickyFooter(action);
+    updateStickyFooter(campaignIDs, action);
+
+    // var timePoint4 = new Date().getTime();
+    // console.log('called updateStickyFooter...: ' + (timePoint4 - timePoint3))
 
     // Update 'Sign All' button
     toggleSignAllButton();
 
-    // Trackasaurus
-    that.tracker.track(action == 'add' ? 'Campaign added' : "Campaign removed", {campaignID: campaignID});
+    // var timePoint5 = new Date().getTime();
+    // console.log('called toggleSignAllButton...: ' + (timePoint5 - timePoint4))
 
-    return false
+    // Trackasaurus
+    if (action == 'add'){
+      that.tracker.track('Campaigns added', {campaignIDs: campaignIDs});
+    } else if (action == 'remove') {
+      that.tracker.track('Campaign removed', {campaignIDs: campaignIDs});
+    }
+
+    // var timePoint6 = new Date().getTime();
+    // console.log('called tracker...: ' + (timePoint6 - timePoint5))
+
+    // var end = new Date().getTime()
+    // console.log('total time: ' + (end - start));
   }
 
 
@@ -233,10 +291,10 @@ var onHomePageLoad = function(){
    * @name animateStickyFooter
    */
   function animateStickyFooter() {
-    var $staticFooter     = $('.static-footer');
-    var $stickyFooter     = $('.sticky-footer');
+    var staticFooter      = document.getElementsByClassName('static-footer')[0];
+    var stickyFooter      = document.getElementsByClassName('sticky-footer')[0];
+
     var selectedCampaigns = getSelectedCampaigns();
-    var inTransition      = false
 
     var body              = document.body,
         html              = document.documentElement;
@@ -244,54 +302,73 @@ var onHomePageLoad = function(){
     var height            = Math.max( body.scrollHeight, body.offsetHeight,
                                       html.clientHeight, html.scrollHeight, html.offsetHeight );
 
-    if (!inTransition){
-      if (selectedCampaigns.length > 0) {
 
-        $stickyFooter.removeClass( 'retracted'    ).addClass('extended');
-        $staticFooter.addClass(    'with-padding' );
+    // If we have selected campaigns, extend footer if need be
+    if (selectedCampaigns.length > 0) {
+
+      if (stickyFooter.classList.value.indexOf('retracted') != -1) {
+        stickyFooter.classList.remove('retracted')
+      }
+      if (stickyFooter.classList.value.indexOf('extended') == -1) {
+        stickyFooter.className += ' extended';
+      }
+      if (stickyFooter.classList.value.indexOf('with-padding') == -1) {
+        stickyFooter.className += ' with-padding';
+      }
 
 
-        if ($(document).scrollTop() + $stickyFooter.height() > (height - html.clientHeight)){
+      if ($(document).scrollTop() + stickyFooter.clientHeight > (height - html.clientHeight)){
 
-          setTimeout(function(){
+        setTimeout(function(){
 
-            var scrollDistance = $(document).scrollTop() + $stickyFooter.height();
+          var scrollDistance = $(document).scrollTop() + stickyFooter.clientHeight;
 
-            $("html, body").animate(
-              { scrollTop: scrollDistance.toString() + 'px' }
-            );
-            window.scrollTo(0, scrollDistance );
+          $("html, body").animate(
+            { scrollTop: scrollDistance.toString() + 'px' }
+          );
+          window.scrollTo(0, scrollDistance );
 
-          }, 400);
+        }, 400);
+
+      }
+
+      // If we have transitioned up, we need to transition back down.
+      setTimeout(function(){
+
+        // Get campaigns to be signed.
+        var selectedCampaigns = getSelectedCampaigns();
+
+        // If we showed the notification box, hide it.
+        if (stickyFooter.classList.value.indexOf('extended') != -1) {
+          stickyFooter.classList.remove('extended');
+        }
+
+        // If we have selected campaigns, retract footer to hide notification box only if need be
+        if (selectedCampaigns.length == 0){
+          if (stickyFooter.classList.value.indexOf('with-padding') != -1) {
+            stickyFooter.classList.remove('with-padding');
+          }
+
+          if (stickyFooter.classList.value.indexOf('retracted') == -1) {
+            stickyFooter.className += ' retracted';
+          }
 
         }
 
-        setTimeout(function(){
-          // Get campaigns to be signed.
-          var selectedCampaigns = getSelectedCampaigns();
-
-          $stickyFooter.removeClass('extended');
-
-          if (selectedCampaigns.length == 0){
-            $stickyFooter.removeClass('extended').addClass('retracted');
-          }
-
+        // Reset counters for adding and removing of campaigns
+        oneTimeEvent(stickyFooter, 'webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(e) {
           that.campaignsJustAdded   = 0;
           that.campaignsJustRemoved = 0;
+        });
 
-        }, 1500);
-      } else {
-        $stickyFooter.addClass(    'retracted'    );
-        $staticFooter.removeClass( 'with-padding' );
-      }
+      }, 1500);
+
+
+    } else {
+
+      stickyFooter.className += ' retracted';
+      staticFooter.classList.remove('with-padding');
     }
-
-    $stickyFooter.one('webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(e) {
-
-      // code to execute after transition ends
-      inTransition = false
-
-    });
 
   }
 
@@ -299,10 +376,10 @@ var onHomePageLoad = function(){
   /**
    * Updates selected campaigns by adding or removing campaigns. Can also add and remove all at once.
    * @name  changeSelectedCampaigns
+   * @param {number} ids    - the ids of the campaigns to add or remove if not all.
    * @param {string} action - whether to add, remove, add all, or delete all.
-   * @param {number} id     - the id of the campaign to add or remove if not all.
    */
-  function changeSelectedCampaigns(action, id) {
+  function changeSelectedCampaigns(ids, action) {
 
     // Get campaigns to be signed.
     var selectedCampaigns = getSelectedCampaigns();
@@ -311,7 +388,7 @@ var onHomePageLoad = function(){
       // Adding a campaign
       case 'add':
         // Add item
-        selectedCampaigns.push(id);
+        selectedCampaigns.push.apply(selectedCampaigns, ids);
         setSelectedCampaigns(selectedCampaigns);
         break;
       case 'all':
@@ -326,10 +403,14 @@ var onHomePageLoad = function(){
         break;
       case 'remove':
         // Remove item
-        const index = selectedCampaigns.indexOf(id);
-        if (index !== -1) {
-          selectedCampaigns.splice(index, 1)
-        }
+        selectedCampaigns = selectedCampaigns.filter(function(i) {
+          return ids.indexOf(i) < 0;
+        });
+
+        // const index = selectedCampaigns.indexOf(id);
+        // if (index !== -1) {
+        //   selectedCampaigns.splice(index, 1)
+        // }
         setSelectedCampaigns(selectedCampaigns);
         break;
     }
@@ -340,42 +421,61 @@ var onHomePageLoad = function(){
   /**
    * Updates display for campaign when user agrees to sign it or removes it.
    * @name  changeSignedDisplay
-   * @param {Object}  elem   - the clicked sign button
-   * @param {boolean} signed - current state (to be signed or not)
+   * @param {Object}  $campaigns - the clicked sign button
+   * @param {boolean} signed     - current state (to be signed or not)
    */
-  function changeSignedDisplay(elem, signed) {
+  function changeSignedDisplay($campaigns, action) {
 
-    var $signCol  = elem;
-    var $signText = elem.find('span');
-    var $plusSign = elem.find('i.fa');
+    // Iterate through campaigns
+    $campaigns.each(function(){
 
-    if (signed) {
-      $signText.text(' ');
-      $plusSign.replaceWith("<i class='fa fa-check'></i>");
+      var $campaign = $(this);
 
-      $signCol.data('sign', true);
-      $signCol.removeClass('sign').addClass('to-be-signed')
-    } else {
-      $signText.text('Add');
-      $plusSign.replaceWith("<i class='fa fa-plus'></i>");
+      var $signCol     = $campaign.find('div.sign, div.to-be-signed');
+      var $signText    = $signCol.find('span');
+      var $plusSign    = $signCol.find('i.fa');
+      var currentState = $signCol.data('sign');
 
-      $signCol.data('sign', false);
-      $signCol.removeClass('to-be-signed').addClass('sign')
-    }
+      // signed is true if we are adding campaigns or we are toggling and the campaign isn't currently to-be-signed.
+      var signed = (action == 'add');
 
-    // Change colors
-    // var color = signCol.css('background-color');
-    // var rgb = color.replace(/rgb(a)?|[()]/g, '').split(',').map(function(item) {
-    //   return parseFloat(item);
-    // });
+      if (signed) {
+        if (!currentState) {
+          $signText.text(' ');
+          $plusSign.replaceWith("<i class='fa fa-check'></i>");
 
-    // if (rgb.length === 3) {
-    //   rgb.push(0.5)
-    //   signCol.css('background-color', "rgba(" + rgb + ")");
-    // } else {
-    //   rgb[rgb.length - 1] === 0.5 ? rgb[rgb.length - 1] = 1 : rgb[rgb.length - 1] = 0.5;
-    //   signCol.css('background-color', "rgba(" + rgb + ")");
-    // }
+          $signCol.data('sign', true);
+          $signCol.removeClass('sign').addClass('to-be-signed');
+
+          $campaign.addClass('to-be-signed')
+        }
+      } else {
+        if (currentState) {
+          $signText.text('Add');
+          $plusSign.replaceWith("<i class='fa fa-plus'></i>");
+
+          $signCol.data('sign', false);
+          $signCol.removeClass('to-be-signed').addClass('sign');
+
+          $campaign.removeClass('to-be-signed')
+        }
+      }
+
+      // Change colors
+      // var color = signCol.css('background-color');
+      // var rgb = color.replace(/rgb(a)?|[()]/g, '').split(',').map(function(item) {
+      //   return parseFloat(item);
+      // });
+
+      // if (rgb.length === 3) {
+      //   rgb.push(0.5)
+      //   signCol.css('background-color', "rgba(" + rgb + ")");
+      // } else {
+      //   rgb[rgb.length - 1] === 0.5 ? rgb[rgb.length - 1] = 1 : rgb[rgb.length - 1] = 0.5;
+      //   signCol.css('background-color', "rgba(" + rgb + ")");
+      // }
+
+    })
 
   }
 
@@ -400,6 +500,26 @@ var onHomePageLoad = function(){
 
     // Perform search
     performSearch();
+  }
+
+
+  /**
+   * Calculates users fingerprint and adds it to data to be
+   * @name determineFingerprint
+   */
+  function determineFingerprint() {
+
+    new Fingerprint2().get(function(result, components){
+      useStorage('write', 'fingerprint_id', result)
+    });
+
+    // hack due to macbook pro GPU rendering issue
+    setTimeout(function(){
+      new Fingerprint2().get(function(result, components){
+        useStorage('write', 'fingerprint_id', result)
+      });
+    }, 5000)
+
   }
 
 
@@ -458,26 +578,6 @@ var onHomePageLoad = function(){
       );
 
     }
-
-  }
-
-
-  /**
-   * Calculates users fingerprint and adds it to data to be
-   * @name determineFingerprint
-   */
-  function determineFingerprint() {
-
-    new Fingerprint2().get(function(result, components){
-      useStorage('write', 'fingerprint_id', result)
-    });
-
-    // hack due to macbook pro GPU rendering issue
-    setTimeout(function(){
-      new Fingerprint2().get(function(result, components){
-        useStorage('write', 'fingerprint_id', result)
-      });
-    }, 5000)
 
   }
 
@@ -589,11 +689,69 @@ var onHomePageLoad = function(){
 
 
   /**
+   * Replacement for jQuery's .one() function
+   * @name  oneTimeEvent
+   * @param {Object} element    - html element
+   * @param {string} eventTypes - all the events to create listeners for
+   * @param {callback} callback - callback to call when event listener is triggered
+   */
+  function oneTimeEvent(element, eventTypes, callback) {
+    var events = eventTypes.split(' ');
+
+    for (var i = 0; i < events.length; i++) {
+      var eventName = events[i];
+      element.addEventListener(eventName, function callThenRemove(e) {
+        e.target.removeEventListener(e.type, callThenRemove, false);
+        return callback(e);
+      });
+    }
+  }
+
+
+  /**
    * Queries server for campaigns
    * @name performSearch
    * @param {Object} [suggestion] - search suggestion from typeahead (optional)
    */
   function performSearch(suggestion){
+    // var time = new Date().getTime();
+    // console.log('starting timer...')
+    // console.log('calling performSearch: ' + new Date().getTime())
+    // var url = '../campaigns.html';
+
+    // var searchData = getSearchData(suggestion);
+    // var filterData = getFilterData();
+
+    // var searchDataString = toQueryString(searchData);
+    // var filterDataString = toQueryString(filterData);
+
+    // if (searchDataString.length && filterDataString.length) {
+    //   url = url + '?' + searchDataString + '&' + filterDataString
+    // } else if (searchDataString.length) {
+    //   url = url + '?' + searchDataString
+    // } else if (filterDataString.length) {
+    //   url = url + '?' + filterDataString
+    // }
+
+
+    // var xhr = new XMLHttpRequest();
+    // console.log('calling ajax: ' + new Date().getTime())
+    // xhr.open("GET", url, true);
+    // xhr.send();
+
+    // xhr.onreadystatechange=function(){
+    //   if(xhr.readyState==4 && xhr.status==200){
+
+    //     console.log('ajax finished: ' + new Date().getTime())
+    //     var campaignListContainer = document.getElementsByClassName('campaign-list-container');
+    //     campaignListContainer[0].innerHTML = xhr.responseText
+    //     console.log('called')
+    //     console.log('data loaded: ' + new Date().getTime())
+    //     console.log('timer finished: ' + ((new Date().getTime()) - time));
+    //   }
+
+    // }
+
     var searchData = getSearchData(suggestion);
     var filterData = getFilterData();
 
@@ -604,12 +762,14 @@ var onHomePageLoad = function(){
       contentType: 'text/html; charset=utf-8'
     })
     .done(function(data, status, xhr){
+      // console.log('ajax done: ' + new Date().getTime())
       if (data === undefined) data = null;
 
       var $campaignListContainer = $('.campaign-list-container')
       $campaignListContainer.html(data);
 
       toggleSignAllButton();
+      // console.log('finished everything: ' + new Date().getTime())
     })
     .fail(function(xhr, status, error){
 
@@ -844,6 +1004,67 @@ var onHomePageLoad = function(){
 
 
   /**
+   * Convert a javascript object into a query string of params
+   * @name  toQueryString
+   * @param {Object} obj - the object to convert into a query string
+   */
+  function toQueryString(obj, urlEncode) {
+    //
+    // Helper function that flattens an object, retaining key structer as a path array:
+    //
+    // Input: { prop1: 'x', prop2: { y: 1, z: 2 } }
+    // Example output: [
+    //     { path: [ 'prop1' ],      val: 'x' },
+    //     { path: [ 'prop2', 'y' ], val: '1' },
+    //     { path: [ 'prop2', 'z' ], val: '2' }
+    // ]
+    //
+    function flattenObj(x, path) {
+    var result = [];
+
+    path = path || [];
+    Object.keys(x).forEach(function (key) {
+      if (!x.hasOwnProperty(key)) return;
+
+      var newPath = path.slice();
+      newPath.push(key);
+
+      var vals = [];
+      if (typeof x[key] == 'object') {
+          vals = flattenObj(x[key], newPath);
+      } else {
+          vals.push({ path: newPath, val: x[key] });
+      }
+      vals.forEach(function (obj) {
+          return result.push(obj);
+      });
+    });
+
+    return result;
+    } // flattenObj
+
+    // start with  flattening `obj`
+    var parts = flattenObj(obj); // [ { path: [ ...parts ], val: ... }, ... ]
+
+    // convert to array notation:
+    parts = parts.map(function (varInfo) {
+      if (varInfo.path.length == 1) varInfo.path = varInfo.path[0];else {
+        var first = varInfo.path[0];
+        var rest = varInfo.path.slice(1);
+        varInfo.path = first + '[' + rest.join('][') + ']';
+      }
+      return varInfo;
+    }); // parts.map
+
+    // join the parts to a query-string url-component
+    var queryString = parts.map(function (varInfo) {
+        return varInfo.path + '=' + varInfo.val;
+    }).join('&');
+    if (urlEncode) return encodeURIComponent(queryString);else return queryString;
+  }
+
+
+  /**
    * Track clicks to share campaigns to social media
    * @name  trackSocialMediaShareClick
    * @param {Object} elem - the clicked html link to share
@@ -866,9 +1087,10 @@ var onHomePageLoad = function(){
   /**
    * Changes notification box's color and text depending on whether campaigns have been added or removed.
    * @name  updateNotificationBox
-   * @param {string} action - 'add' or 'remove'
+   * @param {array}  campaignIDs - ids of the campaigns we just added or removed
+   * @param {string} action      - 'add' or 'remove'
    */
-  function updateNotificationBox(action) {
+  function updateNotificationBox(campaignIDs, action) {
     var $notificationBox  = $(".notification-box");
     var $notificationText = $notificationBox.find('.notification');
 
@@ -888,16 +1110,18 @@ var onHomePageLoad = function(){
 
     // Keep track of how many campaigns have just been clicked to sign
     if (add) {
-      numbersText = ++that.campaignsJustAdded;
+      that.campaignsJustAdded += campaignIDs.length;
+      numbersText   = that.campaignsJustAdded
       campaignsText = (that.campaignsJustAdded == 1) ? 'campaign' : 'campaigns';
       that.campaignsJustRemoved = 0;
     } else {
-      numbersText = ++that.campaignsJustRemoved;
+      that.campaignsJustRemoved += campaignIDs.length;
+      numbersText   = that.campaignsJustRemoved;
       campaignsText = (that.campaignsJustRemoved == 1) ? 'campaign' : 'campaigns';
       that.campaignsJustAdded = 0;
     }
 
-    var actionText = action == 'add' ? 'added!' : 'removed';
+    var actionText    = action == 'add' ? 'added!' : 'removed';
 
     // Support add or remove
     $notificationText.html(
@@ -913,9 +1137,13 @@ var onHomePageLoad = function(){
   /**
    * Updates the footer used to finish selection process and move to signing campaigns
    * @name  updateStickyFooter
-   * @param {string} action - either 'add' or 'remove'; addition or removal of campaign
+   * @param {array}  campaignIDs - ids of the campaigns we just added or removed
+   * @param {string} action      - either 'add' or 'remove'; addition or removal of campaign
    */
-  function updateStickyFooter(action){
+  function updateStickyFooter(campaignIDs, action){
+    // var start = new Date().getTime();
+    // console.log('starting timer: ' + 0)
+
     var $stickyFooter       = $('.sticky-footer');
     // var $footerText         = $stickyFooter.find('.footer-text');
     var $footerNumCampaigns = $stickyFooter.find('.num-campaigns');
@@ -928,6 +1156,9 @@ var onHomePageLoad = function(){
     // for (var i = 0; i < numbersInEnglish.length; i++) {
     //   numbersToWords[i] = numbersInEnglish[i]
     // }
+
+    // var timePoint1 = new Date().getTime();
+    // console.log('calling internal code...: ' + (timePoint1 - start))
 
     if (selectedCampaigns.length) {
       $stickyFooter.removeClass('disabled');
@@ -947,11 +1178,22 @@ var onHomePageLoad = function(){
       $stickyFooter.addClass('disabled');
     }
 
+    // var timePoint2 = new Date().getTime();
+    // console.log('finished calling internal code...: ' + (timePoint2 - timePoint1))
+
     // Update the notification box if need be
-    updateNotificationBox(action);
+    updateNotificationBox(campaignIDs, action);
+
+    // var timePoint3 = new Date().getTime();
+    // console.log('finished calling updateNotificationBox...: ' + (timePoint3 - timePoint2))
 
     // Animate the footer when updates complete
     animateStickyFooter();
+
+    // var timePoint4 = new Date().getTime();
+    // console.log('finished calling animateStickyFooter...: ' + (timePoint4 - timePoint3))
+
+    // console.log('total time: ' + (timePoint4 - start))
   }
 
 

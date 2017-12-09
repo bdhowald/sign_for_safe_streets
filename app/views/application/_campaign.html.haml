@@ -5,7 +5,7 @@
 
 %div.col-sm-6.col-md-4
   %div.card
-    %div.campaign{class: "#{campaigns_already_signed.include?(campaign.id) ? 'already-signed' : ''}", 'data-campaign-id' => campaign.id}
+    %div.campaign{class: "#{campaigns_already_signed.include?(campaign.id) ? 'already-signed' : ''} #{selected_campaigns.include?(campaign.id) ? 'to-be-signed' : ''}", 'data-campaign-id' => campaign.id}
 
       %div.card-body
 
