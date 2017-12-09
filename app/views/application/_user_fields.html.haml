@@ -75,7 +75,7 @@
         %div.form-group
           %label{for: 'user-email', id: 'email-label'}
             Email
-          %input.form-control#user-email{'name' => 'user[email]', 'type' => 'text', 'aria-labeledby' => 'email-label', 'pattern' => '[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$', 'placeholder' => 'Enter email address', 'required' => true, value: @user['email']}
+          %input.form-control#user-email{'name' => 'user[email]', 'type' => 'text', 'aria-labeledby' => 'email-label', 'pattern' => '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$', 'placeholder' => 'Enter email address', 'required' => true, value: @user['email']}
           / %small
 
           %div.invalid-feedback
