@@ -41,8 +41,12 @@ module UserControllerConcern
         return user
       end
 
-    elsif (user = User.find_by(fingerprint_id: JSON.parse(cookies['fingerprint_id'])))
-      return user
+    elsif cookies['fingerprint_id']
+      fingerprint_id  = JSON.parse('fingerprint_id')
+
+      if (user = User.find_by(fingerprint_id: fingerprint_id))
+        return user
+      end
     end
 
     return User.new
