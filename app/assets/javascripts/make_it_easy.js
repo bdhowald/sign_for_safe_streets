@@ -714,69 +714,93 @@ var onHomePageLoad = function(){
    * @param {Object} [suggestion] - search suggestion from typeahead (optional)
    */
   function performSearch(suggestion){
-    // var time = new Date().getTime();
-    // console.log('starting timer...')
+    // var nojQueryStart = new Date().getTime();
+    // var nojQueryEnd;
+
+    // console.log('nojQuery starting timer...')
+
     // console.log('calling performSearch: ' + new Date().getTime())
-    // var url = '../campaigns.html';
-
-    // var searchData = getSearchData(suggestion);
-    // var filterData = getFilterData();
-
-    // var searchDataString = toQueryString(searchData);
-    // var filterDataString = toQueryString(filterData);
-
-    // if (searchDataString.length && filterDataString.length) {
-    //   url = url + '?' + searchDataString + '&' + filterDataString
-    // } else if (searchDataString.length) {
-    //   url = url + '?' + searchDataString
-    // } else if (filterDataString.length) {
-    //   url = url + '?' + filterDataString
-    // }
-
-
-    // var xhr = new XMLHttpRequest();
-    // console.log('calling ajax: ' + new Date().getTime())
-    // xhr.open("GET", url, true);
-    // xhr.send();
-
-    // xhr.onreadystatechange=function(){
-    //   if(xhr.readyState==4 && xhr.status==200){
-
-    //     console.log('ajax finished: ' + new Date().getTime())
-    //     var campaignListContainer = document.getElementsByClassName('campaign-list-container');
-    //     campaignListContainer[0].innerHTML = xhr.responseText
-    //     console.log('called')
-    //     console.log('data loaded: ' + new Date().getTime())
-    //     console.log('timer finished: ' + ((new Date().getTime()) - time));
-    //   }
-
-    // }
+    var url = '../campaigns.html';
 
     var searchData = getSearchData(suggestion);
     var filterData = getFilterData();
 
-    $.ajax({
-      url:         '../campaigns.html',
-      data:        Object.assign(searchData, filterData),
-      type:        'GET',
-      contentType: 'text/html; charset=utf-8'
-    })
-    .done(function(data, status, xhr){
-      // console.log('ajax done: ' + new Date().getTime())
-      if (data === undefined) data = null;
+    var searchDataString = toQueryString(searchData);
+    var filterDataString = toQueryString(filterData);
 
-      var $campaignListContainer = $('.campaign-list-container')
-      $campaignListContainer.html(data);
+    if (searchDataString.length && filterDataString.length) {
+      url = url + '?' + searchDataString + '&' + filterDataString
+    } else if (searchDataString.length) {
+      url = url + '?' + searchDataString
+    } else if (filterDataString.length) {
+      url = url + '?' + filterDataString
+    }
 
-      toggleSignAllButton();
-      // console.log('finished everything: ' + new Date().getTime())
-    })
-    .fail(function(xhr, status, error){
 
-    })
-    .always(function(){
+    var xhr = new XMLHttpRequest();
+    // console.log('nojQuery calling ajax: ' + ( new Date().getTime() - nojQueryStart ) );
+    xhr.open("GET", url, true);
+    xhr.send();
 
-    })
+    xhr.onreadystatechange=function(){
+      if(xhr.readyState==4 && xhr.status==200){
+
+        // var nojQueryAjaxDone = new Date().getTime()
+        // console.log('nojQuery ajax done: ' + ( nojQueryAjaxDone - nojQueryStart ) )
+        var campaignListContainer = document.getElementsByClassName('campaign-list-container');
+        // console.log('nojQuery grabbed container: ' + ( new Date().getTime() - nojQueryStart ) )
+        campaignListContainer[0].innerHTML = xhr.responseText
+        // console.log('nojQuery data replaced: ' + ( new Date().getTime() - nojQueryStart ) )
+
+        toggleSignAllButton();
+        // nojQueryEnd = new Date().getTime();
+        // console.log('nojQuery finished everything: ' + (nojQueryEnd - nojQueryStart) + '\n' );
+
+        // console.log('nojQuery: ' + (nojQueryEnd - nojQueryStart))
+        // console.log('nojQuery after ajax: ' + (nojQueryEnd - nojQueryAjaxDone));
+      }
+
+    }
+
+    // // var jQueryStart = new Date().getTime();
+    // // var jQueryEnd;
+    // // console.log('jQuery starting timer...')
+
+    // var searchData = getSearchData(suggestion);
+    // var filterData = getFilterData();
+
+    // // console.log('jQuery calling ajax: ' + ( new Date().getTime() - jQueryStart ) );
+    // $.ajax({
+    //   url:         '../campaigns.html',
+    //   data:        Object.assign(searchData, filterData),
+    //   type:        'GET',
+    //   contentType: 'text/html; charset=utf-8'
+    // })
+    // .done(function(data, status, xhr){
+    //   // var jQueryAjaxDone = new Date().getTime();
+    //   // console.log('jQuery ajax done: ' + ( jQueryAjaxDone - jQueryStart ) )
+    //   if (data === undefined) data = null;
+
+    //   var $campaignListContainer = $('.campaign-list-container')
+    //   // console.log('jQuery grabbed container: ' + ( new Date().getTime() - jQueryStart ) )
+    //   $campaignListContainer.html(data);
+    //   // console.log('jQuery data replaced: ' + ( new Date().getTime() - jQueryStart ) )
+
+    //   toggleSignAllButton();
+    //   // jQueryEnd = new Date().getTime()
+    //   // console.log('jQuery finished everything: ' + ( jQueryEnd - jQueryStart ) + '\n' )
+
+    //   // console.log('jQuery: ' + (jQueryEnd - jQueryStart))
+    //   // console.log('jQuery after ajax: ' + (jQueryEnd - jQueryAjaxDone));
+    // })
+    // .fail(function(xhr, status, error){
+
+    // })
+    // .always(function(){
+
+    // })
+
+    // // console.log( '\n\n\n' )
   }
 
 
