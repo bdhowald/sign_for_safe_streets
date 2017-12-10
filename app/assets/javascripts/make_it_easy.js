@@ -955,7 +955,13 @@ var onHomePageLoad = function(){
     var $clearSearchButton = $('#filters').find('button.btn-secondary');
     var curVal             = $('.form-control.typeahead.tt-input').typeahead('val')
 
-    curVal == '' ? $clearSearchButton.hide() : $clearSearchButton.show()
+    if (curVal == '') {
+      $clearSearchButton.show();
+      $clearSearchButton.attr('aria-hidden', false);
+    } else {
+      $clearSearchButton.hide();
+      $clearSearchButton.attr('aria-hidden', true);
+    }
   }
 
 
@@ -1055,27 +1061,33 @@ var onHomePageLoad = function(){
     // ]
     //
     function flattenObj(x, path) {
-    var result = [];
+      var result = [];
+      var isArray = Array.isArray(x);
 
-    path = path || [];
-    Object.keys(x).forEach(function (key) {
-      if (!x.hasOwnProperty(key)) return;
+      path = path || [];
 
-      var newPath = path.slice();
-      newPath.push(key);
+      Object.keys(x).forEach(function (key) {
+        if (!x.hasOwnProperty(key)) return;
 
-      var vals = [];
-      if (typeof x[key] == 'object') {
+        var newPath = path.slice();
+        if (isArray) {
+          newPath.push('');
+        } else {
+          newPath.push(key);
+        }
+
+        var vals = [];
+        if (typeof x[key] == 'object') {
           vals = flattenObj(x[key], newPath);
-      } else {
+        } else {
           vals.push({ path: newPath, val: x[key] });
-      }
-      vals.forEach(function (obj) {
+        }
+        vals.forEach(function (obj) {
           return result.push(obj);
+        });
       });
-    });
 
-    return result;
+      return result;
     } // flattenObj
 
     // start with  flattening `obj`
