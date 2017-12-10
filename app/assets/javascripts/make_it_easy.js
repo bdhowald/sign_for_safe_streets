@@ -733,10 +733,17 @@ var onHomePageLoad = function(){
     }
 
 
+    // Change colors to grey to let user know site is loading.
     var campaigns = document.getElementsByClassName('campaign');
 
     Array.prototype.forEach.call(campaigns, function(campaign){
       campaign.setAttribute("style","color: #999");
+    });
+
+    var headers = document.getElementsByClassName('results-header');
+
+    Array.prototype.forEach.call(headers, function(header){
+      header.setAttribute("style","color: #999");
     });
 
 
@@ -763,9 +770,9 @@ var onHomePageLoad = function(){
         // console.log('nojQuery after ajax: ' + (nojQueryEnd - nojQueryAjaxDone));
       }
 
-      Array.prototype.forEach.call(campaigns, function(campaign){
-        campaign.setAttribute("style","color: #000");
-      });
+      // Array.prototype.forEach.call(campaigns, function(campaign){
+      //   campaign.setAttribute("style","color: #000");
+      // });
 
     }
 
