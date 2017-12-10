@@ -737,12 +737,19 @@ var onHomePageLoad = function(){
     }
 
 
+    var campaigns = document.getElementsByClassName('campaign');
+
+    Array.prototype.forEach.call(campaigns, function(campaign){
+      campaign.setAttribute("style","color: #999");
+    });
+
+
     var xhr = new XMLHttpRequest();
     // console.log('nojQuery calling ajax: ' + ( new Date().getTime() - nojQueryStart ) );
     xhr.open("GET", url, true);
     xhr.send();
 
-    xhr.onreadystatechange=function(){
+    xhr.onload=function(){
       if(xhr.readyState==4 && xhr.status==200){
 
         // var nojQueryAjaxDone = new Date().getTime()
@@ -759,6 +766,10 @@ var onHomePageLoad = function(){
         // console.log('nojQuery: ' + (nojQueryEnd - nojQueryStart))
         // console.log('nojQuery after ajax: ' + (nojQueryEnd - nojQueryAjaxDone));
       }
+
+      Array.prototype.forEach.call(campaigns, function(campaign){
+        campaign.setAttribute("style","color: #000");
+      });
 
     }
 
