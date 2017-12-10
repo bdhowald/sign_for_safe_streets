@@ -42,27 +42,18 @@ li:hover{
   text-decoration: none;
 }
 
-html {
-  // height: 100%;
-  // overflow: hidden;
-}
-
 body {
-  font-family: 'Montserrat', sans-serif;
-  // height: 100%;
-  // overflow: auto;
+  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"
 }
 
 $transalt-orange: #ff4500;
 
 
 main {
-  margin: 30px 0 0;
+  margin: 2rem 0 0;
 }
 
-/*#main_container {
-  width: 768px;
-}*/
+
 
 #home-page-header {
   text-align: center;
@@ -70,11 +61,11 @@ main {
 
 .sticky-footer {
   position: fixed;
-  bottom: 0px;
+  bottom: 0rem;
   left: 0;
   right: 0;
   background-color: #0dc50d;
-  height: 75px;
+  height: 5rem;
   z-index: 1;
 
   cursor: pointer;
@@ -91,22 +82,22 @@ main {
 // }
 
 .sticky-footer.extended {
-  transform: translate(0px, -75px);
+  transform: translate(0rem, -5rem);
 }
 
 .sticky-footer.retracted {
   background-color: #fff;
   cursor: default;
-  transform: translate(0px, 75px);
+  transform: translate(0rem, 5rem);
 }
 
 .sticky-footer .footer-text {
   color: #fff;
-  font-size: 18pt;
+  font-size: 1.5rem;
   font-weight: 600;
   text-align: center;
   vertical-align: middle;
-  line-height: 75px;
+  line-height: 5rem;
 }
 
 .sticky-footer .footer-text a {
@@ -116,32 +107,32 @@ main {
 
 .sticky-footer .notification-box {
   background-color: #29b9e7;
-  height: 75px;
+  height: 5rem;
 }
 
 .sticky-footer .notification-box .notification {
   color: #fff;
-  font-size: 18pt;
+  font-size: 1.5rem;
   font-weight: 400;
   text-align: center;
   vertical-align: middle;
-  line-height: 75px;
+  line-height: 5rem;
 }
 
 
 #home-page-header .container {
-  margin-top: 30px;
-  margin-bottom: 30px;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
 #home-page-header .container .row {
-  margin-top: 15px;
-  margin-bottom: 15px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 
 #filters .input-group {
-  margin: 0 0 30px;
+  margin: 0 0 2rem;
 }
 
 #filters .twitter-typeahead, #filters .tt-input {
@@ -149,20 +140,20 @@ main {
 }
 
 #filters .filter-buttons {
-  margin: 15px 0;
+  margin: 1rem 0;
 }
 
 
 
 
 #filters .filter-buttons {
-  margin: 15px 0;
+  margin: 1rem 0;
 }
 
 #filters .filter-buttons .col {
   cursor: pointer;
   font-weight: 600;
-  padding: 10px 0 5px;
+  padding: 0.75rem 0 0.375rem;
 
   // text-align: center;
   // white-space: nowrap;
@@ -203,7 +194,7 @@ body.hasHover #filters .filter-buttons.categories .col:hover {
 
 @media (max-width: 575px) {
   #filters .filter-buttons.categories .col.filter-button {
-    padding: 5px 0;
+    padding: 0.375rem 0;
   }
 
   #filters .filter-buttons.categories span.sans {
@@ -215,7 +206,7 @@ body.hasHover #filters .filter-buttons.categories .col:hover {
 #filters .filter-buttons.locations .col.borough {
   border-top: 1px solid #999;
   border-bottom: 1px solid #999;
-  padding: 10px;
+  padding: .75rem;
 }
 
 #filters .filter-buttons.locations .col.borough:first-child {
@@ -341,7 +332,7 @@ body.hasHover #filters .filter-buttons.locations .col.staten-island:hover {
 
 @media (max-width: 575px) {
   #filters .filter-buttons.locations .col.borough {
-    padding: 5px 0;
+    padding: 0.375rem 0;
   }
 }
 
@@ -355,31 +346,20 @@ body.hasHover #filters .filter-buttons.locations .col.staten-island:hover {
 }
 
 .results-header p {
-  padding: 0 15px;
+  padding: 0 1rem;
   margin: 1rem 0;
   text-align: center;
-  font-size: 16pt;
+  font-size: 1.5rem;
 }
 
 .results-header p span.search-term {
   font-weight: bold;
 }
 
-/*.card {
-  border: 2px solid $transalt-orange;
-  border-radius: 10px;
-  margin: 10px;
-}*/
 
-/*.card {
-  border: none;
-  margin-bottom: 15px;
-}
-*/
 .card {
   margin: 0 0 1rem;
 }
-
 
 .card .campaign.already-signed {
   color: #999;
@@ -389,6 +369,9 @@ body.hasHover #filters .filter-buttons.locations .col.staten-island:hover {
   color: rgba(0, 123, 255, 0.5);
 }
 
+.card .campaign .campaign-details div.col {
+  font-size: 1.125rem;
+}
 
 .card .campaign .campaign-details div.col.sign {
   cursor: pointer;
@@ -500,7 +483,6 @@ body.hasHover #filters .filter-buttons.locations .col.staten-island:hover {
 .card .campaign .campaign-details span.borough {
   color: #212529;
   font-weight: 300;
-  font-size: 14pt;
 }
 
 
@@ -527,13 +509,6 @@ body.hasHover #filters .filter-buttons.locations .col.staten-island:hover {
 .card .campaign li.campaign-starter-list-item span.starter {
   font-weight: bold;
 }
-
-// .card .campaign li.social-media-list-item i {
-//   position: relative;
-//   /* Adjust these values accordingly */
-//   top: 5px;
-//   left: 5px;
-// }
 
 .card .campaign li.social-media-list-item i.fa.fa-facebook-square {
   color: #29487d;
@@ -565,7 +540,7 @@ body.hasHover #filters .filter-buttons.locations .col.staten-island:hover {
 }
 
 .card .campaign .card-text:last-child {
-  margin: 0 0 5px;
+  margin: 0 0 0.375rem;
 }
 
 @media (min-width: 576px) {
@@ -580,7 +555,7 @@ body.hasHover #filters .filter-buttons.locations .col.staten-island:hover {
 }
 
 .campaign-list {
-  margin: 20px 0 35px;
+  margin: 2rem 0 2rem;
   padding: 0;
 }
 
@@ -638,9 +613,9 @@ span.twitter-typeahead .tt-menu {
   z-index: 1000;
   display: none;
   float: left;
-  min-width: 160px;
-  padding: 5px 0;
-  margin: 2px 0 0;
+  min-width: 10rem;
+  padding: 0.25rem 0;
+  margin: .125rem 0 0;
   font-size: 1rem;
   color: #373a3c;
   text-align: left;
@@ -654,7 +629,7 @@ span.twitter-typeahead .tt-menu {
 span.twitter-typeahead .tt-suggestion {
   display: block;
   width: 100%;
-  padding: 3px 20px;
+  padding: .125rem 1.25rem;
   clear: both;
   font-weight: normal;
   line-height: 1.5;
@@ -693,10 +668,10 @@ span.twitter-typeahead {
     .input-group span.twitter-typeahead .tt-menu {
       top: 2.375rem !important; }
 span.twitter-typeahead .tt-header {
-  /*padding: 3px 20px;*/
+  /*padding: .125rem 1.25rem;*/
   font-weight: 600;
-  margin: 0 20px 5px 20px;
-  padding: 3px 0;
+  margin: 0 1.25rem .25rem 1.25rem;
+  padding: .25rem 0;
   border-bottom: 1px solid #ccc;
 }
 

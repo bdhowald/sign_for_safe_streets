@@ -1,6 +1,6 @@
 .static-footer {
   background-color: #f9f9f9;
-  padding: 30px 30px 30px;
+  padding: 2rem;
   text-align: center;
 
   -webkit-transition: padding 0.8s ease-out;
@@ -10,7 +10,7 @@
 }
 
 .static-footer.with-padding {
-  padding-bottom: 105px;
+  padding-bottom: 7rem;
 }
 
 
@@ -25,19 +25,18 @@
 
 .static-footer .container .row .col-lg-12 .footer-row > * {
   display: inline-block;
-  line-height: 42px;
+  line-height: 2.67rem;
   margin-bottom: 0;
 }
 
 .static-footer .social-media-links {
-  // left: 10px;
-  top: 5px;
-  padding: 0 10px;
+  top: .375rem;
+  padding: 0 .75rem;
   position: relative;
 }
 
 .static-footer .social-media-links i {
-  padding: 0px 3px;
+  padding: 0 .25rem;
 }
 
 .static-footer .social-media-links i.fa-twitter {

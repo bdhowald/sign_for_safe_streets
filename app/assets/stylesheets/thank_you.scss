@@ -4,7 +4,7 @@
 }
 
 #thank-you-page-header #directions {
-  margin: 30px 0;
+  margin: 2rem 0;
 }
 
 #thank-you-page-header #sign-more {
@@ -17,34 +17,19 @@
   background-color: #f3f2f1;
 }
 
-.thank-you-page-body .container .row .all-campaigns {
-  // width: 100%
-}
-
-.thank-you-page-footer {
-  background-color: #fff;
-  padding: 30px 30px;
-}
-
-.thank-you-page-footer a {
-  color: #000;
-}
-
-// body{ margin:20px; background:hsl(70, 31%, 85%); text-align:center; }
-
 .balloon {
   display:inline-block;
-  width:120px;
-  height:145px;
-  background:hsl(215,50%,65%);
-  border-radius:80%;
-  position:relative;
-  box-shadow:inset -10px -10px 0 rgba(0,0,0,0.07);
-  margin:20px 30px;
-  transition:transform 0.5s ease;
-  z-index:10;
-  animation:balloons 4s ease-in-out infinite;
-  transform-origin:bottom center;
+  width: 7.5rem;
+  height: 9rem;
+  background: hsl(215, 50%, 65%);
+  border-radius: 80%;
+  position: relative;
+  box-shadow:inset -.75rem -.75rem 0 rgba(0,0,0,0.07);
+  margin: 1.25rem 2rem;
+  transition: transform 0.5s ease;
+  z-index: 10;
+  animation: balloons 4s ease-in-out infinite;
+  transform-origin: bottom center;
 }
 
 .balloon p {
@@ -55,30 +40,30 @@
 
 @keyframes balloons {
   0%,100%{ transform:translateY(0) rotate(-4deg); }
-  50%{ transform:translateY(-25px) rotate(4deg); }
+  50%{ transform:translateY(-1.5rem) rotate(4deg); }
 }
 
 
 .balloon:before {
   content:"▲";
-  font-size:20px;
-  color:hsl(215,30%,50%);
-  display:block;
-  text-align:center;
-  width:100%;
-  position:absolute;
-  bottom:-12px;
-  z-index:-100;
+  font-size: 1.25rem;
+  color: hsl(215,30%,50%);
+  display: block;
+  text-align: center;
+  width: 100%;
+  position: absolute;
+  bottom: -.75rem;
+  z-index: -100;
 }
 
 .balloon:after {
-  display:inline-block; top:153px;
-  position:absolute;
-  height:50px;
-  width:1px;
-  margin:0 auto;
-  content:"";
-  background:rgba(0,0,0,0.2);
+  display:inline-block; top: 9.5rem;
+  position: absolute;
+  height: 3rem;
+  width: 1px;
+  margin: 0 auto;
+  content: "";
+  background: rgba(0,0,0,0.2);
 }
 
 .balloon:nth-child(2){ background:hsl(245,40%,65%); animation-duration:3.5s; }

@@ -1,6 +1,6 @@
 .campaigns-chunk .explanation {
   // background-color: #65dda1;
-  margin: 30px 15px;
+  margin: 2rem 1rem;
 }
 
 .campaigns-chunk .explanation h3.petitions-title {
@@ -19,6 +19,9 @@
 
 .campaigns-chunk .explanation .campaigns .campaign {
   padding: 0;
+}
+
+.campaigns-chunk .explanation .campaigns .campaign:not(:first-child) {
   border-top: 1px solid rgba(0,0,0,0.25);
   border-bottom: 1px solid rgba(0,0,0,0.25);
 }
@@ -59,15 +62,15 @@
 .campaigns-chunk .explanation .campaigns .campaign .card-body {
   cursor: default;
   font-size: 0;
-  margin: 10px 0;
-  padding: 0 10px;
+  margin: .75rem 0;
+  padding: 0 .75rem;
 }
 
 .campaigns-chunk .explanation .campaigns .campaign .campaign-name {
   border-bottom: 1px solid #666;
   display: inline-block;
   font-size: medium;
-  line-height: 26px;
+  line-height: 1.6rem;
   max-width: 75%;
   overflow: hidden;
   // text-decoration: underline;
@@ -98,9 +101,9 @@
   border: 1px solid #000;
   float: right;
   font-size: medium;
-  padding: 0px 5px;
+  padding: 0px 0.25rem;
   text-align: center;
-  width: 60px;
+  width: 3.75rem;
 }
 
 @media (max-width: 767px) and (min-width: 576px) {
@@ -118,7 +121,7 @@
 
 .campaigns-chunk .explanation .campaigns .campaign .petition-text {
   border-top: 1px solid #ccc;
-  padding: 12px 20px;
+  padding: 0.75rem 1.25rem;
 
   -webkit-animation: fadeIn 1s;
   animation: fadeIn 1s;
@@ -126,13 +129,9 @@
 
 .campaigns-chunk .explanation .campaigns .campaign .petition-text .blockquote {
   display: inline;
-  font-size: 16px;
+  font-size: 1rem;
   font-style: italic;
   margin-bottom: 0;
-
-  // max-height: 120px;
-  // overflow: hidden;
-  // position: relative;
 }
 
 .campaigns-chunk .explanation .campaigns .campaign .petition-text div.read-more {
@@ -140,12 +139,12 @@
   display: inline;
   font-style: normal;
   font-weight: 600;
-  margin-left: 5px;
+  margin-left: 0.25rem;
 }
 
 .campaigns-chunk .explanation .campaigns .campaign .target-details {
   border-top: 1px solid #ccc;
-  padding: 12px 20px;
+  padding: 0.75rem 1.25rem;
 
   -webkit-animation: fadeIn 1s;
   animation: fadeIn 1s;
@@ -206,7 +205,6 @@
 }
 
 .campaigns-chunk .explanation .campaigns .campaign .social-media-share-links {
-  // padding: 0 10px;
   border-top: 1px solid #ccc;
-  padding: 12px 20px;
+  padding: 0.75rem 1.25rem;
 }
