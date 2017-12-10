@@ -312,8 +312,8 @@ var onHomePageLoad = function(){
       if (stickyFooter.classList.value.indexOf('extended') == -1) {
         stickyFooter.className += ' extended';
       }
-      if (stickyFooter.classList.value.indexOf('with-padding') == -1) {
-        stickyFooter.className += ' with-padding';
+      if (staticFooter.classList.value.indexOf('with-padding') == -1) {
+        staticFooter.className += ' with-padding';
       }
 
 
@@ -345,8 +345,8 @@ var onHomePageLoad = function(){
 
         // If we have selected campaigns, retract footer to hide notification box only if need be
         if (selectedCampaigns.length == 0){
-          if (stickyFooter.classList.value.indexOf('with-padding') != -1) {
-            stickyFooter.classList.remove('with-padding');
+          if (staticFooter.classList.value.indexOf('with-padding') != -1) {
+            staticFooter.classList.remove('with-padding');
           }
 
           if (stickyFooter.classList.value.indexOf('retracted') == -1) {
@@ -407,10 +407,6 @@ var onHomePageLoad = function(){
           return ids.indexOf(i) < 0;
         });
 
-        // const index = selectedCampaigns.indexOf(id);
-        // if (index !== -1) {
-        //   selectedCampaigns.splice(index, 1)
-        // }
         setSelectedCampaigns(selectedCampaigns);
         break;
     }
@@ -532,7 +528,7 @@ var onHomePageLoad = function(){
 
     var $clickedLink = $(elem);
 
-    const mq = window.matchMedia( "(max-width: 767px)" );
+    var mq = window.matchMedia( "(max-width: 767px)" );
 
     if (mq.matches) {
 
@@ -955,12 +951,13 @@ var onHomePageLoad = function(){
     var $clearSearchButton = $('#filters').find('button.btn-secondary');
     var curVal             = $('.form-control.typeahead.tt-input').typeahead('val')
 
+
     if (curVal == '') {
-      $clearSearchButton.show();
-      $clearSearchButton.attr('aria-hidden', false);
-    } else {
       $clearSearchButton.hide();
       $clearSearchButton.attr('aria-hidden', true);
+    } else {
+      $clearSearchButton.show();
+      $clearSearchButton.attr('aria-hidden', false);
     }
   }
 
