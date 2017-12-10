@@ -190,8 +190,8 @@ var onHomePageLoad = function(){
    * @param {string} action     - add or remove
    */
   function addOrRemoveCampaigns($campaigns, action) {
-    var start = new Date().getTime();
-    console.log('starting timer: ' + 0)
+    // var start = new Date().getTime();
+    // console.log('starting timer: ' + 0)
     var campaignIDs = $.map($campaigns, function(elem){
       return parseInt(elem.dataset.campaignId);
     });
