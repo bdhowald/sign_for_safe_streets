@@ -31,25 +31,32 @@ module UserControllerConcern
 
   def current_user
 
-    mixpanel_token = "mp_#{Rails.application.secrets.mixpanel[:token]}_mixpanel"
+    @cached_user ||= User.new
 
-    if cookies[mixpanel_token]
-      mixpanel_cookie = JSON.parse(cookies[mixpanel_token])
-      mixpanel_id     = mixpanel_cookie['distinct_id']
+    if @cached_user.new_record?
 
-      if (user = User.find_by(mixpanel_id: mixpanel_id))
-        return user
+      mixpanel_token = "mp_#{Rails.application.secrets.mixpanel[:token]}_mixpanel"
+
+      if cookies[mixpanel_token]
+        mixpanel_cookie = JSON.parse(cookies[mixpanel_token])
+        mixpanel_id     = mixpanel_cookie['distinct_id']
+
+        if (user = User.find_by(mixpanel_id: mixpanel_id))
+          return (@cached_user = user)
+        end
       end
 
-    elsif cookies['fingerprint_id']
-      fingerprint_id  = JSON.parse('fingerprint_id')
+      if cookies['fingerprint_id']
+        fingerprint_id  = JSON.parse(cookies['fingerprint_id'])
 
-      if (user = User.find_by(fingerprint_id: fingerprint_id))
-        return user
+        if (user = User.find_by(fingerprint_id: fingerprint_id))
+          return (@cached_user = user)
+        end
       end
+
     end
 
-    return User.new
+    return @cached_user
 
   end
 
