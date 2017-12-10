@@ -44,7 +44,7 @@
               - else "bg-success"
 
 
-            %div{'class' => "#{progress_class} progress-bar", 'role' => "progressbar", 'style' => "width: #{(percentage_complete)}%", 'aria-valuenow' => "#{percentage_complete}", 'aria-valuemin' => '0', 'aria-valuemax' => '100'}
+            %div{'class' => "#{progress_class} progress-bar", 'role' => "progressbar", 'style' => "width: #{(percentage_complete < 15 ? 15 : percentage_complete)}%", 'aria-valuenow' => "#{percentage_complete}", 'aria-valuemin' => '0', 'aria-valuemax' => '100'}
               = "#{percentage_complete.to_i}%"
 
         %li.list-group-item.d-none.d-md-block.campaign-starter-list-item
