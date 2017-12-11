@@ -24,7 +24,7 @@
         - if campaign.is_success
           %li.list-group-item.d-none.d-md-block.success-list-item
             %div.success-banner
-              %i.fa.fa-star
+              %i.fa.fa-star{'aria-hidden' => 'true'}
               Campaign Won!
 
         %li.list-group-item.d-none.d-md-block.description-list-item
@@ -39,10 +39,10 @@
             - percentage_complete = (campaign.num_signatures.to_f / campaign.signatures_needed) * 100
 
             - progress_class = case percentage_complete
-              - when percentage_complete..25 then "bg-danger"
-              - when percentage_complete..75 then "bg-warning"
-              - when percentage_complete..100 then "bg-success"
-              - else "bg-success"
+              - when percentage_complete..25 then 'bg-danger'
+              - when percentage_complete..75 then 'bg-warning'
+              - when percentage_complete..100 then 'bg-success'
+              - else 'bg-success'
 
 
             %div{'class' => "#{progress_class} progress-bar", 'role' => "progressbar", 'style' => "width: #{(percentage_complete < 15 ? 15 : percentage_complete)}%", 'aria-valuenow' => "#{percentage_complete}", 'aria-valuemin' => '0', 'aria-valuemax' => '100'}
@@ -71,18 +71,18 @@
           %div.details.row
             - if selected_campaigns.include?(campaign.id)
 
-              %div.col.to-be-signed{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'true', 'role' => 'button', 'aria-pressed' => 'true'}
+              %div.col.to-be-signed{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'true', 'aria-label' => 'Add campaign', 'role' => 'button', 'aria-pressed' => 'true'}
                 %span
-                %i.fa.fa-check
+                %i.fa.fa-check{'aria-hidden' => 'true'}
             - elsif campaigns_already_signed.include?(campaign.id)
-              %div.col.already-signed{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'false'}
+              %div.col.already-signed{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", 'aria-label' => 'Campaign already signed', "data-sign" => 'false'}
                 %span
-                %i.fa.fa-check
+                %i.fa.fa-check{'aria-hidden' => 'true'}
             - else
-              %div.col.sign{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'false', 'role' => 'button', 'aria-pressed' => 'false'}
+              %div.col.sign{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", 'aria-label' => 'Remove campaign', "data-sign" => 'false', 'role' => 'button', 'aria-pressed' => 'false'}
                 %span
                   Add
-                %i.fa.fa-plus
+                %i.fa.fa-plus{'aria-hidden' => 'true'}
 
 
             %div.col{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}"}
