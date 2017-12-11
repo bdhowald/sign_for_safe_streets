@@ -441,7 +441,10 @@ var onHomePageLoad = function(){
           $plusSign.replaceWith("<i class='fa fa-check'></i>");
 
           $signCol.data('sign', true);
+          $signCol.attr('data-sign', true);
+
           $signCol.removeClass('sign').addClass('to-be-signed');
+          $signCol.attr('aria-pressed', true);
 
           $campaign.addClass('to-be-signed')
         }
@@ -451,7 +454,10 @@ var onHomePageLoad = function(){
           $plusSign.replaceWith("<i class='fa fa-plus'></i>");
 
           $signCol.data('sign', false);
+          $signCol.attr('data-sign', false);
+
           $signCol.removeClass('to-be-signed').addClass('sign');
+          $signCol.attr('aria-pressed', false);
 
           $campaign.removeClass('to-be-signed')
         }

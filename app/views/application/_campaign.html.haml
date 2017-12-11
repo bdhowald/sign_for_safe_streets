@@ -66,7 +66,7 @@
           %div.details.row
             - if selected_campaigns.include?(campaign.id)
 
-              %div.col.to-be-signed{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'true'}
+              %div.col.to-be-signed{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'true', 'role' => 'button', 'aria-pressed' => 'true'}
                 %span
                 %i.fa.fa-check
             - elsif campaigns_already_signed.include?(campaign.id)
@@ -74,7 +74,7 @@
                 %span
                 %i.fa.fa-check
             - else
-              %div.col.sign{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'false'}
+              %div.col.sign{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'false', 'role' => 'button', 'aria-pressed' => 'false'}
                 %span
                   Add
                 %i.fa.fa-plus
