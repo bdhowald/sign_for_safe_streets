@@ -13,26 +13,24 @@
             %div.input-group
               %span.input-group-addon
                 %i.fa.fa-search
-              %input.form-control.typeahead{'aria-label' => 'Clear search', placeholder: 'ex: bike lanes, cameras, Queens', type: 'text'}
+              %input.form-control.typeahead{'aria-label' => 'Search bar', placeholder: 'ex: bike lanes, cameras, Queens', type: 'text'}
               %span.input-group-btn
                 %button.btn.btn-secondary.clear-search{type: 'button', style: 'display:none', 'aria-label' => 'Clear search', 'aria-hidden' => 'true'}
                   %i.fa.fa-times
 
             %div.row.filter-buttons.categories
               - [['Cycling', 'bike'], ['Walking', 'walk'], ['Transit', 'directions-bus'], ['Schools', 'graduation-cap']].each do |button_text|
-                %div.col.filter-button
-                  %div.search-button{'data-search-text' => button_text[0]}
-                    %i{class: "zmdi zmdi-#{button_text[1]} zmdi-hc-lg"}
-                    %span.sans
-                      = button_text[0]
+                %div.col.filter-button{'data-search-text' => button_text[0], 'role' => 'button', 'aria-pressed' => 'false'}
+                  %i{class: "zmdi zmdi-#{button_text[1]} zmdi-hc-lg"}
+                  %span.sans
+                    = button_text[0]
 
 
             %div.row.filter-buttons.locations
               - ['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island', 'Citywide', 'Statewide'].each do |button_text|
-                %div{class: "col filter-button borough #{button_text.downcase.strip.gsub(' ', '-')}"}
-                  %div.search-button{class: "search-button", 'data-search-text' => button_text}
-                    %span.sans
-                      = borough_abbreviation(button_text)
+                %div{class: "col filter-button borough #{button_text.downcase.strip.gsub(' ', '-')}", 'data-search-text' => button_text, 'role' => 'button', 'aria-pressed' => 'false'}
+                  %span.sans
+                    = borough_abbreviation(button_text)
 
 
 

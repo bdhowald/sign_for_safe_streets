@@ -248,7 +248,7 @@ var onHomePageLoad = function(){
     var filterType          = $filterButton.parents('.filter-buttons').hasClass('categories') ? 'categories' : 'locations'
 
     var $filterTerms        = $('#' + filterType + '-filter');
-    var searchText          = $filterButton.find('.search-button').data('search-text').trim().toLowerCase();
+    var searchText          = $filterButton.data('search-text').trim().toLowerCase();
 
     var currentFilterTerms  = Boolean($filterTerms.val().trim()) ? JSON.parse($filterTerms.val().trim()) : []
 
@@ -262,6 +262,10 @@ var onHomePageLoad = function(){
         currentFilterTerms.push(searchText.toLowerCase());
       }
 
+      // Show users using screen readers that button has been pressed
+      $filterButton.attr('aria-pressed', true);
+
+
       // Trackasaurus
       that.tracker.track('Filter added');
 
@@ -273,6 +277,9 @@ var onHomePageLoad = function(){
       currentFilterTerms = currentFilterTerms.filter(function(elem){
         return elem !== searchText;
       })
+
+      // Show users using screen readers that button has been pressed
+      $filterButton.attr('aria-pressed', false);
 
       // Trackasaurus
       that.tracker.track('Filter removed');
@@ -650,7 +657,6 @@ var onHomePageLoad = function(){
     if(enterEvent.which == 13) {
       var $typeahead     = $('.form-control.typeahead.tt-input');
       var searchText     = $typeahead.typeahead('val').trim().toLowerCase();
-      var $searchButtons = $('.search-button');
       var $searchTerms   = $('input#search-terms');
 
       var newSearchTerms = [searchText];
