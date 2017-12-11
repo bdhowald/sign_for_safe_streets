@@ -9,7 +9,8 @@
 
       %div.card-body
 
-        %h3.card-title.campaign-name{'data-full-name' => campaign.name, 'data-shortened-name' => string_with_ellipses(campaign.name, 50)}
+        // Use styles of h3, but use h1 for accessibility.
+        %h1.h3.card-title.campaign-name{'data-full-name' => campaign.name, 'data-shortened-name' => string_with_ellipses(campaign.name, 50)}
           / = link_to(campaign.name, campaign.full_url)
           = string_with_ellipses(campaign.name, 50)
 
