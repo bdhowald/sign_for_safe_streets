@@ -11,9 +11,9 @@
         %div.col-lg-12
           %div#filters
             %div.input-group
-              %span#search-exp.input-group-addon
+              %span.input-group-addon
                 %i.fa.fa-search
-              %input.form-control.typeahead{"aria-describedby" => "search-exp", placeholder: "ex: bike lanes, cameras, Queens", type: "text"}
+              %input.form-control.typeahead{'aria-label' => 'Clear search', placeholder: 'ex: bike lanes, cameras, Queens', type: 'text'}
               %span.input-group-btn
                 %button.btn.btn-secondary.clear-search{type: 'button', style: 'display:none', 'aria-label' => 'Clear search', 'aria-hidden' => 'true'}
                   %i.fa.fa-times
