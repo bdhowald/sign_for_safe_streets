@@ -22,14 +22,14 @@
               - [['Cycling', 'bike'], ['Walking', 'walk'], ['Transit', 'directions-bus'], ['Schools', 'graduation-cap']].each do |button_text|
                 %div.col.filter-button{'data-search-text' => button_text[0], 'role' => 'button', 'aria-pressed' => 'false'}
                   %i{class: "zmdi zmdi-#{button_text[1]} zmdi-hc-lg"}
-                  %span.sans
+                  %span.sans{'aria-label' => button_text[0]}
                     = button_text[0]
 
 
             %div.row.filter-buttons.locations
               - ['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island', 'Citywide', 'Statewide'].each do |button_text|
                 %div{class: "col filter-button borough #{button_text.downcase.strip.gsub(' ', '-')}", 'data-search-text' => button_text, 'role' => 'button', 'aria-pressed' => 'false'}
-                  %span.sans
+                  %span.sans{'aria-label' => button_text}
                     = borough_abbreviation(button_text)
 
 
