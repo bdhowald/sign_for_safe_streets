@@ -56,7 +56,7 @@
 
 
 
-  %div.sticky-footer.sign-petitions{class: "#{'retracted' if !have_selected_campaigns}"}
+  %div.sticky-footer.sign-petitions{class: "#{'retracted' if !have_selected_campaigns}", 'role' => 'button', 'aria-pressed' => 'false'}
     = form_tag('/review', method: 'POST') do
 
       %input#petition-data{type: 'hidden', name:'campaigns[selected]'}

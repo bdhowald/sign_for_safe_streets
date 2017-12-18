@@ -452,6 +452,7 @@ var onHomePageLoad = function(){
 
           $signCol.removeClass('sign').addClass('to-be-signed');
           $signCol.attr('aria-pressed', true);
+          $signCol.attr('aria-label', 'Remove campaign');
 
           $campaign.addClass('to-be-signed')
         }
@@ -465,6 +466,7 @@ var onHomePageLoad = function(){
 
           $signCol.removeClass('to-be-signed').addClass('sign');
           $signCol.attr('aria-pressed', false);
+          $signCol.attr('aria-label', 'Add campaign');
 
           $campaign.removeClass('to-be-signed')
         }

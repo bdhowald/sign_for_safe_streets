@@ -48,30 +48,28 @@
             %div{'class' => "#{progress_class} progress-bar", 'role' => "progressbar", 'style' => "width: #{(percentage_complete < 15 ? 15 : percentage_complete)}%", 'aria-valuenow' => "#{percentage_complete}", 'aria-valuemin' => '0', 'aria-valuemax' => '100'}
               = "#{percentage_complete.to_i}%"
 
-        %li.list-group-item.d-none.d-md-block.campaign-starter-list-item
-          Started by:
-          %span.starter
-            = campaign.starter
+        %li.list-group-item.d-none.d-md-block.campaign-starter-list-item{'aria-labeledby' => "started-by-text-#{campaign.id} starter-#{campaign.id}"}
+          %p
+            %span.started-by-text{id: "started-by-text-#{campaign.id}", tabindex: '-1'}
+              Started by:
+            %span.starter{id: "starter-#{campaign.id}", tabindex: '-1'}
+              = campaign.starter
 
         %li.list-group-item.d-none.d-md-block.social-media-list-item
           %span.share-text
 
-          %a.social-media-share-link.twitter-link{'href' => "https://twitter.com/intent/tweet?status=Sign the petition #{campaign.name}%0A#{campaign_domain}#{campaign.link}", 'target' => '_blank'}
+          %a.social-media-share-link.twitter-link{'href' => "https://twitter.com/intent/tweet?status=Sign the petition #{campaign.name}%0A#{campaign_domain}#{campaign.link}", 'target' => '_blank', 'aria-label' => 'Share campaign to Twitter'}
             %i.fa.fa-2x.fa-twitter-square
-            %span.sr-only
-              Share to Twitter
 
-          %a.social-media-share-link.facebook-link{'href' => "https://www.facebook.com/sharer/sharer.php?u=#{campaign_domain}#{campaign.link}&title=#{campaign.name}", 'target' => '_blank'}
+          %a.social-media-share-link.facebook-link{'href' => "https://www.facebook.com/sharer/sharer.php?u=#{campaign_domain}#{campaign.link}&title=#{campaign.name}", 'target' => '_blank', 'aria-label' => 'Share campaign to Facebook'}
             %i.fa.fa-2x.fa-facebook-square
-            %span.sr-only
-              Share to Facebook
 
 
         %li.list-group-item.no-padding
           %div.details.row
             - if selected_campaigns.include?(campaign.id)
 
-              %div.col.to-be-signed{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'true', 'aria-label' => 'Add campaign', 'role' => 'button', 'aria-pressed' => 'true'}
+              %div.col.to-be-signed{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'true', 'aria-label' => 'Remove campaign', 'role' => 'button', 'aria-pressed' => 'true'}
                 %span
                 %i.fa.fa-check{'aria-hidden' => 'true'}
             - elsif campaigns_already_signed.include?(campaign.id)
@@ -79,7 +77,7 @@
                 %span
                 %i.fa.fa-check{'aria-hidden' => 'true'}
             - else
-              %div.col.sign{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", 'aria-label' => 'Remove campaign', "data-sign" => 'false', 'role' => 'button', 'aria-pressed' => 'false'}
+              %div.col.sign{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", 'aria-label' => 'Add campaign', "data-sign" => 'false', 'role' => 'button', 'aria-pressed' => 'false'}
                 %span
                   Add
                 %i.fa.fa-plus{'aria-hidden' => 'true'}
