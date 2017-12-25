@@ -429,6 +429,26 @@ var onReviewPageLoad = function(){
       // If form is invalid...
       event.preventDefault();
       event.stopPropagation();
+
+      $('input:invalid, select:invalid').each(function(){
+        var errorMessage = $(this).siblings('.invalid-feedback');
+        var errorMessageContent = errorMessage.html();
+
+        $(this).attr('aria-invalid', 'true');
+
+        errorMessage.replaceWith(
+          "<div class='invalid-feedback' role='alert'>" + errorMessageContent + '</div>'
+        )
+
+        var errorMessage = $(this).siblings('.invalid-feedback');
+        errorMessage.attr('aria-live', 'polite');
+      });
+      $('input:valid, select:invalid').each(function(){
+        var errorMessage = $(this).siblings('.invalid-feedback');
+
+        $(this).attr('aria-invalid', 'false');
+        errorMessage.removeAttr('aria-live');
+      });
     } else {
       // If form is valid...
       var $submitFormButton = $('#submit-form-button');
@@ -439,6 +459,9 @@ var onReviewPageLoad = function(){
       // Hide button text and show loading indicator.
       $submitFormButton.find('#submit-button-text').hide();
       $submitFormButton.find('i.zmdi').show();
+
+      // Show screen readers that button has been pressed.
+      $submitFormButton.attr('aria-pressed', true);
 
       var petitionsToSign = $('input#petition-data').val();
       if (petitionsToSign != '') {

@@ -6,10 +6,12 @@
           %div#directions
             %h1#encouragement
               You're almost done!
-            %h5#ps
+            %h5#ps{'aria-hidden' => 'true'}
               (But feel free to
               = link_to("go back", homepage_path, {id: 'sign-more', method: :get})
               and sign some more.)
+            %span.sr-only
+              But feel free to go back and sign some more.
 
 
   = render partial: 'signing_panel'

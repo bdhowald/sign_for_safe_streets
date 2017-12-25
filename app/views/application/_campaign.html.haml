@@ -45,15 +45,17 @@
               - else 'bg-success'
 
 
-            %div{'class' => "#{progress_class} progress-bar", 'role' => "progressbar", 'style' => "width: #{(percentage_complete < 15 ? 15 : percentage_complete)}%", 'aria-valuenow' => "#{percentage_complete}", 'aria-valuemin' => '0', 'aria-valuemax' => '100'}
+            %div{'class' => "#{progress_class} progress-bar", 'role' => "progressbar", 'style' => "width: #{(percentage_complete < 15 ? 15 : percentage_complete)}%", 'aria-valuenow' => "#{percentage_complete}", 'aria-valuemin' => '0', 'aria-valuemax' => '100', 'aria-label' => "#{percentage_complete.to_i}% of signatures needed to reach campaign goal."}
               = "#{percentage_complete.to_i}%"
 
-        %li.list-group-item.d-none.d-md-block.campaign-starter-list-item{'aria-labeledby' => "started-by-text-#{campaign.id} starter-#{campaign.id}"}
-          %p
-            %span.started-by-text{id: "started-by-text-#{campaign.id}", tabindex: '-1'}
+        %li.list-group-item.d-none.d-md-block.campaign-starter-list-item
+          %div{'aria-labelledby' => "started-by-text-#{campaign.id} starter-#{campaign.id}"}
+            %span.started-by-text{id: "started-by-text-#{campaign.id}", 'aria-hidden' => 'true'}
               Started by:
-            %span.starter{id: "starter-#{campaign.id}", tabindex: '-1'}
+            %span.starter{id: "starter-#{campaign.id}", 'aria-hidden' => 'true'}
               = campaign.starter
+            %span.sr-only
+              = "Started by #{campaign.starter}"
 
         %li.list-group-item.d-none.d-md-block.social-media-list-item
           %span.share-text
@@ -72,6 +74,7 @@
               %div.col.to-be-signed{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'true', 'aria-label' => 'Remove campaign', 'role' => 'button', 'aria-pressed' => 'true'}
                 %span
                 %i.fa.fa-check{'aria-hidden' => 'true'}
+
             - elsif campaigns_already_signed.include?(campaign.id)
               %div.col.already-signed{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", 'aria-label' => 'Campaign already signed', "data-sign" => 'false'}
                 %span

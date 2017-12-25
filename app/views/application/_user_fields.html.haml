@@ -7,7 +7,7 @@
         %div.form-group
           %label{for: 'user-title', id: 'title-label'}
             Select title
-          %select.form-control#user-title{'name' => 'user[title]', 'type' => 'text', 'aria-labeledby' => 'title-label', 'required' => true}
+          %select.form-control#user-title{'name' => 'user[title]', 'type' => 'text', 'aria-labeledby' => 'title-label', 'required' => true, 'aria-required' => 'true'}
             %option{disabled: 'true', selected: @user['title'].nil?, value: ''}
               Select
             %option{selected: @user['title'] == 'Ms.'}
@@ -20,29 +20,29 @@
               Mr.
             %option{selected: @user['title'] == 'Dr.'}
               Dr.
-          / = select_tag('user[title]', grouped_options_for_select([['Select', ['Ms.', 'Miss', 'Mrs.', 'Mr.', 'Dr.']]], selected: @user['title'] || 'Selected', disabled: 'Select'), {'id' => 'user-title', 'class' => 'form-control', 'type' => 'text', 'aria-labeledby' => 'title-label', 'required' => true})
+          / = select_tag('user[title]', grouped_options_for_select([['Select', ['Ms.', 'Miss', 'Mrs.', 'Mr.', 'Dr.']]], selected: @user['title'] || 'Selected', disabled: 'Select'), {'id' => 'user-title', 'class' => 'form-control', 'type' => 'text', 'aria-labeledby' => 'title-label', 'required' => true, 'aria-required' => 'true'})
 
-          %div.invalid-feedback
+          %div.invalid-feedback{'role' => 'alert', 'aria-atomic' => 'true'}
             Please select a title
 
 
         %div.form-group
           %label{for: 'user-first-name', id: 'first-name-label'}
             First name
-          %input.form-control#user-first-name{'name' => 'user[first_name]', 'type' => 'text', 'aria-labeledby' => 'first-name-label', 'placeholder' => 'Enter first name', 'required' => true, value: @user['first_name']}
+          %input.form-control#user-first-name{'name' => 'user[first_name]', 'type' => 'text', 'aria-labeledby' => 'first-name-label', 'placeholder' => 'Enter first name', 'required' => true, 'aria-required' => 'true', value: @user['first_name']}
           / %small
 
-          %div.invalid-feedback
+          %div.invalid-feedback{'role' => 'alert', 'aria-atomic' => 'true'}
             Please enter your first name
 
 
         %div.form-group
           %label{for: 'user-last-name', id: 'last-name-label'}
             Last name
-          %input.form-control#user-last-name{'name' => 'user[last_name]', 'type' => 'text', 'aria-labeledby' => 'last-name-label', 'placeholder' => 'Enter last name', 'required' => true, value: @user['last_name']}
+          %input.form-control#user-last-name{'name' => 'user[last_name]', 'type' => 'text', 'aria-labeledby' => 'last-name-label', 'placeholder' => 'Enter last name', 'required' => true, 'aria-required' => 'true', value: @user['last_name']}
           / %small
 
-          %div.invalid-feedback
+          %div.invalid-feedback{'role' => 'alert', 'aria-atomic' => 'true'}
             Please enter your last name
 
 
@@ -50,41 +50,41 @@
           %label{for: 'user-address', id: 'address-label'}
             Address
 
-          %input.form-control#user-address{'type' => 'text', 'aria-labeledby' => 'address-label', 'placeholder' => 'Enter address', 'required' => true, value: "#{address_string(@user['address']) if address_complete?(@user['address'])}"}
+          %input.form-control#user-address{'type' => 'text', 'aria-labeledby' => 'address-label', 'placeholder' => 'Enter address', 'required' => true, 'aria-required' => 'true', value: "#{address_string(@user['address']) if address_complete?(@user['address'])}"}
           / %small
           %input#user-address-street{type: 'hidden', name: 'user[address][street]', value: @user.try(:[], 'address').try(:[], 'street')}
           %input#user-address-city{type: 'hidden', name: 'user[address][city]', value: @user.try(:[], 'address').try(:[], 'city')}
           %input#user-address-state{type: 'hidden', name: 'user[address][state]', value: @user.try(:[], 'address').try(:[], 'state')}
           %input#user-address-zip{type: 'hidden', name: 'user[address][zip]', value: @user.try(:[], 'address').try(:[], 'zip')}
 
-          %div.invalid-feedback
+          %div.invalid-feedback{'role' => 'alert', 'aria-atomic' => 'true'}
             Please enter your address
 
 
         %div.form-group
           %label{for: 'user-phone', id: 'phone-label'}
             Phone number
-          %input.form-control#user-phone{'name' => 'user[phone]', 'type' => 'text', 'aria-labeledby' => 'phone-label', 'pattern' => '(?:\([2-9]\d{2}\)|[2-9]\d{2})[- \.]?\d{3}[- \.]?\d{4}', 'placeholder' => 'Enter phone number', 'required' => true, value: @user['phone']}
+          %input.form-control#user-phone{'name' => 'user[phone]', 'type' => 'text', 'aria-labeledby' => 'phone-label', 'pattern' => '(?:\([2-9]\d{2}\)|[2-9]\d{2})[- \.]?\d{3}[- \.]?\d{4}', 'placeholder' => 'Enter phone number', 'required' => true, 'aria-required' => 'true', value: @user['phone']}
           %small
             Petition recipients require a phone number.
 
-          %div.invalid-feedback
+          %div.invalid-feedback{'role' => 'alert', 'aria-atomic' => 'true'}
             Please enter a valid phone number
 
 
         %div.form-group
           %label{for: 'user-email', id: 'email-label'}
             Email
-          %input.form-control#user-email{'name' => 'user[email]', 'type' => 'text', 'aria-labeledby' => 'email-label', 'pattern' => '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$', 'placeholder' => 'Enter email address', 'required' => true, value: @user['email']}
+          %input.form-control#user-email{'name' => 'user[email]', 'type' => 'text', 'aria-labeledby' => 'email-label', 'pattern' => '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$', 'placeholder' => 'Enter email address', 'required' => true, 'aria-required' => 'true', value: @user['email']}
           / %small
 
-          %div.invalid-feedback
+          %div.invalid-feedback{'role' => 'alert', 'aria-atomic' => 'true'}
             Please enter a valid email address
 
-      %button.btn.btn-primary.btn-lg.btn-block{type: 'submit', id: 'submit-form-button'}
+      %button.btn.btn-primary.btn-lg.btn-block#submit-form-button{type: 'submit', 'aria-pressed' => 'false'}
         %span#submit-button-text
           = "Sign #{@petitions_to_sign.count} Petition#{'s' if @petitions_to_sign.count > 1}"
-        %i.zmdi.zmdi-rotate-right.zmdi-hc-spin
+        %i.zmdi.zmdi-rotate-right.zmdi-hc-spin{'aria-hidden' => 'true'}
 
 
       %input#petition-data{type: 'hidden', name:'campaigns[selected]'}

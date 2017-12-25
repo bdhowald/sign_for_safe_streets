@@ -13,7 +13,7 @@
             %div.input-group
               %span.input-group-addon
                 %i.fa.fa-search
-              %input.form-control.typeahead{'aria-label' => 'Search bar', placeholder: 'ex: bike lanes, cameras, Queens', type: 'text'}
+              %input.form-control.typeahead{'aria-label' => 'Search bar', placeholder: 'ex: bike lanes, cameras, Queens', type: 'text', 'aria-label' => 'Type search terms here'}
               %span.input-group-btn
                 %button.btn.btn-secondary.clear-search{type: 'button', style: 'display:none', 'aria-label' => 'Clear search', 'aria-hidden' => 'true'}
                   %i.fa.fa-times
@@ -24,7 +24,6 @@
                   %i{class: "zmdi zmdi-#{button_text[1]} zmdi-hc-lg", 'aria-hidden' => 'true'}
                   %span.sans{'aria-label' => button_text[0]}
                     = button_text[0]
-
 
             %div.row.filter-buttons.locations
               - ['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island', 'Citywide', 'Statewide'].each do |button_text|
@@ -65,18 +64,23 @@
       %input#search-terms{type: 'hidden', value: '[]'}
       %input#categories-filter.filter-terms{type: 'hidden', value: '[]', 'data-filter-type' => 'categories'}
       %input#locations-filter.filter-terms{type: 'hidden', value: '[]', 'data-filter-type' => 'locations'}
-      / %input#fingerprint-id{type: 'hidden', name: 'user[fingerprint_id]'}
+
 
       %div.footer-text
-        Sign
-        - num_selected_campaigns = (@selected_campaigns || []).count
-        %span.num-campaigns
-          = num_selected_campaigns.to_s
-        %span.campaign-word
-          = (num_selected_campaigns == 1 ? 'petition!' : 'petitions!')
+        %div{'aria-labelledby' => "sign-word sign-num-campaigns sign-campaign-word"}
+          %span.sign-word{id: "sign-word", 'aria-hidden' => 'true'}
+            Sign
+          - num_selected_campaigns = (@selected_campaigns || []).count
+          %span.num-campaigns{id: "sign-num-campaigns", 'aria-hidden' => 'true'}
+            = num_selected_campaigns.to_s
+          %span.campaign-word{id: "sign-campaign-word", 'aria-hidden' => 'true'}
+            = (num_selected_campaigns == 1 ? 'petition!' : 'petitions!')
+          %span.sr-only
+            = "Sign #{num_selected_campaigns} #{num_selected_campaigns == 1 ? 'petition!' : 'petitions!'}"
       %div.notification-box{'data-add-color' => '#15a3d0', 'data-remove-color' => '#ffc107'}
         %div.notification
           Campaign added!
+        %div#sr-notification-text{'role' => 'alert', 'aria-atomic' => 'true'}
 
   = render partial: 'layouts/footer', locals: {have_selected_campaigns: have_selected_campaigns}
 

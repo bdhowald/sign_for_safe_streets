@@ -4,16 +4,18 @@
       %div.row.justify-content-center
         %div.col
           %div.jumbotron
-            %h1#privacy
+            %h1#privacy{'aria-hidden' => 'true'}
               Privacy is
               %span.very
                 very
               important.
+            %span.sr-only
+              Privacy is very important.
             %h3
               (So we don't store your data.)
             %p.lead
               This site uses cookies stored in your browser to keep track of the campaigns you've signed and your info for filling them out.
-            %hr/
+            %hr{'aria-hidden' => 'true'}
             %p
               If you don't want this data stored at all, just clear your cookies.
 
