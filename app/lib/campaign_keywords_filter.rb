@@ -12,6 +12,7 @@ class CampaignKeywordsFilter
   end
 
   def filter_campaigns
+
     @campaigns.each do |campaign|
 
       old_tags = campaign.tags
@@ -80,8 +81,8 @@ class CampaignKeywordsFilter
     end
   end
 
-  def add(campaign)
-    @campaigns << campaign
+  def add(campaigns)
+    @campaigns += Array.wrap(campaigns)
   end
 
   # def keywords
