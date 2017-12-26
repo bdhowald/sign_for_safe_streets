@@ -5,8 +5,10 @@
   %div.header#thank-you-page-header
     - 5.times.each do
       %div.balloon
-        %p
+        %p{'aria-hidden' => 'true'}
           Thank You!
+    %span.sr-only
+      Thank You!
 
 
     %div.container
@@ -15,10 +17,12 @@
           %div#directions
             %h1#encouragement
               = "You're a safe streets hero!"
-            %h5#ps
+            %h5#ps{'aria-hidden' => 'true'}
               (Want to sign more?
               = link_to("Head back", homepage_path, {id: 'sign-more', method: :get})
               to the petition homepage.)
+            %span.sr-only
+              Want to sign more? Head back to the petition homepage.
 
 
   %div.thank-you-page-body#main-content
