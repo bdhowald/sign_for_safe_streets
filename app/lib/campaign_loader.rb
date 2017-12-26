@@ -21,8 +21,10 @@ class CampaignLoader
     campaign_page      = 0
     transalt_campaigns = []
 
+    puts "Scraping campaigns..."
     # Collect all campaigns
     while more_campaigns do
+      puts "Scraping ?page=#{campaign_page}"
       scraper = CampaignCrawler.new(campaign_page)
       output = scraper.crawl
 
@@ -30,6 +32,8 @@ class CampaignLoader
 
       output['campaigns'].empty? ? (more_campaigns = false) : campaign_page +=1
     end
+
+    puts "Scraped #{campaign_page} pages\n\n"
 
     transalt_campaigns
   end
@@ -227,6 +231,8 @@ class CampaignLoader
   #
   def process_raw_campaign_data(scraped_data_array)
 
+    puts "Processing raw campaign data..."
+
     processed_campaigns = []
 
     # Create new Campaign records for each new campaign.
@@ -241,6 +247,8 @@ class CampaignLoader
 
     end
 
+    puts "Finished processing raw campaign data\n\n"
+
     processed_campaigns
 
   end
@@ -251,8 +259,12 @@ class CampaignLoader
   #
   def deactivate_inactive_campaigns(active_campaigns)
 
+    puts "Deactivating inactive campaigns..."
+
     # Keep track of campaigns we have seen
     seen_campaign_ids = Set.new(active_campaigns.collect(&:id))
+
+    newly_inactive_campaigns = 0
 
     # deactivate campaigns no longer used
     inactive_campaigns = Campaign.where.not(id: seen_campaign_ids.to_a)
@@ -260,11 +272,16 @@ class CampaignLoader
     inactive_campaigns.each do |in_cp|
       if in_cp.is_active
         in_cp.update_attributes(is_active: false)
+
+        newly_inactive_campaigns += 1
         puts "Deactivating campaign: #{in_cp.name}"
       else
         puts "Campaign already inactive: #{in_cp.name}"
       end
     end
+
+    puts "Deactivated #{newly_inactive_campaigns} campaign#{newly_inactive_campaigns == 1 ? '' : 's'}"
+    puts "#{inactive_campaigns.count} inactive campaign#{inactive_campaigns.count == 1 ? '' : 's'} total\n\n"
 
   end
 
@@ -273,7 +290,9 @@ class CampaignLoader
   # @param {Array} processed_campaigns - array of processed and active campaigns
   #
   def filter_processed_campaigns(processed_campaigns)
+    puts "Filtering campaigns..."
     CampaignKeywordsFilter.new(processed_campaigns).filter_campaigns
+    puts "Finished filtering campaigns\n\n"
   end
 
 
