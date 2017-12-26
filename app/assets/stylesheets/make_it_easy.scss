@@ -369,106 +369,106 @@ body.hasHover #filters .filter-buttons.locations .col.staten-island:hover {
   color: rgba(0, 123, 255, 0.5);
 }
 
-.card .campaign .campaign-details div.col {
+.card .campaign .campaign-details .col {
   font-size: 1.125rem;
 }
 
-.card .campaign .campaign-details div.col.sign {
+.card .campaign .campaign-details .col.sign {
   cursor: pointer;
 }
 
-.card .campaign .campaign-details div.col.to-be-signed {
+.card .campaign .campaign-details .col.to-be-signed {
   cursor: pointer;
 }
 
-.card .campaign .campaign-details div.col.citywide {
+.card .campaign .campaign-details .col.citywide {
   background-color: rgba(255, 179, 71, 0.25);
 }
 
-.card .campaign .campaign-details div.col.statewide {
+.card .campaign .campaign-details .col.statewide {
   background-color: rgba(0, 119, 200, 0.25);
 }
 
-.card .campaign .campaign-details div.col.bronx {
+.card .campaign .campaign-details .col.bronx {
   background-color: rgba(245, 199, 184, 0.25);
 }
 
-.card .campaign .campaign-details div.col.brooklyn {
+.card .campaign .campaign-details .col.brooklyn {
   background-color: rgba(147, 230, 180, 0.25);
 }
 
-.card .campaign .campaign-details div.col.manhattan {
+.card .campaign .campaign-details .col.manhattan {
   background-color: rgba(0, 200, 238, 0.25);
 }
 
-.card .campaign .campaign-details div.col.queens {
+.card .campaign .campaign-details .col.queens {
   background-color: rgba(243, 234, 161, 0.25);
 }
 
-.card .campaign .campaign-details div.col.staten-island {
+.card .campaign .campaign-details .col.staten-island {
   background-color: rgba(218, 197, 208, 0.25);
 }
 
 
-.card .campaign .campaign-details div.col.sign.citywide {
+.card .campaign .campaign-details .col.sign.citywide {
   background-color: rgba(255, 179, 71, 0.5);
 }
 
-.card .campaign .campaign-details div.col.sign.statewide {
+.card .campaign .campaign-details .col.sign.statewide {
   background-color: rgba(0, 119, 200, 0.5);
 }
 
-.card .campaign .campaign-details div.col.sign.bronx {
+.card .campaign .campaign-details .col.sign.bronx {
   background-color: rgba(245, 199, 184, 0.5);
 }
 
-.card .campaign .campaign-details div.col.sign.brooklyn {
+.card .campaign .campaign-details .col.sign.brooklyn {
   background-color: rgba(147, 230, 180, 0.5);
 }
 
-.card .campaign .campaign-details div.col.sign.manhattan {
+.card .campaign .campaign-details .col.sign.manhattan {
   background-color: rgba(0, 200, 238, 0.5);
 }
 
-.card .campaign .campaign-details div.col.sign.queens {
+.card .campaign .campaign-details .col.sign.queens {
   background-color: rgba(243, 234, 161, 0.5);
 }
 
-.card .campaign .campaign-details div.col.sign.staten-island {
+.card .campaign .campaign-details .col.sign.staten-island {
   background-color: rgba(218, 197, 208, 0.5);
 }
 
 
-.card .campaign .campaign-details div.col.to-be-signed.citywide {
+.card .campaign .campaign-details .col.to-be-signed.citywide {
   background-color: rgba(255, 179, 71, 1.0);
 }
 
-.card .campaign .campaign-details div.col.to-be-signed.statewide {
+.card .campaign .campaign-details .col.to-be-signed.statewide {
   background-color: rgba(0, 119, 200, 1.0);
 }
 
-.card .campaign .campaign-details div.col.to-be-signed.bronx {
+.card .campaign .campaign-details .col.to-be-signed.bronx {
   background-color: rgba(245, 199, 184, 1.0);
 }
 
-.card .campaign .campaign-details div.col.to-be-signed.brooklyn {
+.card .campaign .campaign-details .col.to-be-signed.brooklyn {
   background-color: rgba(147, 230, 180, 1.0);
 }
 
-.card .campaign .campaign-details div.col.to-be-signed.manhattan {
+.card .campaign .campaign-details .col.to-be-signed.manhattan {
   background-color: rgba(0, 200, 238, 1.0);
 }
 
-.card .campaign .campaign-details div.col.to-be-signed.queens {
+.card .campaign .campaign-details .col.to-be-signed.queens {
   background-color: rgba(243, 234, 161, 1.0);
 }
 
-.card .campaign .campaign-details div.col.to-be-signed.staten-island {
+.card .campaign .campaign-details .col.to-be-signed.staten-island {
   background-color: rgba(218, 197, 208, 1.0);
 }
 
 
-.card .campaign.already-signed .campaign-details div.col.already-signed {
+.card .campaign.already-signed .campaign-details .col.already-signed {
   background-color: #ccc;
 }
 
@@ -592,12 +592,15 @@ li.list-group-item.no-padding div.row {
   text-align: center;
 }
 
-li.list-group-item.no-padding div.col {
+li.list-group-item.no-padding .col {
   padding: 0.75rem 1.25rem;
 }
 
-li.list-group-item.no-padding div.col:first-child {
-  border-right: 1px solid #ddd;
+li.list-group-item.no-padding .col:first-child {
+  border-top:    0;
+  border-bottom: 0;
+  border-left:   0;
+  border-right:  1px solid #ddd;
 }
 
 

@@ -71,7 +71,7 @@
           %div.details.row
             - if selected_campaigns.include?(campaign.id)
 
-              %div.col.to-be-signed{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'true', 'aria-label' => 'Remove campaign', 'role' => 'button', 'aria-pressed' => 'true'}
+              %button.col.to-be-signed{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'true', 'aria-label' => 'Campaign added', 'type' => 'button'}
                 %span
                 %i.fa.fa-check{'aria-hidden' => 'true'}
 
@@ -80,7 +80,7 @@
                 %span
                 %i.fa.fa-check{'aria-hidden' => 'true'}
             - else
-              %div.col.sign{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", 'aria-label' => 'Add campaign', "data-sign" => 'false', 'role' => 'button', 'aria-pressed' => 'false'}
+              %button.col.sign{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", 'aria-label' => 'Add campaign', "data-sign" => 'false', 'type' => 'button'}
                 %span
                   Add
                 %i.fa.fa-plus{'aria-hidden' => 'true'}

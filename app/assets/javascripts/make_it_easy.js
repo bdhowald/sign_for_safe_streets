@@ -85,7 +85,7 @@ var onHomePageLoad = function(){
 
 
   // Click to sign or remove a campaign.
-  $('body').on('click', 'div.sign, div.to-be-signed', function(event){
+  $('body').on('click', '.col.sign, .col.to-be-signed', function(event){
     // Delegate to function.
     addOrRemoveCampaign(this);
 
@@ -133,7 +133,7 @@ var onHomePageLoad = function(){
 
       // console.log('beginning adding all campaigns: ' + (new Date().getTime() - time) );
       // Update campaigns to be signed
-      // $('div.campaign-list').not('.not-matching').find('div.sign').each(function(){
+      // $('div.campaign-list').not('.not-matching').find('.col.sign').each(function(){
       //   // var timer = new Date().getTime()
       //   // console.log('beginning adding a campaign: ' + (new Date().getTime() - time) );
       //   addOrRemoveCampaign($(this));
@@ -154,7 +154,7 @@ var onHomePageLoad = function(){
 
       // Update campaigns to be signed
       // console.log('beginning removing all campaigns: ' + (new Date().getTime() - time) );
-      // $('div.campaign-list').not('.not-matching').find('div.to-be-signed').each(function(){
+      // $('div.campaign-list').not('.not-matching').find('.col.to-be-signed').each(function(){
       //   // var timer = new Date().getTime()
       //   // console.log('beginning removing a campaign: ' + (new Date().getTime() - time) );
       //   addOrRemoveCampaign($(this));
@@ -300,6 +300,7 @@ var onHomePageLoad = function(){
   function animateStickyFooter() {
     var staticFooter      = document.getElementsByClassName('static-footer')[0];
     var stickyFooter      = document.getElementsByClassName('sticky-footer')[0];
+    var notificationBox   = document.getElementsByClassName('notification-box')[0];
 
     var selectedCampaigns = getSelectedCampaigns();
 
@@ -318,6 +319,8 @@ var onHomePageLoad = function(){
       }
       if (stickyFooter.classList.value.indexOf('extended') == -1) {
         stickyFooter.className += ' extended';
+
+        notificationBox.classList.remove('sr-only');
       }
       if (staticFooter.classList.value.indexOf('with-padding') == -1) {
         staticFooter.className += ' with-padding';
@@ -339,6 +342,14 @@ var onHomePageLoad = function(){
 
       }
 
+
+      // Reset counters for adding and removing of campaigns
+      oneTimeEvent(stickyFooter, 'webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(e) {
+        notificationBox.classList.remove('sr-only');
+      });
+
+
+
       // If we have transitioned up, we need to transition back down.
       setTimeout(function(){
 
@@ -348,6 +359,8 @@ var onHomePageLoad = function(){
         // If we showed the notification box, hide it.
         if (stickyFooter.classList.value.indexOf('extended') != -1) {
           stickyFooter.classList.remove('extended');
+
+          notificationBox.className += ' sr-only';
         }
 
         // If we have selected campaigns, retract footer to hide notification box only if need be
@@ -366,6 +379,8 @@ var onHomePageLoad = function(){
         oneTimeEvent(stickyFooter, 'webkitTransitionEnd otransitionend oTransitionEnd msTransitionEnd transitionend', function(e) {
           that.campaignsJustAdded   = 0;
           that.campaignsJustRemoved = 0;
+
+          notificationBox.className += ' sr-only';
         });
 
       }, 1500);
@@ -434,9 +449,9 @@ var onHomePageLoad = function(){
 
       var $campaign = $(this);
 
-      var $signCol     = $campaign.find('div.sign, div.to-be-signed');
+      var $signCol     = $campaign.find('.col.sign, .col.to-be-signed');
       var $signText    = $signCol.find('span');
-      var $plusSign    = $signCol.find('i.fa');
+      var $icon        = $signCol.find('i.fa');
       var currentState = $signCol.data('sign');
 
       // signed is true if we are adding campaigns or we are toggling and the campaign isn't currently to-be-signed.
@@ -445,21 +460,21 @@ var onHomePageLoad = function(){
       if (signed) {
         if (!currentState) {
           $signText.text(' ');
-          $plusSign.replaceWith("<i class='fa fa-check'></i>");
+          $icon.replaceWith("<i class='fa fa-check' aria-hidden='true'></i>");
 
           $signCol.data('sign', true);
           $signCol.attr('data-sign', true);
 
           $signCol.removeClass('sign').addClass('to-be-signed');
           $signCol.attr('aria-pressed', true);
-          $signCol.attr('aria-label', 'Remove campaign');
+          $signCol.attr('aria-label', 'Campaign added');
 
           $campaign.addClass('to-be-signed')
         }
       } else {
         if (currentState) {
           $signText.text('Add');
-          $plusSign.replaceWith("<i class='fa fa-plus'></i>");
+          $icon.replaceWith("<i class='fa fa-plus' aria-hidden='true'></i>");
 
           $signCol.data('sign', false);
           $signCol.attr('data-sign', false);
@@ -1002,7 +1017,7 @@ var onHomePageLoad = function(){
       if ($allUnsignedCampaigns.length > 0) {
         // If there are still campaigns we have not yet signed
 
-        if ($allUnsignedCampaigns.length == $unsignedMatchingCampaigns.find('div.to-be-signed').length) {
+        if ($allUnsignedCampaigns.length == $unsignedMatchingCampaigns.find('.col.to-be-signed').length) {
           // But if we have already added all to be signed.
 
           $signAllButton.html('Remove All Campaigns');
@@ -1029,7 +1044,7 @@ var onHomePageLoad = function(){
         $signAllButton.removeClass('btn-primary btn-danger').addClass('btn-secondary');
         $signAllButton.prop('disabled', true)
 
-      } else if ($unsignedMatchingCampaigns.length == $unsignedMatchingCampaigns.find('div.to-be-signed').length) {
+      } else if ($unsignedMatchingCampaigns.length == $unsignedMatchingCampaigns.find('.col.to-be-signed').length) {
         // There are as many unsigned campaigns as campaigns to be signed.
 
         if ($unsignedMatchingCampaigns.length == 0) {
@@ -1156,8 +1171,9 @@ var onHomePageLoad = function(){
    * @param {string} action      - 'add' or 'remove'
    */
   function updateNotificationBox(campaignIDs, action) {
-    var $notificationBox  = $(".notification-box");
-    var $notificationText = $notificationBox.find('.notification');
+    var $notificationBox    = $(".notification-box");
+    var $notificationText   = $notificationBox.find('.notification');
+    var $notificationSRText = $('#sr-notification-text');
 
     var add = (action == 'add');
 
@@ -1175,18 +1191,18 @@ var onHomePageLoad = function(){
 
     // Keep track of how many campaigns have just been clicked to sign
     if (add) {
-      that.campaignsJustAdded += campaignIDs.length;
-      numbersText   = that.campaignsJustAdded
-      campaignsText = (that.campaignsJustAdded == 1) ? 'campaign' : 'campaigns';
-      that.campaignsJustRemoved = 0;
+      that.campaignsJustAdded   += campaignIDs.length;
+      numbersText                = that.campaignsJustAdded
+      campaignsText              = (that.campaignsJustAdded == 1) ? 'campaign' : 'campaigns';
+      that.campaignsJustRemoved  = 0;
     } else {
       that.campaignsJustRemoved += campaignIDs.length;
-      numbersText   = that.campaignsJustRemoved;
-      campaignsText = (that.campaignsJustRemoved == 1) ? 'campaign' : 'campaigns';
-      that.campaignsJustAdded = 0;
+      numbersText                = that.campaignsJustRemoved;
+      campaignsText              = (that.campaignsJustRemoved == 1) ? 'campaign' : 'campaigns';
+      that.campaignsJustAdded    = 0;
     }
 
-    var actionText    = action == 'add' ? 'added!' : 'removed';
+    var actionText               = action == 'add' ? 'added!' : 'removed';
 
     // Support add or remove
     $notificationText.html(
@@ -1195,6 +1211,13 @@ var onHomePageLoad = function(){
 
     $notificationBox.css('background-color', backgroundColor);
     $notificationText.css('color', color);
+
+    // For screen readers
+    $notificationSRText.replaceWith(
+      "<div id='sr-notification-text' role='alert'>" + (numbersText + ' ' + campaignsText + ' ' + actionText).trim() + '</div>'
+    )
+    var $notificationSRText = $('#sr-notification-text');
+    $notificationSRText.attr('aria-live', 'polite');
 
   }
 
