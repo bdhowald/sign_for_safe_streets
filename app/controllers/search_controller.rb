@@ -6,6 +6,7 @@ class SearchController < ActionController::Base
 
     search_params  = params[:search] || {}
     search_filters = params[:filters] || {}
+    @view_style    = params[:view_style] || 'grid'
 
     if (cat_filters = search_filters[:categories])
       category_filters = JSON.parse(cat_filters)
@@ -33,12 +34,12 @@ class SearchController < ActionController::Base
           when 'all'
             @search_term = nil
 
-            matching_campaigns = Campaign.where(is_active: true)
+            matching_campaigns = Campaign.active
 
           when 'name'
             @search_term = query_terms
 
-            matching_campaigns = Campaign.active.where(
+            matching_campaigns = Campaign.where(
               name: query_terms
             )
 
@@ -71,10 +72,10 @@ class SearchController < ActionController::Base
           partial: 'application/results',
           layout: false,
           locals: {
-            campaigns: matching_campaigns.sort{ |x,y|
+            campaigns: matching_campaigns.active.sort{ |x,y|
               x.name.length <=> y.name.length
             },
-            other_campaigns: Campaign.where.not(id: matching_campaigns.collect(&:id))
+            other_campaigns: Campaign.active.where.not(id: matching_campaigns.collect(&:id))
           }
         )
 
@@ -86,7 +87,7 @@ class SearchController < ActionController::Base
         response.headers['Content-Type'] = 'application/vnd.api+json'
 
         if search_params[:suggestion].present?
-          campaigns = Campaign.search_full_text(search_params[:suggestion])
+          campaigns = Campaign.active.search_full_text(search_params[:suggestion])
         end
 
         @results = {

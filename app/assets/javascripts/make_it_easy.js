@@ -106,6 +106,11 @@ var onHomePageLoad = function(){
     return false;
   });
 
+  // Detect click on view toggle buttons.
+  $('body').on('click', '.view-style-controls label.btn', function(event) {
+    toggleViewStyle(this);
+  });
+
   // Track potential shares to social media.
   $('body').on('click', '.social-media-list-item .social-media-share-link', function(event) {
     trackSocialMediaShareClick(this);
@@ -667,6 +672,21 @@ var onHomePageLoad = function(){
 
 
   /**
+   * Queries hidden input for view style setting.
+   * @name getViewStyle
+   */
+  function getViewStyle() {
+    var mq = window.matchMedia( "(min-width: 576px)" );
+
+    if (mq.matches) {
+      return {view_style: $('#view-style').val()};
+    } else {
+      return {view_style: 'grid'};
+    }
+  }
+
+
+  /**
    * Handles when user presses enter in the search box. Updates search terms and performs search.
    * @name handleUserSearch
    */
@@ -749,9 +769,11 @@ var onHomePageLoad = function(){
 
     var searchData = getSearchData(suggestion);
     var filterData = getFilterData();
+    var viewStyle  = getViewStyle();
 
     var searchDataString = toQueryString(searchData);
     var filterDataString = toQueryString(filterData);
+    var viewStyleString  = toQueryString(viewStyle);
 
     if (searchDataString.length && filterDataString.length) {
       url = url + '?' + searchDataString + '&' + filterDataString
@@ -760,6 +782,9 @@ var onHomePageLoad = function(){
     } else if (filterDataString.length) {
       url = url + '?' + filterDataString
     }
+
+    // Get view style string
+    url = url + '&' + viewStyleString;
 
 
     // Change colors to grey to let user know site is loading.
@@ -1074,6 +1099,33 @@ var onHomePageLoad = function(){
 
     }
 
+  }
+
+
+  /**
+   * Toggles view between grid and list view
+   * @name  toggleViewStyle
+   * @param {Object} elem - button label
+   */
+  function toggleViewStyle(elem) {
+    var $button   = $(elem);
+    var viewStyle = $button.find('input').data('view-style')
+
+    if (viewStyle == 'list') {
+      $('.row-item').each(function(){
+        $(this).addClass('list-row-item')
+      })
+    } else if (viewStyle == 'grid') {
+      $('.row-item').each(function(){
+        $(this).removeClass('list-row-item')
+      })
+    }
+
+    // Set hidden input for future requests
+    $('#view-style').val(viewStyle);
+
+    // Store value, too.
+    useStorage('write', 'view_style', viewStyle);
   }
 
 

@@ -343,7 +343,35 @@ body.hasHover #filters .filter-buttons.locations .col.staten-island:hover {
   -moz-transition: all 0.5s ease;
   -o-transition: all 0.5s ease;
   transition: all 0.5s ease;
+
+  margin-bottom: 1rem;
 }
+
+@media (max-width: 575px) {
+  .sign-all button {
+    margin-bottom: 0;
+  }
+}
+
+
+.view-style-controls {
+  width: 100%
+}
+
+.view-style-controls .btn-group {
+  width: 100%
+}
+
+.view-style-controls .btn {
+  width: 50%
+}
+
+@media (max-width: 575px) {
+  .view-style-row {
+    display: none;
+  }
+}
+
 
 .results-header p {
   padding: 0 1rem;
@@ -352,174 +380,312 @@ body.hasHover #filters .filter-buttons.locations .col.staten-island:hover {
   font-size: 1.5rem;
 }
 
+.results-header p a.new-campaign {
+  font-weight: bold;
+}
+
 .results-header p span.search-term {
   font-weight: bold;
 }
 
 
-.card {
+
+.all-campaigns-body {
+  background-color: #f3f2f1;
+}
+
+.all-campaigns-body .campaign-list-container .campaign-list {
+  margin: 2rem 0 2rem;
+  padding: 0;
+}
+
+.all-campaigns-body .campaign-list-container .campaign-list.matching {
+  border-bottom: 2px solid #333;
+}
+
+.all-campaigns-body .campaign-list-container .campaign-list.not-matching .row-item .card .campaign {
+  background-color: #e9e9e9;
+}
+
+.all-campaigns-body .campaign-list-container .campaign-list.not-matching .row-item .card .campaign ul.campaign-details li.list-group-item {
+  background-color: #e9e9e9;
+}
+
+.all-campaigns-body .campaign-list-container .campaign-list.not-matching .row-item .card .campaign ul.campaign-details li.success-list-item {
+  color: #000;
+}
+
+.all-campaigns-body .campaign-list-container .campaign-list .row-item.list-row-item {
+  flex: 0 0 100%;
+  max-width: 100%;
+  width: 100%;
+}
+
+
+@media (min-width: 768px) {
+
+  .all-campaigns-body .campaign-list-container .campaign-list .row-item.list-row-item .card .campaign .card-top {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .all-campaigns-body .campaign-list-container .campaign-list .row-item.list-row-item .card .campaign .card-top .card-body {
+    padding: 0.75rem 1.25rem;
+    width: 50%;
+  }
+
+  .all-campaigns-body .campaign-list-container .campaign-list .row-item.list-row-item .card .campaign .card-top .card-body h1 {
+    margin-bottom: 0;
+  }
+
+  .all-campaigns-body .campaign-list-container .campaign-list .row-item.list-row-item .card .campaign .list-group-flush {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .all-campaigns-body .campaign-list-container .campaign-list .row-item.list-row-item .card .campaign .list-group-flush .list-group-item {
+    padding: 0.75rem 1.25rem;
+  }
+
+  .all-campaigns-body .campaign-list-container .campaign-list .row-item.list-row-item .card .campaign .list-group-flush .list-group-item.no-padding {
+    padding: 0;
+  }
+
+  .all-campaigns-body .campaign-list-container .campaign-list .row-item.list-row-item .card .campaign .list-group-flush .list-group-item.success-list-item {
+    width: 100%;
+  }
+
+  .all-campaigns-body .campaign-list-container .campaign-list .row-item.list-row-item .card .campaign .list-group-flush .list-group-item.description-list-item {
+    margin-bottom: 0;
+    width: 100%;
+  }
+
+  .all-campaigns-body .campaign-list-container .campaign-list .row-item.list-row-item .card .campaign .list-group-flush .list-group-item.description-list-item .grid-view {
+    display: none;
+  }
+
+  .all-campaigns-body .campaign-list-container .campaign-list .row-item.list-row-item .card .campaign .list-group-flush .list-group-item.description-list-item .list-view {
+    display: block;
+  }
+
+  .all-campaigns-body .campaign-list-container .campaign-list .row-item.list-row-item .card .campaign .list-group-flush .list-group-item.signatures-list-item {
+    border-left:   0;
+    border-right:  1px solid rgba(0,0,0,0.125);
+    border-top:    0;
+    border-bottom: 0;
+    display: inline-block !important;
+    line-height: 100%;
+    vertical-align: middle;
+    width: 30%;
+  }
+
+  .all-campaigns-body .campaign-list-container .campaign-list .row-item.list-row-item .card .campaign .list-group-flush .list-group-item.campaign-starter-list-item {
+    border-left:   0;
+    border-right:  1px solid rgba(0,0,0,0.125);
+    border-top:    0;
+    border-bottom: 0;
+    display: inline-block !important;
+    line-height: 100%;
+    margin: 0rem;
+    vertical-align: middle;
+    width: 55%;
+  }
+
+  .all-campaigns-body .campaign-list-container .campaign-list .row-item.list-row-item .card .campaign .list-group-flush .list-group-item.social-media-list-item {
+    border-left:   0;
+    border-right:  0;
+    border-top:    0;
+    border-bottom: 0;
+    display: inline-block !important;
+    line-height: 100%;
+    margin: 0rem;
+    vertical-align: middle;
+    width: 15%;
+  }
+
+  .all-campaigns-body .campaign-list-container .campaign-list .row-item.list-row-item .card .campaign .list-group-flush .list-group-item.social-media-list-item .social-media-items {
+    text-align: center;
+  }
+
+  .all-campaigns-body .campaign-list-container .campaign-list .row-item.list-row-item .card .campaign .list-group-flush .list-group-item.signing-list-item {
+    width: 100%;
+  }
+
+}
+
+
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card {
   margin: 0 0 1rem;
 }
 
-.card .campaign.already-signed {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign.already-signed {
   color: #999;
 }
 
-.card .campaign.already-signed a {
-  color: rgba(0, 123, 255, 0.5);
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign.already-signed .campaign-details .campaign-description a {
+  // color: rgba(0, 123, 255, 0.5);
 }
 
-.card .campaign .campaign-details .col {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col {
   font-size: 1.125rem;
 }
 
-.card .campaign .campaign-details .col.sign {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.sign {
   cursor: pointer;
 }
 
-.card .campaign .campaign-details .col.to-be-signed {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.to-be-signed {
   cursor: pointer;
 }
 
-.card .campaign .campaign-details .col.citywide {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.citywide {
   background-color: rgba(255, 179, 71, 0.25);
 }
 
-.card .campaign .campaign-details .col.statewide {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.statewide {
   background-color: rgba(0, 119, 200, 0.25);
 }
 
-.card .campaign .campaign-details .col.bronx {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.bronx {
   background-color: rgba(245, 199, 184, 0.25);
 }
 
-.card .campaign .campaign-details .col.brooklyn {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.brooklyn {
   background-color: rgba(147, 230, 180, 0.25);
 }
 
-.card .campaign .campaign-details .col.manhattan {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.manhattan {
   background-color: rgba(0, 200, 238, 0.25);
 }
 
-.card .campaign .campaign-details .col.queens {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.queens {
   background-color: rgba(243, 234, 161, 0.25);
 }
 
-.card .campaign .campaign-details .col.staten-island {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.staten-island {
   background-color: rgba(218, 197, 208, 0.25);
 }
 
 
-.card .campaign .campaign-details .col.sign.citywide {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.sign.citywide {
   background-color: rgba(255, 179, 71, 0.5);
 }
 
-.card .campaign .campaign-details .col.sign.statewide {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.sign.statewide {
   background-color: rgba(0, 119, 200, 0.5);
 }
 
-.card .campaign .campaign-details .col.sign.bronx {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.sign.bronx {
   background-color: rgba(245, 199, 184, 0.5);
 }
 
-.card .campaign .campaign-details .col.sign.brooklyn {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.sign.brooklyn {
   background-color: rgba(147, 230, 180, 0.5);
 }
 
-.card .campaign .campaign-details .col.sign.manhattan {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.sign.manhattan {
   background-color: rgba(0, 200, 238, 0.5);
 }
 
-.card .campaign .campaign-details .col.sign.queens {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.sign.queens {
   background-color: rgba(243, 234, 161, 0.5);
 }
 
-.card .campaign .campaign-details .col.sign.staten-island {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.sign.staten-island {
   background-color: rgba(218, 197, 208, 0.5);
 }
 
 
-.card .campaign .campaign-details .col.to-be-signed.citywide {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.to-be-signed.citywide {
   background-color: rgba(255, 179, 71, 1.0);
 }
 
-.card .campaign .campaign-details .col.to-be-signed.statewide {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.to-be-signed.statewide {
   background-color: rgba(0, 119, 200, 1.0);
 }
 
-.card .campaign .campaign-details .col.to-be-signed.bronx {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.to-be-signed.bronx {
   background-color: rgba(245, 199, 184, 1.0);
 }
 
-.card .campaign .campaign-details .col.to-be-signed.brooklyn {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.to-be-signed.brooklyn {
   background-color: rgba(147, 230, 180, 1.0);
 }
 
-.card .campaign .campaign-details .col.to-be-signed.manhattan {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.to-be-signed.manhattan {
   background-color: rgba(0, 200, 238, 1.0);
 }
 
-.card .campaign .campaign-details .col.to-be-signed.queens {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.to-be-signed.queens {
   background-color: rgba(243, 234, 161, 1.0);
 }
 
-.card .campaign .campaign-details .col.to-be-signed.staten-island {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .campaign-details .col.to-be-signed.staten-island {
   background-color: rgba(218, 197, 208, 1.0);
 }
 
 
-.card .campaign.already-signed .campaign-details .col.already-signed {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign.already-signed .campaign-details .col.already-signed {
   background-color: #ccc;
 }
 
 
 
-/*.card .campaign .campaign-details div.sign {
+/*.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .list-group-flush .campaign-details div.sign {
   background-color: #000;
   color: #fff;
   font-size: 13pt;
 }*/
 
-.card .campaign .campaign-details span.borough {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .list-group-flush {
+  margin: 0;
+}
+
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .list-group-flush .campaign-details span.borough {
   color: #212529;
   font-weight: 300;
 }
 
 
 
-.card .campaign .campaign-name {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .list-group-flush .campaign-name {
   /*text-align: center;*/
 }
 
-.card .campaign .campaign-details {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .list-group-flush .campaign-details {
   margin: 0;
 }
 
-.card .campaign .campaign-details p {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .list-group-flush .campaign-details p {
   margin: 0;
 }
 
 
-.card .campaign li.success-list-item {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .list-group-flush li.success-list-item {
   background-color: #e9632d;
   color: #fff;
 }
 
 
-.card .campaign li.campaign-starter-list-item span.starter {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .list-group-flush li.campaign-starter-list-item span.starter {
   font-weight: bold;
 }
 
-.card .campaign li.social-media-list-item i.fa.fa-facebook-square {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .list-group-flush li.social-media-list-item .social-media-items a.social-media-share-link i {
+  vertical-align: -webkit-baseline-middle;
+}
+
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .list-group-flush li.social-media-list-item .social-media-items a.social-media-share-link i.fa.fa-facebook-square {
   color: #29487d;
 }
 
-.card .campaign li.social-media-list-item i.fa.fa-twitter-square {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .list-group-flush li.social-media-list-item .social-media-items a.social-media-share-link i.fa.fa-twitter-square {
   color: #1da1f2;
 }
 
 
-.card .campaign li.description-list-item.d-block {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .list-group-flush li.description-list-item.d-block {
   -webkit-animation: fadeIn 1s;
   animation: fadeIn 1s;
 }
@@ -534,45 +700,27 @@ body.hasHover #filters .filter-buttons.locations .col.staten-island:hover {
       to { opacity: 1; }
 }
 
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .list-group-flush li.description-list-item .grid-view {
+  display: block;
+}
 
-.card .campaign li.signatures-list-item .progress {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .list-group-flush li.description-list-item .list-view {
+  display: none;
+}
+
+
+.all-campaigns-body .campaign-list-container .campaign-list .card .campaign li.signatures-list-item .progress {
   margin-top: 0.5rem;
 }
 
-.card .campaign .card-text:last-child {
+.all-campaigns-body .campaign-list-container .campaign-list .card .campaign .card-text:last-child {
   margin: 0 0 0.375rem;
 }
 
 @media (min-width: 576px) {
-  .card .campaign .card-text:last-child {
+  .all-campaigns-body .campaign-list-container .campaign-list .card .campaign .card-text:last-child {
     margin: 0;
   }
-}
-
-
-.all-campaigns-body {
-  background-color: #f3f2f1;
-}
-
-.campaign-list {
-  margin: 2rem 0 2rem;
-  padding: 0;
-}
-
-.campaign-list.matching {
-  border-bottom: 2px solid #333;
-}
-
-.campaign-list.not-matching .campaign {
-  background-color: #e9e9e9;
-}
-
-.campaign-list.not-matching .campaign ul.campaign-details li.list-group-item {
-  background-color: #e9e9e9;
-}
-
-.campaign-list.not-matching .campaign ul.campaign-details li.success-list-item {
-  color: #000;
 }
 
 

@@ -12,6 +12,8 @@ class ApplicationController < ActionController::Base
 
   def make_it_easy
 
+    @view_style = unserialize_hash(cookies['view_style']) || 'grid'
+
     if !(campaignData = unserialized_campaigns_cookie).empty?
       @selected_campaigns       = campaignData['selected']
       @campaigns_already_signed = campaignData['already_signed']

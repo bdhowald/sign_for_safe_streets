@@ -28,8 +28,18 @@
 
       = "#{results_string_parts[:location_string]}"
 
+
+    - if campaigns.count == 0
+      %p.start-campaign{'aria-hidden' => 'true'}
+        That's okay!
+        %a.new-campaign{href: 'https://campaigns.transalt.org/new', target: '_blank'}
+          Start your own campaign!
+      %span.sr-only
+        That's okay! Start your own campaign!
+
+
 %div{class: "row campaign-list #{'matching' if !other_campaigns.empty?}"}
-  = render partial: 'application/campaign', collection: campaigns.sort{|x,y| x.name.length <=> y.name.length}, cached: -> campaign { [ campaign, campaigns_already_signed.include?(campaign.id), selected_campaigns.include?(campaign.id) ] }
+  = render partial: 'application/campaign', collection: campaigns.sort{|x,y| x.name.length <=> y.name.length}, cached: -> campaign { [ campaign, campaigns_already_signed.include?(campaign.id), selected_campaigns.include?(campaign.id), @view_style ] }
 
 
 - if !other_campaigns.empty?
@@ -38,4 +48,4 @@
       Other campaigns:
 
   %div.row.campaign-list.not-matching
-    = render partial: 'application/campaign', collection: other_campaigns.sort{|x,y| x.name.length <=> y.name.length}, cached: -> campaign { [ campaign, campaigns_already_signed.include?(campaign.id), selected_campaigns.include?(campaign.id) ] }
+    = render partial: 'application/campaign', collection: other_campaigns.sort{|x,y| x.name.length <=> y.name.length}, cached: -> campaign { [ campaign, campaigns_already_signed.include?(campaign.id), selected_campaigns.include?(campaign.id), @view_style ] }
