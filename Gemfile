@@ -7,6 +7,7 @@ end
 
 # User-specific gems
 gem 'bootstrap', '~> 4.0.0.beta2'
+gem 'dotenv-rails'
 gem 'font-awesome-sass'
 gem 'haml-rails'
 gem 'jquery-rails'
