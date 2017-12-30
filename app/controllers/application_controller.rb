@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   THREAD_COUNT = 8  # tweak this number for maximum performance.
 
 
-  def make_it_easy
+  def index
 
     @view_style = unserialize_hash(cookies['view_style']) || 'grid'
 
