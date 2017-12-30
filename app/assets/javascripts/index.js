@@ -1070,14 +1070,26 @@ var onHomePageLoad = function(){
         $signAllButton.prop('disabled', true)
 
       } else if ($unsignedMatchingCampaigns.length == $unsignedMatchingCampaigns.find('.col.to-be-signed').length) {
-        // There are as many unsigned campaigns as campaigns to be signed.
+        // There are as many unsigned campaigns as campaigns user has already added to be signed.
 
         if ($unsignedMatchingCampaigns.length == 0) {
-          // We signed them all.
+          // There are no unsigned matching campaigns
 
-          $signAllButton.html('All Campaigns Signed');
-          $signAllButton.removeClass('btn-primary btn-danger').addClass('btn-secondary');
-          $signAllButton.prop('disabled', true)
+          if ($allUnsignedCampaigns.length == 0) {
+            // There are no unsigned campaigns at all
+
+            $signAllButton.html('All Campaigns Signed');
+            $signAllButton.removeClass('btn-primary btn-danger').addClass('btn-secondary');
+            $signAllButton.prop('disabled', true);
+
+          } else {
+            // There are unsigned campaigns, but not of those matching.
+
+            $signAllButton.html('Matching Campaigns Signed');
+            $signAllButton.removeClass('btn-primary btn-danger').addClass('btn-secondary');
+            $signAllButton.prop('disabled', true);
+
+          }
 
         } else {
           // Or we have selected them all.
