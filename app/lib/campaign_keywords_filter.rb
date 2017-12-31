@@ -81,7 +81,7 @@ class CampaignKeywordsFilter
 
     end
 
-    puts "Filtered #{@campaigns.count} campaigns"
+    puts "\nFiltered #{@campaigns.count} campaigns"
   end
 
   def add(campaigns)
