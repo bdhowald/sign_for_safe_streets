@@ -364,8 +364,6 @@ var onHomePageLoad = function(){
         // If we showed the notification box, hide it.
         if (stickyFooter.classList.value.indexOf('extended') != -1) {
           stickyFooter.classList.remove('extended');
-
-          notificationBox.className += ' sr-only';
         }
 
         // If we have selected campaigns, retract footer to hide notification box only if need be
