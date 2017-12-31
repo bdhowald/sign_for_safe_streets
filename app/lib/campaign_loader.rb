@@ -292,9 +292,9 @@ class CampaignLoader
   # @param {Array} processed_campaigns - array of processed and active campaigns
   #
   def filter_processed_campaigns(processed_campaigns)
-    puts "Filtering campaigns..."
+    puts "\nFiltering campaigns..."
     CampaignKeywordsFilter.new(processed_campaigns).filter_campaigns
-    puts "Finished filtering campaigns\n\n"
+    puts "\nFinished filtering campaigns\n"
   end
 
 
