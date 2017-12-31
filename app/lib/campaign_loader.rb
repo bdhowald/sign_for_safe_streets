@@ -247,7 +247,9 @@ class CampaignLoader
 
     end
 
-    puts "Finished processing raw campaign data\n\n"
+    puts "\nFinished processing raw campaign data\n"
+
+    puts "\nCreated or updated #{processed_campaigns.count} campaigns\n"
 
     processed_campaigns
 

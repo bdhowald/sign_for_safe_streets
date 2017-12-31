@@ -15,6 +15,8 @@ class CampaignKeywordsFilter
 
     @campaigns.each do |campaign|
 
+      puts "Filtering campaign :#{campaign.name}"
+
       old_tags = campaign.tags
       new_tags = []
 
@@ -77,8 +79,9 @@ class CampaignKeywordsFilter
       # tags to be added
       (new_tags - old_tags).each{|new_tag| campaign.tags << new_tag}
 
-
     end
+
+    puts "Filtered #{@campaigns.count} campaigns"
   end
 
   def add(campaigns)
