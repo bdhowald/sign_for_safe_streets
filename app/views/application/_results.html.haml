@@ -38,7 +38,7 @@
         That's okay! Start your own campaign!
 
 
-%div{class: "row campaign-list #{'matching' if !other_campaigns.empty?}"}
+%div{class: "row campaign-list #{(campaigns.empty? ? 'empty' : 'matching') if !other_campaigns.empty?}"}
   = render partial: 'application/campaign', collection: campaigns.sort{|x,y| x.name.length <=> y.name.length}, cached: -> campaign { [ campaign, campaigns_already_signed.include?(campaign.id), selected_campaigns.include?(campaign.id), @view_style ] }
 
 

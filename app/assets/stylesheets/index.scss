@@ -395,8 +395,13 @@ body.hasHover #filters .filter-buttons.locations .col.staten-island:hover {
 }
 
 .all-campaigns-body .campaign-list-container .campaign-list {
-  margin: 0;
-  padding: 2rem 0 1rem;
+  margin: 1rem 0 0;
+  padding: 0 0 1rem;
+}
+
+.all-campaigns-body .campaign-list-container .campaign-list.empty {
+  border-bottom: 2px solid #666;
+  padding: 0;
 }
 
 .all-campaigns-body .campaign-list-container .campaign-list.matching {
