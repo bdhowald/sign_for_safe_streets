@@ -72,7 +72,7 @@
     = form_tag('/review', method: 'POST') do
 
       %input#petition-data{type: 'hidden', name:'campaigns[selected]'}
-      %input#unsigned-campaign-ids{type: 'hidden', value: @all_active_campaigns.collect(&:id).sort}
+      %input#unsigned-campaign-ids{type: 'hidden', value: (@all_active_campaigns.collect(&:id) - campaigns_already_signed).sort }
 
       %input#search-terms{type: 'hidden', value: '[]'}
       %input#categories-filter.filter-terms{type: 'hidden', value: '[]', 'data-filter-type' => 'categories'}
