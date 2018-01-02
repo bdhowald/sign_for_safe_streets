@@ -52,3 +52,10 @@
 
 
   = render partial: 'layouts/footer'
+
+
+:javascript
+  #{@just_signed_campaigns.collect(&:id)}.forEach(function(campaignID){
+    // Trackasaurus
+    window.tracker.track('User signed campaign', {campaignID: campaignID});
+  })

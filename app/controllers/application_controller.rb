@@ -247,7 +247,7 @@ class ApplicationController < ActionController::Base
 
       if responses.all?{|_, res| res['success'] == 'success' }
 
-        return redirect_to thank_you_path
+        return redirect_to thank_you_path, flash: { just_signed: true  }
 
       else
 
