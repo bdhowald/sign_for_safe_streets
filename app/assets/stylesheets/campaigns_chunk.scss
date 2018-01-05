@@ -216,3 +216,46 @@
 .campaigns-chunk .explanation .campaigns .campaign .social-media-share-links a.social-media-share-link i.fa.fa-twitter-square {
   color: #1da1f2;
 }
+
+.campaigns-chunk .explanation .campaigns .campaign .remove-campaign {
+  align-items: center;
+  border-top: 1px solid #ccc;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  min-height: 3.65rem;
+  padding: 0.75rem 0.75rem;
+}
+
+.campaigns-chunk .explanation .campaigns .campaign .remove-campaign .remove-text {
+  line-height: 1.6rem;
+}
+
+.campaigns-chunk .explanation .campaigns .campaign .remove-campaign i {
+  border: 1px solid #000;
+  float: right;
+  line-height: 2rem;
+  font-size: 1rem;
+  padding: 0px 0.25rem;
+  text-align: center;
+  width: 3.75rem;
+}
+
+// @media (max-width: 299px) {
+//   .campaigns-chunk .explanation .campaigns .campaign .remove-campaign i {
+//     display: none;
+//   }
+// }
+
+// @media (max-width: 767px) and (min-width: 576px) {
+//   .campaigns-chunk .explanation .campaigns .campaign .remove-campaign i {
+//     display: none;
+//   }
+// }
+
+.campaigns-chunk .explanation .campaigns .campaign .remove-campaign i.remove-button {
+  float: none;
+  line-height: 2rem;
+  width: 45%;
+}

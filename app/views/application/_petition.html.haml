@@ -1,11 +1,13 @@
 - previously_signed_petitions = (@recently_signed_petitions || []) + (@already_signed_campaigns || [])
 - previously_signed           = previously_signed_petitions.include?(petition)
 - just_signed_petitions       = (@just_signed_campaigns || [])
+- signed                      = ((previously_signed_petitions + just_signed_petitions).include?(petition))
 - errors                      = (@errors || {})[petition.id]
 - has_errors                  = !errors.blank?
 
 - show_detail                 = petition.id == petition_to_expand
-- show_share_links            = (previously_signed_petitions + just_signed_petitions).include?(petition) && current_page?(:controller => 'application', :action => 'thank_you')
+- show_remove_button          = !signed && controller_name == 'application' && (request.fullpath.ends_with?('review') || request.fullpath.ends_with?('sign'))
+- show_share_links            = (previously_signed_petitions + just_signed_petitions).include?(petition) && current_page?(controller: 'application', action: 'thank_you')
 
 - campaign_domain             = 'https://campaigns.transalt.org'
 
@@ -45,6 +47,12 @@
             = remove_targets_abbreviations(target.strip)
           %li.target.narrow-display
             = abbreviate_targets(target.strip)
+
+    - if show_remove_button && false
+      %div.remove-campaign
+        %div.remove-text
+          Remove
+        %i.fa.fa-times{'aria-hidden' => 'true'}
 
 
     - if show_share_links

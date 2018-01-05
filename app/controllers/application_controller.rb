@@ -19,7 +19,15 @@ class ApplicationController < ActionController::Base
       @campaigns_already_signed = campaignData['already_signed']
     end
 
-    @all_active_campaigns = Campaign.where(is_active: true)
+    if (@search_term    = params['search-term']).present?
+      @campaigns        = Campaign.active.search_full_text(@search_term)
+    elsif (campaign_ids = params['campaigns'].present? && params['campaigns'].reject{|id| (id =~ /\A[-+]?[0-9]*\.?[0-9]+\Z/).nil?}).present?
+      @campaigns        = Campaign.active.where(id: campaign_ids)
+    else
+      @campaigns        = Campaign.active
+    end
+
+    @other_campaigns  = Campaign.active.where.not(id: @campaigns.collect(&:id))
 
     render
   end

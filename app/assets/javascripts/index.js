@@ -232,7 +232,7 @@ var onHomePageLoad = function(){
     if (action == 'add'){
       that.tracker.track('Campaigns added', {campaignIDs: campaignIDs});
     } else if (action == 'remove') {
-      that.tracker.track('Campaign removed', {campaignIDs: campaignIDs});
+      that.tracker.track('Campaigns removed', {campaignIDs: campaignIDs});
     }
 
     // var timePoint6 = new Date().getTime();
@@ -443,7 +443,7 @@ var onHomePageLoad = function(){
    * Updates display for campaign when user agrees to sign it or removes it.
    * @name  changeSignedDisplay
    * @param {Object}  $campaigns - the clicked sign button
-   * @param {boolean} signed     - current state (to be signed or not)
+   * @param {boolean} action     - current state (to be signed or not)
    */
   function changeSignedDisplay($campaigns, action) {
 
@@ -720,13 +720,29 @@ var onHomePageLoad = function(){
    */
   function loadCampaignsToBeSigned() {
 
-    // Get campaigns to be signed.
-    var selectedCampaigns = getSelectedCampaigns();
+    var selectedCampaignIDs = getSelectedCampaigns();
 
-    selectedCampaigns.forEach(function(campaignID){
-      var $elem = $(document.querySelectorAll("[data-campaign-id='" + campaignID.toString() + "']"));
-      changeSignedDisplay($elem.find('div.sign'), true)
+    // Get campaigns to be signed.
+    var selectedCampaigns = selectedCampaignIDs.map(function(campaignID){
+      var nodeList = document.querySelectorAll("[data-campaign-id='" + campaignID.toString() + "']");
+      var array = Array.prototype.slice.call(nodeList);
+      return array[0]
     });
+
+    changeSignedDisplay($(selectedCampaigns).find('.sign'), 'add')
+
+
+    var unselectedCampaigns = JSON.parse($('#unsigned-campaign-ids').val() || '[]').filter(function(i) {
+      return selectedCampaignIDs.indexOf(i) < 0;
+    });
+
+    unselectedCampaigns = unselectedCampaigns.map(function(campaignID){
+      var nodeList = document.querySelectorAll("[data-campaign-id='" + campaignID.toString() + "']");
+      var array = Array.prototype.slice.call(nodeList);
+      return array[0]
+    });
+
+    changeSignedDisplay($(unselectedCampaigns).find('.to-be-signed'), 'remove')
 
   }
 

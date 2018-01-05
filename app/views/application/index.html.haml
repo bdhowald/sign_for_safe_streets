@@ -1,3 +1,6 @@
+- campaigns                = @campaigns || []
+- other_campaigns          = @other_campaigns || []
+
 - campaigns_already_signed = @campaigns_already_signed || []
 - selected_campaigns       = @selected_campaigns || []
 - have_selected_campaigns  = @selected_campaigns.present?
@@ -13,9 +16,9 @@
             %div.input-group
               %span.input-group-addon
                 %i.fa.fa-search
-              %input.form-control.typeahead{'aria-label' => 'Search bar', placeholder: 'ex: bike lanes, cameras, Queens', type: 'text', 'aria-label' => 'Type search terms here'}
+              %input.form-control.typeahead{'aria-label' => 'Search bar', placeholder: 'ex: bike lanes, cameras, Queens', type: 'text', 'aria-label' => 'Type search terms here', value: @search_term}
               %span.input-group-btn
-                %button.btn.btn-secondary.clear-search{type: 'button', style: 'display:none', 'aria-label' => 'Clear search', 'aria-hidden' => 'true'}
+                %button.btn.btn-secondary.clear-search{type: 'button', style: "#{@search_term.present? ? '' : 'display:none'}", 'aria-label' => 'Clear search', 'aria-hidden' => 'true'}
                   %i.fa.fa-times
 
             %div.row.filter-buttons.categories
@@ -36,15 +39,51 @@
       %div.row
         %div.col-lg-12
           %div.sign-all
-            - if selected_campaigns.present? && @selected_campaigns.sort == @all_active_campaigns.collect(&:id).sort
-              %button.btn.btn-danger.btn-lg.btn-block{type: 'button'}
-                Remove All Campaigns
-            - elsif @all_active_campaigns.collect(&:id).sort == campaigns_already_signed.sort
-              %button.btn.btn-secondary.btn-lg.btn-block{type: 'button'}
-                All Campaigns Signed
+            - if !other_campaigns.empty?
+              / there is a subset of all campaigns currently filtered for
+              - if campaigns.empty?
+                / that subset is empty
+                %button.btn.btn-secondary.btn-lg.btn-block{type: 'button'}
+                  No Campaigns Match
+              - else
+                / that subset is not empty
+                - if (campaigns.collect(&:id) - campaigns_already_signed).empty?
+                  / the subset is only signed campaigns
+                  %button.btn.btn-secondary.btn-lg.btn-block{type: 'button'}
+                    Matching Campaigns Signed
+                - else
+                  / the subset is not only signed campaigns
+                  - if (campaigns.collect(&:id) - (selected_campaigns + campaigns_already_signed)).empty?
+                    / the subset is only added and signed campaigns
+                    %button.btn.btn-danger.btn-lg.btn-block{type: 'button'}
+                      Remove Matching Campaigns
+                  - else
+                    / the subset has unadded campaigns
+                    %button.btn.btn-primary.btn-lg.btn-block{type: 'button'}
+                      Add Matching Campaigns
             - else
-              %button.btn.btn-primary.btn-lg.btn-block{type: 'button'}
-                Add All Campaigns
+              / all active campaigns are shown (no subset being filtered for)
+              - if campaigns.empty?
+                / we don't have any campaigns
+                %button.btn.btn-secondary.btn-lg.btn-block{type: 'button'}
+                  No Campaigns
+              - else
+                / we have active campaigns
+                - if (campaigns.collect(&:id) - campaigns_already_signed).empty?
+                  / we only have signed campaigns
+                  %button.btn.btn-secondary.btn-lg.btn-block{type: 'button'}
+                    All Campaigns Signed
+                - else
+                  / we have unsigned campaigns
+                  - if (campaigns.collect(&:id) - (selected_campaigns + campaigns_already_signed)).empty?
+                    / we have only added and signed campaigns
+                    %button.btn.btn-danger.btn-lg.btn-block{type: 'button'}
+                      Remove All Campaigns
+                  - else
+                    / we have unadded campaigns
+                    %button.btn.btn-primary.btn-lg.btn-block{type: 'button'}
+                      Add All Campaigns
+
 
       %div.row.view-style-row
         %div.col-lg-12
@@ -63,8 +102,7 @@
     %div.container
       %div.row
         %div.campaign-list-container
-          %div.row.campaign-list
-            = render partial: 'application/campaign', collection: @all_active_campaigns.sort{|x,y| x.name.length <=> y.name.length}, cached: -> campaign { [ campaign, campaigns_already_signed.include?(campaign.id), selected_campaigns.include?(campaign.id), @view_style ] }
+          = render partial: 'application/results', locals: {campaigns: campaigns, other_campaigns: other_campaigns}
 
 
 
@@ -72,9 +110,9 @@
     = form_tag('/review', method: 'POST') do
 
       %input#petition-data{type: 'hidden', name:'campaigns[selected]'}
-      %input#unsigned-campaign-ids{type: 'hidden', value: (@all_active_campaigns.collect(&:id) - campaigns_already_signed).sort }
+      %input#unsigned-campaign-ids{type: 'hidden', value: ((campaigns + other_campaigns).collect(&:id) - campaigns_already_signed).sort }
 
-      %input#search-terms{type: 'hidden', value: '[]'}
+      %input#search-terms{type: 'hidden', value: "#{@search_term.nil? ? '[]' : [JSON.unparse(@search_term)]}"}
       %input#categories-filter.filter-terms{type: 'hidden', value: '[]', 'data-filter-type' => 'categories'}
       %input#locations-filter.filter-terms{type: 'hidden', value: '[]', 'data-filter-type' => 'locations'}
       %input#view-style{type: 'hidden', value: @view_style}

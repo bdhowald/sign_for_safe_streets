@@ -1,55 +1,75 @@
 'use strict'
 
-var onReviewPageLoad = function(){
+var onReviewPageLoad = (function(){
 
-  var that = this;
-
-  initialize();
+  var tracker;
+  var googlePlaceSelected;
 
   /**
    * Sets up all js functions on this page.
    * @name initialize
    */
-  function initialize(){
-    setUpGoogleListeners();
-    that.googlePlaceSelected = checkAddressFields();
+  var initialize = function(){
+    bindEventListeners();
+    googlePlaceSelected = checkAddressFields();
 
-    that.tracker             = window.tracker;
+    tracker             = window.tracker;
   }
 
 
-  $('body').on('click', 'a.information-toggle', function(event){
-    // Expand a campaign's description.
-    toggleTargetDetails(event);
+  /**
+   * Sets up event listeners for page
+   * @name bindEventListeners
+   */
+  var bindEventListeners = function(){
+    $('body').on('click', 'a.information-toggle', function(event){
+      // Expand a campaign's description.
+      toggleTargetDetails(event.target);
 
-    return false;
-  })
+      return false;
+    })
 
 
-  $('body').on('submit', '#user-form', function(){
-    // Gather ids of campaigns to sign and serialize them for submission.
-    gatherCampaignIdsForSubmission();
-  })
+    $('body').on('click', '.remove-campaign', function(event){
+      // Remove a campaign from the list to be signed;
+      removeCampaign(event);
+
+      return false;
+    })
+
+    $('body').on('click', '.remove-button', function(event){
+      // Confirm removal of a campaign.
+      confirmRemoveCampaign(event);
+
+      return false;
+    })
 
 
-  $('body').on('click', 'div.read-more', function(event){
-    // Show the full petition letter of a campaign.
-    showFullLetter(event)
+    $('body').on('click', 'div.read-more', function(event){
+      // Show the full petition letter of a campaign.
+      showFullLetter(event)
 
-    return false;
-  })
+      return false;
+    })
 
-  $('body').on('submit', '#user-form', function(event){
-    // Validate the user form.
-    validateForm(event);
-  })
+    $('body').on('submit', '#user-form', function(event){
+      // Gather ids of campaigns to sign and serialize them for submission.
+      gatherCampaignIdsForSubmission();
+
+      // Trackasaurus
+      tracker.track("User pressed 'Sign' Button.", {campaignIDs: campaignIDs});
+
+      // Validate the user form.
+      validateForm(event);
+    })
+  }
 
 
   /**
    * If user address info is complete, a Google place has been selected.
    * @name  checkAddressFields
    */
-  function checkAddressFields(){
+  var checkAddressFields = function(){
     if ($('#user-address-street').val() === '') return false
     if ($('#user-address-city').val()   === '') return false
     if ($('#user-address-state').val()  === '') return false
@@ -60,14 +80,53 @@ var onReviewPageLoad = function(){
 
 
   /**
+   * Remove the petition from the list to be signed.
+   * @name  confirmRemoveCampaign
+   * @param {Object} event - javascript event of confirming to remove campaign or not
+   */
+  var confirmRemoveCampaign = function(event){
+    var $removeButton = $(event.currentTarget);
+    var $removeDiv    = $removeButton.parents('.remove-campaign')
+
+    if ($removeButton.data('remove')) {
+      var campaign    = $removeDiv.parents('li.campaign');
+
+      // Remove petition id from cookies['selected']
+      var campaignID         = campaign.data('campaign-id');
+      var campaignsRemaining = removeFromSelectedCampaigns(campaignID);
+
+      // If no campaigns left, go to petition page
+      if (campaignsRemaining) {
+        // Remove petition div
+        campaign.remove();
+
+        // Expand first remaining petition
+        toggleTargetDetails($('.information-toggle').first());
+      } else {
+        // document.location.href = '/'
+        Turbolinks.visit("/", { action: "replace" })
+      }
+    } else {
+      $removeDiv.html(
+        "<div class='remove-text'>" +
+          "Remove" +
+        "</div>" +
+        "<i class='fa fa-times aria-hidden='true'></i>"
+      )
+    }
+
+  }
+
+
+  /**
    * Make sure user selects a location through Google Places.
    * @name  ensureGooglePlaceSelected
    */
-  function ensureGooglePlaceSelected(){
+  var ensureGooglePlaceSelected = function(){
     var input = $('#user-address')[0];
     var $input = $('#user-address');
 
-    if (!that.googlePlaceSelected) {
+    if (!googlePlaceSelected) {
       input.setCustomValidity('You must select an address');
       $input.siblings('.invalid-feedback').text('You must select an address');
       return false
@@ -84,7 +143,7 @@ var onReviewPageLoad = function(){
    * Ensure campaign ids to sign are serialized in hidden input for submission.
    * @name gatherCampaignIdsForSubmission
    */
-  function gatherCampaignIdsForSubmission(){
+  var gatherCampaignIdsForSubmission = function(){
     var campaignIds = $('li.campaign').not('.signed').map(function() {
       return $(this).data('campaign-id')
     })
@@ -98,7 +157,7 @@ var onReviewPageLoad = function(){
    * @param {Object} location - Google place object
    * @param {string} granularity - honestly I don't know.
    */
-  function handleDetailsResult(location, granularity){
+  var handleDetailsResult = function(location, granularity){
     console.log(
       "We selected the first item from the list automatically " +
       "because the user didn't select anything"
@@ -114,12 +173,12 @@ var onReviewPageLoad = function(){
    * @param {Object} location - Google place object
    * @param {string} status - status of request, honestly I don't know.
    */
-  function handleLocationSelection(location, status){
+  var handleLocationSelection = function(location, status){
     // Change search bar location to address.
     $('#user-address').val(location.formatted_address);
 
     // Set flag to signal user has selected a place.
-    that.googlePlaceSelected = true;
+    googlePlaceSelected = true;
 
     // Set hidden address inputs
     setSelectedLocation(location);
@@ -137,7 +196,7 @@ var onReviewPageLoad = function(){
    * @name  inferUserChoice
    * @param {object} result - Google place object
    */
-  function inferUserChoice(result){
+  var inferUserChoice = function(result){
     var _this = this;
 
     var input = $('#user-address')[0];
@@ -154,7 +213,7 @@ var onReviewPageLoad = function(){
    * @param {object} input - address field object
    * @param {requestCallback} callback - callback to trigger on place selection.
    */
-  function performGoogleSearch(place, input, callback){
+  var performGoogleSearch = function(place, input, callback){
     if (place.name != ""){
       // The user pressed enter in the input
       // without selecting a result from the list
@@ -203,17 +262,51 @@ var onReviewPageLoad = function(){
 
 
   /**
+   * Remove the petition from the list to be signed.
+   * @name  removeCampaign
+   * @param {Object} event - javascript event of clicking to remove campaign
+   */
+  var removeCampaign = function(event){
+    var $removeDiv = $(event.currentTarget);
+
+    $removeDiv.html(
+      "<i class='fa fa-thumbs-up remove-button' aria-hidden='true' data-remove='false'></i>" +
+      "<i class='fa fa-trash-o remove-button' aria-hidden='true' data-remove='true'></i>"
+    )
+  }
+
+
+  /**
+   * Remove campaign from cookie.
+   * @name   removeFromSelectedCampaigns
+   * @param  {Integer} id - id of removed campaign
+   * @return {Bool} whether there are any more selected campaigns
+   */
+  var removeFromSelectedCampaigns = function(id){
+    var campaignCookie    = JSON.parse(Cookies('campaigns'));
+
+    campaignCookie.selected = campaignCookie.selected.filter(function(i) {
+      return [id].indexOf(i) < 0;
+    });
+
+    Cookies('campaigns', campaignCookie);
+
+    return campaignCookie.selected.length > 0
+  }
+
+
+  /**
    * Reset input fields when no Google place is selected.
    * @name resetAddressFields
    */
-  function resetAddressFields(){
+  var resetAddressFields = function(){
     $('#user-address-street').val('');
     $('#user-address-city').val('');
     $('#user-address-state').val('');
     $('#user-address-zip').val('');
 
     // Set flag to signal user no longer has a selected place.
-    that.googlePlaceSelected = false;
+    googlePlaceSelected = false;
   }
 
 
@@ -222,7 +315,7 @@ var onReviewPageLoad = function(){
    * @name  setSelectedLocation
    * @param {Object} place - Google Places object
    */
-  function setSelectedLocation(place){
+  var setSelectedLocation = function(place){
 
     if (typeof place !== "undefined" && place !== null) {
 
@@ -282,7 +375,8 @@ var onReviewPageLoad = function(){
    * Set up google event listeners.
    * @name  setUpGoogleListeners
    */
-  function setUpGoogleListeners(){
+  var setUpGoogleListeners = function(){
+
     var options = {
       types: ['geocode'],//['(cities)']
       componentRestrictions: {country: 'us'}
@@ -291,8 +385,10 @@ var onReviewPageLoad = function(){
     // Typeahead input
     var input = $('#user-address')[0];
 
+
     // If the input exists
     if (input && typeof(google) != 'undefined') {
+
       var autocomplete = new google.maps.places.Autocomplete(input, options);
 
       // attach event listener.
@@ -332,7 +428,7 @@ var onReviewPageLoad = function(){
    * @name  showFullLetter
    * @param {Object} event - jQuery event object
    */
-  function showFullLetter(event) {
+  var showFullLetter = function(event) {
     var $readMoreLink     = $(event.target);
 
     var $thisCampaign     = $readMoreLink.parents('li.campaign');
@@ -343,7 +439,7 @@ var onReviewPageLoad = function(){
     $thisBlockquote.html($thisBlockquote.data('full-letter'));
 
     // Trackasaurus
-    that.tracker.track('Campaign full letter viewed', {campaignID: $thisCampaign.data('campaign-id')});
+    tracker.track('Campaign full letter viewed', {campaignID: $thisCampaign.data('campaign-id')});
 
     // hide '(read more)'
     $readMoreLink.hide();
@@ -353,10 +449,10 @@ var onReviewPageLoad = function(){
   /**
    * Hides petition text and targets list for all campaigns except the selected one.
    * @name  toggleTargetDetails
-   * @param {Object} event - jQuery event of click on link header for selected campaign.
+   * @param {Object} toggleLink - link header for selected campaign
    */
-  function toggleTargetDetails(event) {
-    var $toggleLink             = $(event.target);
+  var toggleTargetDetails = function(toggleLink) {
+    var $toggleLink             = $(toggleLink);
     var $allCampaigns           = $toggleLink.parents('div.all-campaigns');
 
     var $thisCampaign           = $toggleLink.parents('li.campaign');
@@ -374,7 +470,7 @@ var onReviewPageLoad = function(){
       // var $thisCampaignsName    = $thisCampaign.find('.campaign-name');
 
       // Trackasaurus
-      that.tracker.track('Campaign details viewed', {campaignID: $thisCampaign.data('campaign-id')});
+      tracker.track('Campaign details viewed', {campaignID: $thisCampaign.data('campaign-id')});
 
 
       if ($thisCampaignsDetails.hasClass('d-none')) {
@@ -421,7 +517,7 @@ var onReviewPageLoad = function(){
    * @name  validateForm
    * @param {Object} event -  jQuery form submission event.
    */
-  function validateForm(event) {
+  var validateForm = function(event) {
 
     var form = event.target;
 
@@ -468,7 +564,7 @@ var onReviewPageLoad = function(){
         var campaignIDs = JSON.parse(petitionsToSign);
 
         // Trackasaurus
-        that.tracker.track('User attempted to sign campaigns', {campaignIDs: campaignIDs});
+        tracker.track('User attempted to sign campaigns', {campaignIDs: campaignIDs});
 
       }
     }
@@ -476,6 +572,13 @@ var onReviewPageLoad = function(){
 
   };
 
-}
+  return {
+    initialize: initialize,
+    initializeGooglePlaces: setUpGoogleListeners
+  }
 
-$(document).on("turbolinks:load", onReviewPageLoad)
+})();
+
+$(document).on("turbolinks:load", function(){
+  onReviewPageLoad.initialize()
+})
