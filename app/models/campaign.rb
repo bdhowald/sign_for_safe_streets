@@ -41,8 +41,8 @@ class Campaign < ApplicationRecord
   LINK_BASE_URL = "https://campaigns.transalt.org"
 
 
-  def description_first_paragraph
-    (description || " ").split(/<p>|<\/p>/).reject(&:blank?).first.strip
+  def description_n_paragraphs(num_paragraphs)
+    (description || " ").split(/<p>|<\/p>/).reject(&:blank?).first(num_paragraphs).collect(&:strip).join
   end
 
   def full_url

@@ -30,12 +30,12 @@
 
           %div.d-none.d-md-block.card-text.campaign-description.grid-view
             %span.letter-text
-              = (string_with_ellipses(campaign.description_first_paragraph, 200)).html_safe
-            = link_to(' (see more)', '#', {class: 'campaign-see-more', target: '_blank', 'data-full-text' => campaign.description.html_safe, 'data-shortened-text' => string_with_ellipses(campaign.description_first_paragraph, 200)}).html_safe
-          %div.card-text.campaign-description.list-view
+              = (string_with_ellipses(campaign.description_n_paragraphs(1), 200)).html_safe
+            = link_to(' (see more)', '#', {class: 'campaign-see-more', target: '_blank', 'data-full-text' => campaign.description.html_safe, 'data-shortened-text' => string_with_ellipses(campaign.description_n_paragraphs(1), 200)}).html_safe
+          %div.card-text.campaign-description.campaign-description.list-view
             %span.letter-text
-              = (string_with_ellipses(campaign.description, 400)).html_safe
-            = link_to(' (see more)', '#', {class: 'campaign-see-more', target: '_blank', 'data-full-text' => campaign.description.html_safe, 'data-shortened-text' => string_with_ellipses(campaign.description_first_paragraph, 200)}).html_safe
+              = (string_with_ellipses(campaign.description_n_paragraphs(1), 400)).html_safe
+            = link_to(' (see more)', '#', {class: 'campaign-see-more', target: '_blank', 'data-full-text' => campaign.description.html_safe, 'data-shortened-text' => string_with_ellipses(campaign.description_n_paragraphs(1), 400)}).html_safe
 
         %li.list-group-item.d-none.d-md-block.signatures-list-item>
           %span.signatures
