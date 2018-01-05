@@ -48,11 +48,24 @@
           %li.target.narrow-display
             = abbreviate_targets(target.strip)
 
-    - if show_remove_button && false
+    - if show_remove_button
       %div.remove-campaign
-        %div.remove-text
-          Remove
-        %i.fa.fa-times{'aria-hidden' => 'true'}
+        %div.remove-default
+          %div.remove-text{'aria-hidden' => 'true'}
+            Remove
+          %i.fa.fa-times.remove-dialog-icon{'aria-hidden' => 'true'}
+          %span.sr-only
+            Remove campaign
+        %div.remove-confirm{style: 'display:none;'}
+          %i.fa.fa-heart.remove-dialog-icon.remove-button{'aria-hidden' => 'true', 'data-remove' => 'false', 'role' => 'button', 'aria-pressed' => 'false'}
+          %i.fa.fa-trash-o.remove-dialog-icon.remove-button{'aria-hidden' => 'true', 'data-remove' => 'true', 'role' => 'button', 'aria-pressed' => 'false'}
+        %div.remove-undo{style: 'display:none;'}
+          %div.remove-undo-text{'aria-hidden' => 'true'}
+            Undo
+          %i.fa.fa-undo.remove-dialog-icon{'aria-hidden' => 'true'}
+          %span.sr-only
+            Undo remove campaign
+
 
 
     - if show_share_links

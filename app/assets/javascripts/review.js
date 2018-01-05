@@ -30,7 +30,7 @@ var onReviewPageLoad = (function(){
     })
 
 
-    $('body').on('click', '.remove-campaign', function(event){
+    $('body').on('click', '.remove-default', function(event){
       // Remove a campaign from the list to be signed;
       removeCampaign(event);
 
@@ -40,6 +40,13 @@ var onReviewPageLoad = (function(){
     $('body').on('click', '.remove-button', function(event){
       // Confirm removal of a campaign.
       confirmRemoveCampaign(event);
+
+      return false;
+    })
+
+    $('body').on('click', '.remove-undo', function(event){
+      // Undo removal of a campaign.
+      undoRemoveCampaign(event);
 
       return false;
     })
@@ -89,30 +96,41 @@ var onReviewPageLoad = (function(){
     var $removeDiv    = $removeButton.parents('.remove-campaign')
 
     if ($removeButton.data('remove')) {
-      var campaign    = $removeDiv.parents('li.campaign');
+      var $campaign    = $removeDiv.parents('li.campaign');
+      var $thisToggle  = $campaign.find('.information-toggle');
 
       // Remove petition id from cookies['selected']
-      var campaignID         = campaign.data('campaign-id');
-      var campaignsRemaining = removeFromSelectedCampaigns(campaignID);
+      var campaignID         = $campaign.data('campaign-id');
+      var campaignsRemaining = editSelectedCampaigns(campaignID, 'remove');
 
       // If no campaigns left, go to petition page
       if (campaignsRemaining) {
         // Remove petition div
-        campaign.remove();
+        $campaign.addClass('removed');
+
+        // Hide the confirm dialog
+        $removeDiv.find('.remove-confirm').hide();
+
+        // Show the undo dialog
+        $removeDiv.find('.remove-undo').show();
+
+        // -1 from number of petitions to sign
+        var $numPetitionsText  = $('#submit-form-button .sign-num-petitions');
+        var newNumPetitions    = parseInt($numPetitionsText.text()) - 1
+        $numPetitionsText.text(newNumPetitions);
+
+        var $petitionsWordText = $('#submit-form-button .sign-petitions-word');
+        $petitionsWordText.text(newNumPetitions == 1 ? 'Petition' : 'Petitions');
 
         // Expand first remaining petition
-        toggleTargetDetails($('.information-toggle').first());
+        toggleTargetDetails($('.campaign').not('.removed').find('.information-toggle').first());
       } else {
         // document.location.href = '/'
         Turbolinks.visit("/", { action: "replace" })
       }
     } else {
-      $removeDiv.html(
-        "<div class='remove-text'>" +
-          "Remove" +
-        "</div>" +
-        "<i class='fa fa-times aria-hidden='true'></i>"
-      )
+      $removeDiv.find('.remove-default').show();
+      $removeDiv.find('.remove-confirm').hide();
     }
 
   }
@@ -144,7 +162,7 @@ var onReviewPageLoad = (function(){
    * @name gatherCampaignIdsForSubmission
    */
   var gatherCampaignIdsForSubmission = function(){
-    var campaignIds = $('li.campaign').not('.signed').map(function() {
+    var campaignIds = $('li.campaign').not('.signed').not('.removed').map(function() {
       return $(this).data('campaign-id')
     })
     $('#petition-data').val(JSON.stringify(campaignIds.get()));
@@ -267,27 +285,30 @@ var onReviewPageLoad = (function(){
    * @param {Object} event - javascript event of clicking to remove campaign
    */
   var removeCampaign = function(event){
-    var $removeDiv = $(event.currentTarget);
+    var $removeDiv = $(event.currentTarget).parents('.remove-campaign');
 
-    $removeDiv.html(
-      "<i class='fa fa-thumbs-up remove-button' aria-hidden='true' data-remove='false'></i>" +
-      "<i class='fa fa-trash-o remove-button' aria-hidden='true' data-remove='true'></i>"
-    )
+    $removeDiv.find('.remove-default').hide();
+    $removeDiv.find('.remove-confirm').show();
   }
 
 
   /**
    * Remove campaign from cookie.
-   * @name   removeFromSelectedCampaigns
-   * @param  {Integer} id - id of removed campaign
+   * @name   editSelectedCampaigns
+   * @param  {Integer} id     - id of removed campaign
+   * @param  {String}  action - whether to add or delete
    * @return {Bool} whether there are any more selected campaigns
    */
-  var removeFromSelectedCampaigns = function(id){
+  var editSelectedCampaigns = function(id, action){
     var campaignCookie    = JSON.parse(Cookies('campaigns'));
 
-    campaignCookie.selected = campaignCookie.selected.filter(function(i) {
-      return [id].indexOf(i) < 0;
-    });
+    if (action == 'add') {
+      campaignCookie.selected.push(id)
+    } else if (action == 'remove') {
+      campaignCookie.selected = campaignCookie.selected.filter(function(i) {
+        return [id].indexOf(i) < 0;
+      });
+    }
 
     Cookies('campaigns', campaignCookie);
 
@@ -508,6 +529,42 @@ var onReviewPageLoad = (function(){
       }
 
     }
+
+  }
+
+
+  /**
+   * Re-adds the petition to the list to be signed.
+   * @name  UndoRemoveCampaign
+   * @param {Object} event - javascript event of readding campaign
+   */
+  var undoRemoveCampaign = function(event){
+    var $removeUndoDiv = $(event.currentTarget);
+    var $removeDiv     = $removeUndoDiv.parents('.remove-campaign')
+
+    // if ($removeButton.data('remove')) {
+    var $campaign     = $removeDiv.parents('li.campaign');
+
+    // Re-add petition id from cookies['selected']
+    var campaignID         = $campaign.data('campaign-id');
+    var campaignsRemaining = editSelectedCampaigns(campaignID, 'add');
+
+    // Remove remove class div
+    $campaign.removeClass('removed');
+
+    // Hide the undo div now that its job is done.
+    $removeUndoDiv.hide()
+
+    // Show the original remove campaign box
+    $removeDiv.find('.remove-default').show();
+
+    // +1 from number of petitions to sign
+    var $numPetitionsText  = $('#submit-form-button .sign-num-petitions');
+    var newNumPetitions    = parseInt($numPetitionsText.text()) + 1
+    $numPetitionsText.text(newNumPetitions);
+
+    var $petitionsWordText = $('#submit-form-button .sign-petitions-word');
+    $petitionsWordText.text(newNumPetitions == 1 ? 'Petition' : 'Petitions');
 
   }
 

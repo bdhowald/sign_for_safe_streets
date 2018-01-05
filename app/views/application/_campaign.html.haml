@@ -13,26 +13,29 @@
             / = link_to(campaign.name, campaign.full_url)
             = string_with_ellipses(campaign.name, 50)
 
-          %div.card-text
-            %div.d-block.d-md-none
-              %a.expand-campaign{href: '#'}
-                see campaign description
-
-
       %ul.campaign-details.list-group-flush
 
         - if campaign.is_success
-          %li.list-group-item.d-none.d-md-block.success-list-item
+          %li.list-group-item.success-list-item
             %div.success-banner
               %i.fa.fa-star{'aria-hidden' => 'true'}
               Campaign Won!
 
-        %li.list-group-item.d-none.d-md-block.description-list-item
-          %div.card-text.campaign-description.grid-view
-            / = campaign.shortened_description.html_safe
-            = (string_with_ellipses(campaign.description_first_paragraph, 200) + link_to(' (see more)', campaign.full_url, {class: 'campaign-link', target: '_blank'})).html_safe
+        %li.list-group-item.description-list-item
+          %div.d-block.d-md-none.see-description-link
+            %div.card-text
+              %div.d-block.d-md-none
+                %a.expand-campaign{href: '#'}
+                  see campaign description
+
+          %div.d-none.d-md-block.card-text.campaign-description.grid-view
+            %span.letter-text
+              = (string_with_ellipses(campaign.description_first_paragraph, 200)).html_safe
+            = link_to(' (see more)', '#', {class: 'campaign-see-more', target: '_blank', 'data-full-text' => campaign.description.html_safe, 'data-shortened-text' => string_with_ellipses(campaign.description_first_paragraph, 200)}).html_safe
           %div.card-text.campaign-description.list-view
-            = (string_with_ellipses(campaign.description, 400) + link_to(' (see more)', campaign.full_url, {class: 'campaign-link', target: '_blank'})).html_safe
+            %span.letter-text
+              = (string_with_ellipses(campaign.description, 400)).html_safe
+            = link_to(' (see more)', '#', {class: 'campaign-see-more', target: '_blank', 'data-full-text' => campaign.description.html_safe, 'data-shortened-text' => string_with_ellipses(campaign.description_first_paragraph, 200)}).html_safe
 
         %li.list-group-item.d-none.d-md-block.signatures-list-item>
           %span.signatures
@@ -53,12 +56,13 @@
 
         %li.list-group-item.d-none.d-md-block.campaign-starter-list-item>
           %div{'aria-labelledby' => "started-by-text-#{campaign.id} starter-#{campaign.id}"}
-            %span.started-by-text{id: "started-by-text-#{campaign.id}", 'aria-hidden' => 'true'}
-              Started by:
-            %span.starter{id: "starter-#{campaign.id}", 'aria-hidden' => 'true'}
-              = campaign.starter
-            %span.sr-only
-              = "Started by #{campaign.starter}"
+            %a.campaign-link{href: "#{campaign.full_url}", target: '_blank', 'aria-label' => 'Link to campaign page on Transportation Alternatives website.'}
+              %span.started-by-text{id: "started-by-text-#{campaign.id}", 'aria-hidden' => 'true'}
+                Started by:
+              %span.starter{id: "starter-#{campaign.id}", 'aria-hidden' => 'true'}
+                = campaign.starter
+              %span.sr-only
+                = "Started by #{campaign.starter}"
 
         %li.list-group-item.d-none.d-md-block.social-media-list-item>
           %div.social-media-items

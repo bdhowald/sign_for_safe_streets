@@ -63,13 +63,6 @@ var onHomePageLoad = function(){
   });
 
 
-  $('body').on('click', 'div.sign-petitions', function(event){
-    signPetitions(this);
-
-    return false;
-  });
-
-
   $('body').on('click', 'button.clear-search', function(event){
     clearSearch(this);
 
@@ -79,6 +72,20 @@ var onHomePageLoad = function(){
 
   $('body').on('click', '.filter-button', function(){
     addOrRemoveFilter(this);
+
+    return false;
+  });
+
+
+  $('body').on('click', 'div.sign-petitions', function(event){
+    signPetitions(this);
+
+    return false;
+  });
+
+
+  $('body').on('click', '.campaign-see-more', function(event){
+    toggleCampaignDescription(this);
 
     return false;
   });
@@ -559,7 +566,8 @@ var onHomePageLoad = function(){
    */
   function expandCampaign(elem) {
 
-    var $clickedLink = $(elem);
+    var $clickedLink    = $(elem);
+    var viewStyleClass  = '.' + $('input#view-style').val() + '-view'
 
     var mq = window.matchMedia( "(max-width: 767px)" );
 
@@ -574,8 +582,8 @@ var onHomePageLoad = function(){
       var $thisCampaign      = $learnMoreLink.parents('.campaign');
       var $allLearnMoreLinks = $campaignList.find('a.expand-campaign');
 
-      var $allCampaignsDetails  = $campaignList.find('.campaign-details .description-list-item');
-      var $thisCampaignsDetails = $thisCampaign.find('.campaign-details .description-list-item');
+      var $allCampaignsDetails  = $campaignList.find('.campaign-details .description-list-item .campaign-description' + viewStyleClass);
+      var $thisCampaignsDetails = $thisCampaign.find('.campaign-details .description-list-item .campaign-description' + viewStyleClass);
 
       var $allCampaignsNames = $campaignList.find('.campaign-name');
       var $thisCampaignsName = $thisCampaign.find('.campaign-name');
@@ -1013,6 +1021,64 @@ var onHomePageLoad = function(){
 
       $petitionData.parents('form').submit();
     }
+  }
+
+
+  /**
+   * Expands the full details of a selected campaign.
+   * @name  toggleCampaignDescription
+   * @param {Object} elem - see more link html element of a campaign.
+   */
+  function toggleCampaignDescription(elem){
+
+    var $seeMoreLink         = $(event.target);
+    var $campaign            = $seeMoreLink.parents('.campaign');
+    // var $campaignDescription = $campaign.find('.campaign-description');
+    var $campaignText        = $campaign.find('.letter-text');
+    var $campaignRowItem     = $campaign.parents('.row-item');
+    var expanded             = $campaignRowItem.hasClass('expanded');
+
+    // Reset any expanded campaign
+    $('.row-item.expanded').each(function(){
+      var $expandedRowItem             = $(this);
+      var $expandedCampaign            = $expandedRowItem.find('.campaign');
+      // var $expandedCampaignDescription = $expandedCampaign.find('.campaign-description.expanded');
+      var $expandedCampaignText        = $expandedCampaign.find('.letter-text.expanded');
+      var $expandedSeeMoreLink         = $expandedCampaign.find('.campaign-see-more');
+
+      // Toggle to shortened text
+      $expandedCampaignText.html($seeMoreLink.data('shortened-text'));
+      $expandedCampaignText.toggleClass('expanded');
+
+      // Toggle to show less
+      $expandedSeeMoreLink.text('(see more)');
+      $expandedSeeMoreLink.toggleClass('expanded');
+
+      $expandedRowItem.toggleClass('col-sm-12 col-md-12')
+        .toggleClass('col-sm-6 col-md-4')
+        .toggleClass('expanded');
+    })
+
+    if (!expanded) {
+
+      // Toggle to full text
+      $campaignText.html($seeMoreLink.data('full-text'));
+      $campaignText.addClass('expanded');
+
+      // Toggle to show less
+      $seeMoreLink.text('(see less)');
+      $seeMoreLink.addClass('expanded');
+
+      // Change classes to see whole description
+      $campaignRowItem.toggleClass('col-sm-6 col-md-4').toggleClass('col-sm-12 col-md-12');
+      $campaignRowItem.addClass('expanded');
+
+    }
+
+    $('html, body').animate({
+      scrollTop: $campaignRowItem.offset().top - 16
+    }, 800);
+
   }
 
 

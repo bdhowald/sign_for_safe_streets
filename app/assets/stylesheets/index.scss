@@ -672,8 +672,11 @@ body.hasHover #filters .filter-buttons.locations .col.staten-island:hover {
   color: #fff;
 }
 
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .list-group-flush li.campaign-starter-list-item .campaign-link .started-by-text {
+  color: #000;
+}
 
-.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .list-group-flush li.campaign-starter-list-item span.starter {
+.all-campaigns-body .campaign-list-container .campaign-list .row-item .card .campaign .list-group-flush li.campaign-starter-list-item .campaign-link span.starter {
   font-weight: bold;
 }
 

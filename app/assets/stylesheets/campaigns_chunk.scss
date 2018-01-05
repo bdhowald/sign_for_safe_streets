@@ -55,6 +55,23 @@
 }
 
 
+.campaigns-chunk .explanation .campaigns .campaign.removed {
+  background-color: rgba(192, 192, 192, 0.5);
+}
+
+.campaigns-chunk .explanation .campaigns .campaign.removed .information-toggle {
+  text-decoration: line-through;
+}
+
+.campaigns-chunk .explanation .campaigns .campaign.removed .petition-details .petition-text {
+  text-decoration: line-through;
+}
+
+.campaigns-chunk .explanation .campaigns .campaign.removed .petition-details .target-details {
+  text-decoration: line-through;
+}
+
+
 .campaigns-chunk .explanation .campaigns .campaign.signed {
   background-color: rgba(192, 192, 192, 0.5);
 }
@@ -66,7 +83,7 @@
   padding: 0 .75rem;
 }
 
-.campaigns-chunk .explanation .campaigns .campaign .campaign-name {
+.campaigns-chunk .explanation .campaigns .campaign .card-body .campaign-name {
   border-bottom: 1px solid #666;
   display: inline-block;
   font-size: 1rem;
@@ -76,6 +93,10 @@
   // text-decoration: underline;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.campaigns-chunk .explanation .campaigns .campaign.removed .card-body .campaign-name {
+  text-decoration: line-through;
 }
 
 @media (max-width: 767px) and (min-width: 576px) {
@@ -218,44 +239,36 @@
 }
 
 .campaigns-chunk .explanation .campaigns .campaign .remove-campaign {
-  align-items: center;
   border-top: 1px solid #ccc;
   cursor: pointer;
+  min-height: 3.65rem;
+  padding: 0.75rem 0.75rem;
+}
+
+.campaigns-chunk .explanation .campaigns .campaign .remove-campaign > div {
+  align-items: center;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  min-height: 3.65rem;
-  padding: 0.75rem 0.75rem;
 }
 
 .campaigns-chunk .explanation .campaigns .campaign .remove-campaign .remove-text {
   line-height: 1.6rem;
 }
 
-.campaigns-chunk .explanation .campaigns .campaign .remove-campaign i {
+.campaigns-chunk .explanation .campaigns .campaign .remove-campaign .remove-dialog-icon {
   border: 1px solid #000;
-  float: right;
   line-height: 2rem;
-  font-size: 1rem;
-  padding: 0px 0.25rem;
   text-align: center;
   width: 3.75rem;
 }
 
-// @media (max-width: 299px) {
-//   .campaigns-chunk .explanation .campaigns .campaign .remove-campaign i {
-//     display: none;
-//   }
-// }
-
-// @media (max-width: 767px) and (min-width: 576px) {
-//   .campaigns-chunk .explanation .campaigns .campaign .remove-campaign i {
-//     display: none;
-//   }
-// }
-
-.campaigns-chunk .explanation .campaigns .campaign .remove-campaign i.remove-button {
+.campaigns-chunk .explanation .campaigns .campaign .remove-campaign .remove-button {
   float: none;
   line-height: 2rem;
   width: 45%;
+}
+
+.campaigns-chunk .explanation .campaigns .campaign .remove-campaign .remove-undo {
+  text-decoration: none;
 }

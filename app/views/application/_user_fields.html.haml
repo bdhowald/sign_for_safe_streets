@@ -83,7 +83,12 @@
 
       %button.btn.btn-primary.btn-lg.btn-block#submit-form-button{type: 'submit', 'aria-pressed' => 'false'}
         %span#submit-button-text
-          = "Sign #{@petitions_to_sign.count} Petition#{'s' if @petitions_to_sign.count > 1}"
+          %span.sign-word
+            Sign
+          %span.sign-num-petitions
+            = @petitions_to_sign.count
+          %span.sign-petitions-word
+            = "Petition#{'s' if @petitions_to_sign.count > 1}"
         %i.zmdi.zmdi-rotate-right.zmdi-hc-spin{'aria-hidden' => 'true'}
 
 
