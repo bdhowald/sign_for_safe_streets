@@ -61,7 +61,7 @@ var onReviewPageLoad = (function(){
 
     $('body').on('submit', '#user-form', function(event){
       // Gather ids of campaigns to sign and serialize them for submission.
-      gatherCampaignIdsForSubmission();
+      var campaignIDs = gatherCampaignIdsForSubmission();
 
       // Trackasaurus
       tracker.track("User pressed 'Sign' Button.", {campaignIDs: campaignIDs});
@@ -162,10 +162,10 @@ var onReviewPageLoad = (function(){
    * @name gatherCampaignIdsForSubmission
    */
   var gatherCampaignIdsForSubmission = function(){
-    var campaignIds = $('li.campaign').not('.signed').not('.removed').map(function() {
+    var campaignIDs = $('li.campaign').not('.signed').not('.removed').map(function() {
       return $(this).data('campaign-id')
     })
-    $('#petition-data').val(JSON.stringify(campaignIds.get()));
+    $('#petition-data').val(JSON.stringify(campaignIDs.get()));
   }
 
 
