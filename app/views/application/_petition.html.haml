@@ -71,9 +71,9 @@
     - if show_share_links
       %div.social-media-share-links
 
-        %a.social-media-share-link.twitter-link{'href' => "https://twitter.com/intent/tweet?status=I just signed the petition '#{petition.name}'%0A#{campaign_domain}#{petition.link}! You should, too!", 'target' => '_blank'}
+        %a.social-media-share-link.twitter-link{'href' => "https://twitter.com/intent/tweet?status=I just signed the petition '#{petition.name}'%0A#{campaign_domain}#{petition.link}! You should, too!", 'target' => '_blank', rel: 'noopener noreferrer'}
           %i.fa.fa-2x.fa-twitter-square{'aria-hidden' => 'true'}
 
-        %a.social-media-share-link.facebook-link{'href' => "https://www.facebook.com/sharer/sharer.php?u=#{campaign_domain}#{petition.link}&title=#{petition.name}", 'target' => '_blank'}
+        %a.social-media-share-link.facebook-link{'href' => "https://www.facebook.com/sharer/sharer.php?u=#{campaign_domain}#{petition.link}&title=#{petition.name}", 'target' => '_blank', rel: 'noopener noreferrer'}
           %i.fa.fa-2x.fa-facebook-square{'aria-hidden' => 'true'}
 

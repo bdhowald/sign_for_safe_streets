@@ -31,11 +31,11 @@
           %div.d-none.d-md-block.card-text.campaign-description.grid-view
             %span.letter-text
               = (string_with_ellipses(campaign.description_n_paragraphs(1), 200)).html_safe
-            = link_to(' (see more)', '#', {class: 'campaign-see-more', target: '_blank', 'data-full-text' => campaign.description.html_safe, 'data-shortened-text' => string_with_ellipses(campaign.description_n_paragraphs(1), 200)}).html_safe
+            = link_to(' (see more)', '', {class: 'campaign-see-more', 'data-full-text' => campaign.description.html_safe, 'data-shortened-text' => string_with_ellipses(campaign.description_n_paragraphs(1), 200)}).html_safe
           %div.card-text.campaign-description.campaign-description.list-view
             %span.letter-text
               = (string_with_ellipses(campaign.description_n_paragraphs(1), 400)).html_safe
-            = link_to(' (see more)', '#', {class: 'campaign-see-more', target: '_blank', 'data-full-text' => campaign.description.html_safe, 'data-shortened-text' => string_with_ellipses(campaign.description_n_paragraphs(1), 400)}).html_safe
+            = link_to(' (see more)', '', {class: 'campaign-see-more', 'data-full-text' => campaign.description.html_safe, 'data-shortened-text' => string_with_ellipses(campaign.description_n_paragraphs(1), 400)}).html_safe
 
         %li.list-group-item.d-none.d-md-block.signatures-list-item>
           %span.signatures
@@ -56,7 +56,7 @@
 
         %li.list-group-item.d-none.d-md-block.campaign-starter-list-item>
           %div{'aria-labelledby' => "started-by-text-#{campaign.id} starter-#{campaign.id}"}
-            %a.campaign-link{href: "#{campaign.full_url}", target: '_blank', 'aria-label' => 'Link to campaign page on Transportation Alternatives website.'}
+            %a.campaign-link{href: "#{campaign.full_url}", target: '_blank', 'aria-label' => 'Link to campaign page on Transportation Alternatives website.', rel: 'noopener noreferrer'}
               %span.started-by-text{id: "started-by-text-#{campaign.id}", 'aria-hidden' => 'true'}
                 Started by:
               %span.starter{id: "starter-#{campaign.id}", 'aria-hidden' => 'true'}
@@ -67,10 +67,10 @@
         %li.list-group-item.d-none.d-md-block.social-media-list-item>
           %div.social-media-items
 
-            %a.social-media-share-link.twitter-link{'href' => "https://twitter.com/intent/tweet?status=Sign the petition #{campaign.name}%0A#{campaign_domain}#{campaign.link}", 'target' => '_blank', 'aria-label' => 'Share campaign to Twitter'}
+            %a.social-media-share-link.twitter-link{'href' => "https://twitter.com/intent/tweet?status=Sign the petition #{campaign.name}%0A#{campaign_domain}#{campaign.link}", 'target' => '_blank', 'aria-label' => 'Share campaign to Twitter', rel: 'noopener noreferrer'}
               %i.fa.fa-2x.fa-twitter-square
 
-            %a.social-media-share-link.facebook-link{'href' => "https://www.facebook.com/sharer/sharer.php?u=#{campaign_domain}#{campaign.link}&title=#{campaign.name}", 'target' => '_blank', 'aria-label' => 'Share campaign to Facebook'}
+            %a.social-media-share-link.facebook-link{'href' => "https://www.facebook.com/sharer/sharer.php?u=#{campaign_domain}#{campaign.link}&title=#{campaign.name}", 'target' => '_blank', 'aria-label' => 'Share campaign to Facebook', rel: 'noopener noreferrer'}
               %i.fa.fa-2x.fa-facebook-square
 
 
