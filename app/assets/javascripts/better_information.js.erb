@@ -1,0 +1,92 @@
+'use strict'
+
+var BetterInformation = function() {
+
+  this.initialize = function() {
+    // console.log('BetterInformation initializing...');
+
+    var _this              = this;
+    this.asyncList         = [];
+    this.fingerprintLoaded = false;
+    this.fingerprint_id    = null;
+
+
+    if (typeof(mixpanel) != 'undefined') {
+      mixpanel.init("<%= Rails.application.secrets.mixpanel[:token] %>", {
+        cross_subdomain_cookie: <%= !Rails.env.staging? %>,
+        loaded: function() {
+          for (var i = 0; i < _this.asyncList.length; i++) {
+            var func = _this.asyncList[i];
+            func();
+          }
+        }
+      })
+    } else {
+      new Fingerprint2().get(function(result, components){
+        _this.fingerprintLoaded = true;
+        _this.fingerprint_id    = result;
+
+        for (var i = 0; i < _this.asyncList.length; i++) {
+          var func = _this.asyncList[i];
+          func();
+        }
+      });
+    }
+
+  }
+
+
+  this.delayed = function(callback){
+    if (typeof(mixpanel) != 'undefined') {
+      if (!mixpanel.__loaded){
+        this.asyncList.push(callback);
+      } else {
+        callback();
+      }
+    } else {
+      if (this.fingerprintLoaded) {
+        callback()
+      } else {
+        this.asyncList.push(callback)
+      }
+    }
+  }
+
+
+  this.track = function(event, args) {
+    var _this = this;
+    if (typeof(mixpanel) != 'undefined') {
+      this.delayed(function(){
+        return mixpanel.track(event, args);
+      });
+    } else {
+      this.delayed(function(){
+        _this.trackViaServer(event, args)
+      })
+    }
+  };
+
+
+  this.trackViaServer = function(event, args){
+    var _this = this;
+
+    var data  = {mixpanel: {event: event, args: args == undefined ? {campaignIds: [1,2,3]} : args}}
+
+    console.log(data)
+    $.ajax({
+      url     : '../tracking/' + _this.fingerprint_id + '.js',
+      data    : $.param(data),
+      dataType: 'json',
+      type    : 'PUT',
+    })
+  }
+
+}
+
+$(document).on('turbolinks:load', function(){
+  var tracker = new BetterInformation();
+  tracker.initialize();
+
+  window.tracker = tracker;
+})
+

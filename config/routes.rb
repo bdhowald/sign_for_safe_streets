@@ -30,4 +30,6 @@ Rails.application.routes.draw do
   get '/tags.json', to: 'search#tags',
     defaults: { format: 'json' }
 
+  put '/tracking/:id(.:format)', to: 'tracking#send_to_mixpanel'
+
 end
