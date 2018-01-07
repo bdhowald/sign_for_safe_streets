@@ -55,7 +55,9 @@
 
 
 :javascript
-  #{@just_signed_campaigns.collect(&:id)}.forEach(function(campaignID){
-    // Trackasaurus
-    window.tracker.track('User signed campaign', {campaignID: campaignID});
-  })
+  $(document).on('turbolinks:load', function(){
+    #{@just_signed_campaigns.collect(&:id)}.forEach(function(campaignID){
+      // Trackasaurus
+      window.tracker.track('User signed campaign', {campaignID: campaignID});
+    })
+  });
