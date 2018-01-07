@@ -578,15 +578,16 @@ var onHomePageLoad = function(){
 
       var $learnMoreLink = $clickedLink;
 
-      var $campaignList      = $learnMoreLink.parents('.campaign-list');
-      var $thisCampaign      = $learnMoreLink.parents('.campaign');
-      var $allLearnMoreLinks = $campaignList.find('a.expand-campaign');
+      var $campaignList         = $learnMoreLink.parents('.campaign-list');
+      var $thisCampaign         = $learnMoreLink.parents('.campaign');
+      var $thisCampaignRowItem  = $thisCampaign.parents('.row-item');
+      var $allLearnMoreLinks    = $campaignList.find('a.expand-campaign');
 
       var $allCampaignsDetails  = $campaignList.find('.campaign-details .description-list-item .campaign-description' + viewStyleClass);
       var $thisCampaignsDetails = $thisCampaign.find('.campaign-details .description-list-item .campaign-description' + viewStyleClass);
 
-      var $allCampaignsNames = $campaignList.find('.campaign-name');
-      var $thisCampaignsName = $thisCampaign.find('.campaign-name');
+      var $allCampaignsNames    = $campaignList.find('.campaign-name');
+      var $thisCampaignsName    = $thisCampaign.find('.campaign-name');
 
 
       $allCampaignsNames.each(function() {
@@ -613,6 +614,12 @@ var onHomePageLoad = function(){
       $thisCampaignsName.html(
         $thisCampaignsName.data('full-name')
       );
+
+
+
+      $('html, body').animate({
+        scrollTop: $thisCampaignRowItem.offset().top - 16
+      }, 800);
 
     }
 
