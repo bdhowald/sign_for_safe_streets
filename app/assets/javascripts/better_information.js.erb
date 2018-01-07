@@ -72,7 +72,6 @@ var BetterInformation = function() {
 
     var data  = {mixpanel: {event: event, args: args == undefined ? {campaignIds: [1,2,3]} : args}}
 
-    console.log(data)
     $.ajax({
       url     : '../tracking/' + _this.fingerprint_id + '.js',
       data    : $.param(data),
