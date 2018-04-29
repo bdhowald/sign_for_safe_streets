@@ -11,6 +11,8 @@ class ApplicationController < ActionController::Base
 
 
   def index
+    # TODO: hacky, replace ASAP
+    cookies['petition_mode'] = serialize_hash(false)
 
     @view_style = unserialize_hash(cookies['view_style']) || 'grid'
 
@@ -19,13 +21,15 @@ class ApplicationController < ActionController::Base
       @campaigns_already_signed = campaignData['already_signed']
     end
 
-    if (@search_term    = params['search-term']).present?
-      @campaigns        = Campaign.active.search_full_text(@search_term)
-    elsif (campaign_ids = params['campaigns'].present? && params['campaigns'].reject{|id| (id =~ /\A[-+]?[0-9]*\.?[0-9]+\Z/).nil?}).present?
-      @campaigns        = Campaign.active.where(id: campaign_ids)
-    else
-      @campaigns        = Campaign.active
-    end
+
+    @campaigns =
+      if (@search_term = params['search-term']).present?
+        Campaign.active.search_full_text(@search_term)
+      elsif (campaign_ids = params['campaigns'].present? && params['campaigns'].reject{|id| (id =~ /\A[-+]?[0-9]*\.?[0-9]+\Z/).nil?}).present?
+        Campaign.active.where(id: campaign_ids)
+      else
+        Campaign.active
+      end
 
     @other_campaigns  = Campaign.active.where.not(id: @campaigns.collect(&:id))
 
@@ -35,6 +39,27 @@ class ApplicationController < ActionController::Base
     response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
 
     render
+  end
+
+
+  def region
+    @region = Region.find_by(alias: params[:reg_alias])
+
+    return redirect_to(homepage_path) unless @region
+
+    # TODO: hacky, replace ASAP
+    cookies['petition_mode'] = serialize_hash(true)
+    cookies['region']        = serialize_hash(@region.alias)
+
+    @campaigns       = @region.campaigns
+    @other_campaigns = []
+
+    @view_style = unserialize_hash(cookies['view_style']) || 'grid'
+
+    if !(campaignData = unserialized_campaigns_cookie).empty?
+      # On region pages, only treat available campaigns as possibly selected
+      @selected_campaigns = (campaignData['selected'] & @campaigns.collect(&:id))
+    end
   end
 
 
@@ -302,7 +327,18 @@ class ApplicationController < ActionController::Base
       return redirect_to '/'
     end
 
-    set_campaigns_cookie(cookie_hash)
+    is_petition_mode = unserialize_hash(cookies['petition_mode'])
+
+    if is_petition_mode
+      set_campaigns_cookie({})
+      update_user_params({})
+
+      if (region = unserialize_hash(cookies['region'])).present?
+        @region_alias = region
+      end
+    else
+      set_campaigns_cookie(cookie_hash)
+    end
 
   end
 

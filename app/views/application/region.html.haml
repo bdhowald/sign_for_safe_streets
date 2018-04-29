@@ -1,0 +1,20 @@
+- campaigns                = @campaigns || []
+- other_campaigns          = @other_campaigns || []
+
+- campaigns_already_signed = @campaigns_already_signed || []
+- selected_campaigns       = @selected_campaigns || []
+- have_selected_campaigns  = @selected_campaigns.present?
+
+%main
+  %h1.region-name
+    = @region.name
+
+  = render partial: 'application/filters', locals: {campaigns: campaigns, other_campaigns: other_campaigns, selected_campaigns: selected_campaigns, campaigns_already_signed: campaigns_already_signed, region: @region, search_term: @search_term, view_style: @view_style}
+
+  %div.all-campaigns-body#main-content
+    %div.container
+      %div.row
+        %div#campaign-list-container
+          = render partial: 'application/results', locals: {campaigns: campaigns.sort_by{|cp| cp.is_success ? 1 : 0}, other_campaigns: other_campaigns}
+
+  = render partial: 'application/sticky_footer', locals: {retracted: !have_selected_campaigns, campaigns: campaigns, other_campaigns: other_campaigns, selected_campaigns: selected_campaigns, campaigns_already_signed: campaigns_already_signed, search_term: @search_term, view_style: @view_style}

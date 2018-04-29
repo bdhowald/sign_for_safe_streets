@@ -1,0 +1,10 @@
+%div.view-style-controls
+  %div.btn-group{"data-toggle" => "buttons"}
+    %label{class: "btn btn-outline-dark #{'active' if view_style == 'grid'}"}
+      %input#grid-view-button{'autocomplete' => 'off', 'name' => 'grid-view', 'type' => 'radio', 'data-view-style' => 'grid'}/
+      Grid
+      %i.fa.fa-th
+    %label{class: "btn btn-outline-dark #{'active' if view_style == 'list'}"}
+      %input#list-view-button{'autocomplete' => 'off', 'name' => 'list-view', 'type' => "radio", 'data-view-style' => 'list'}/
+      List
+      %i.fa.fa-bars

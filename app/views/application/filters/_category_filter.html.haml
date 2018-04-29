@@ -1,0 +1,6 @@
+%div.row.filter-buttons.categories
+  - [['Cycling', 'bike'], ['Walking', 'walk'], ['Transit', 'directions-bus'], ['Schools', 'graduation-cap']].each do |button_text|
+    %div.col.filter-button{'data-search-text' => button_text[0], 'role' => 'button', 'aria-pressed' => 'false', 'aria-label' => button_text[0]}
+      %i{class: "zmdi zmdi-#{button_text[1]} zmdi-hc-lg", 'aria-hidden' => 'true'}
+      %span.sans{'aria-label' => button_text[0]}
+        = button_text[0]

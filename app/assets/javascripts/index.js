@@ -25,6 +25,8 @@ var onHomePageLoad = function(){
     // }
 
     determineFingerprint();
+
+    setAvailableCampaigns(getAvailableCampaigns());
     loadCampaignsToBeSigned();
     setUpTypeahead();
     watchForHover();
@@ -107,7 +109,7 @@ var onHomePageLoad = function(){
   })
 
   // Detect click on sign-all button.
-  $('body').on('click', '.sign-all button', function(event) {
+  $('body').on('click', '#sign-all button', function(event) {
     addOrRemoveAllCampaigns(this);
 
     return false;
@@ -223,18 +225,6 @@ var onHomePageLoad = function(){
     // var timePoint3 = new Date().getTime();
     // console.log('called changeSelectedCampaigns...: ' + (timePoint3 - timePoint2))
 
-    // Update the footer
-    updateStickyFooter(campaignIDs, action);
-
-    // var timePoint4 = new Date().getTime();
-    // console.log('called updateStickyFooter...: ' + (timePoint4 - timePoint3))
-
-    // Update 'Sign All' button
-    toggleSignAllButton();
-
-    // var timePoint5 = new Date().getTime();
-    // console.log('called toggleSignAllButton...: ' + (timePoint5 - timePoint4))
-
     // Trackasaurus
     if (action == 'add'){
       that.tracker.track('Campaigns added', {campaignIDs: campaignIDs});
@@ -242,8 +232,33 @@ var onHomePageLoad = function(){
       that.tracker.track('Campaigns removed', {campaignIDs: campaignIDs});
     }
 
+    // var timePoint4 = new Date().getTime();
+    // console.log('called tracker...: ' + (timePoint4 - timePoint3))
+
+    if (document.getElementById('campaign-list-container')) {
+
+      // Update the footer, if it's there.
+      if (document.getElementById('sticky-footer')) {
+        updateStickyFooter(campaignIDs, action);
+      }
+
+      // var timePoint5 = new Date().getTime();
+      // console.log('called updateStickyFooter...: ' + (timePoint5 - timePoint4))
+
+      // Update 'Sign All' button
+      if (document.getElementById('sign-all')) {
+        toggleSignAllButton();
+      }
+
+    } else {
+
+      // Take user to the homepage
+      Turbolinks.visit("/", { action: "replace" })
+
+    }
+
     // var timePoint6 = new Date().getTime();
-    // console.log('called tracker...: ' + (timePoint6 - timePoint5))
+    // console.log('called toggleSignAllButton...: ' + (timePoint6 - timePoint5))
 
     // var end = new Date().getTime()
     // console.log('total time: ' + (end - start));
@@ -310,21 +325,21 @@ var onHomePageLoad = function(){
    * @name animateStickyFooter
    */
   function animateStickyFooter() {
-    var staticFooter      = document.getElementsByClassName('static-footer')[0];
-    var stickyFooter      = document.getElementsByClassName('sticky-footer')[0];
-    var notificationBox   = document.getElementsByClassName('notification-box')[0];
+    var staticFooter               = document.getElementById('static-footer');
+    var stickyFooter               = document.getElementById('sticky-footer');
+    var notificationBox            = document.getElementsByClassName('notification-box')[0];
 
-    var selectedCampaigns = getSelectedCampaigns();
+    var availableSelectedCampaigns = getAvailableSelectedCampaigns();
 
-    var body              = document.body,
-        html              = document.documentElement;
+    var body                       = document.body,
+        html                       = document.documentElement;
 
-    var height            = Math.max( body.scrollHeight, body.offsetHeight,
+    var height                     = Math.max( body.scrollHeight, body.offsetHeight,
                                       html.clientHeight, html.scrollHeight, html.offsetHeight );
 
 
     // If we have selected campaigns, extend footer if need be
-    if (selectedCampaigns.length > 0) {
+    if (availableSelectedCampaigns.length > 0) {
 
       if (stickyFooter.classList.value.indexOf('retracted') != -1) {
         stickyFooter.classList.remove('retracted')
@@ -366,7 +381,7 @@ var onHomePageLoad = function(){
       setTimeout(function(){
 
         // Get campaigns to be signed.
-        var selectedCampaigns = getSelectedCampaigns();
+        var availableSelectedCampaigns = getAvailableSelectedCampaigns();
 
         // If we showed the notification box, hide it.
         if (stickyFooter.classList.value.indexOf('extended') != -1) {
@@ -374,7 +389,7 @@ var onHomePageLoad = function(){
         }
 
         // If we have selected campaigns, retract footer to hide notification box only if need be
-        if (selectedCampaigns.length == 0){
+        if (availableSelectedCampaigns.length == 0){
           if (staticFooter.classList.value.indexOf('with-padding') != -1) {
             staticFooter.classList.remove('with-padding');
           }
@@ -627,6 +642,23 @@ var onHomePageLoad = function(){
 
 
   /**
+   * Convenience function that grabs available campaign data from page.
+   * @name getAvailableCampaigns
+   */
+  function getAvailableCampaigns() {
+    // Get campaigns that can be signed.
+    var $unsignedCampaignIDs = $('#unsigned-campaign-ids');
+
+    if ($unsignedCampaignIDs.length) {
+      return JSON.parse($('#unsigned-campaign-ids').val())
+    } else {
+      var campaignData = useStorage('read', 'campaigns') || {};
+      return (campaignData.available || [])
+    }
+  }
+
+
+  /**
    * Marshals into form filter data from hidden inputs
    * @name getFilterData
    */
@@ -669,6 +701,27 @@ var onHomePageLoad = function(){
     data['search']['query_value'] = searchTerms;
 
     return data;
+  }
+
+
+  /**
+   * Convenience function that intersects campaigns user will sign
+   * with those currently available on the page.
+   * @name getAvailableSelectedCampaigns
+   */
+  function getAvailableSelectedCampaigns() {
+    // Get campaigns that can be signed.
+
+    var a = getSelectedCampaigns();
+    var b = getAvailableCampaigns();
+
+    var t;
+    if (b.length > a.length) t = b, b = a, a = t; // indexOf to loop over shorter
+    return a.filter(function (e) {
+        return b.indexOf(e) > -1;
+    }).filter(function (e, i, c) { // extra step to remove duplicates
+        return c.indexOf(e) === i;
+    });
   }
 
 
@@ -735,20 +788,20 @@ var onHomePageLoad = function(){
    */
   function loadCampaignsToBeSigned() {
 
-    var selectedCampaignIDs = getSelectedCampaigns();
+    var availableSelectedCampaignIDs = getAvailableSelectedCampaigns();
 
     // Get campaigns to be signed.
-    var selectedCampaigns = selectedCampaignIDs.map(function(campaignID){
+    var availableSelectedCampaigns = availableSelectedCampaignIDs.map(function(campaignID){
       var nodeList = document.querySelectorAll("[data-campaign-id='" + campaignID.toString() + "']");
       var array = Array.prototype.slice.call(nodeList);
       return array[0]
     });
 
-    changeSignedDisplay($(selectedCampaigns).find('.sign'), 'add')
+    changeSignedDisplay($(availableSelectedCampaigns).find('.sign'), 'add')
 
 
     var unselectedCampaigns = JSON.parse($('#unsigned-campaign-ids').val() || '[]').filter(function(i) {
-      return selectedCampaignIDs.indexOf(i) < 0;
+      return availableSelectedCampaignIDs.indexOf(i) < 0;
     });
 
     unselectedCampaigns = unselectedCampaigns.map(function(campaignID){
@@ -840,9 +893,10 @@ var onHomePageLoad = function(){
 
         // var nojQueryAjaxDone = new Date().getTime()
         // console.log('nojQuery ajax done: ' + ( nojQueryAjaxDone - nojQueryStart ) )
-        var campaignListContainer = document.getElementsByClassName('campaign-list-container');
+
+        var campaignListContainer = document.getElementById('campaign-list-container');
         // console.log('nojQuery grabbed container: ' + ( new Date().getTime() - nojQueryStart ) )
-        campaignListContainer[0].innerHTML = xhr.responseText
+        campaignListContainer.innerHTML = xhr.responseText
         // console.log('nojQuery data replaced: ' + ( new Date().getTime() - nojQueryStart ) )
 
         toggleSignAllButton();
@@ -878,7 +932,7 @@ var onHomePageLoad = function(){
     //   // console.log('jQuery ajax done: ' + ( jQueryAjaxDone - jQueryStart ) )
     //   if (data === undefined) data = null;
 
-    //   var $campaignListContainer = $('.campaign-list-container')
+    //   var $campaignListContainer = $('#campaign-list-container')
     //   // console.log('jQuery grabbed container: ' + ( new Date().getTime() - jQueryStart ) )
     //   $campaignListContainer.html(data);
     //   // console.log('jQuery data replaced: ' + ( new Date().getTime() - jQueryStart ) )
@@ -915,6 +969,19 @@ var onHomePageLoad = function(){
 
     // Search for campaigns
     performSearch(suggestion);
+  }
+
+
+  /**
+   * Convenience function that grabs current available campaign data from storage and updates available campaign list.
+   * @name  setAvailableCampaigns
+   * @param {array} selectedCampaigns - updated selected campaigns
+   */
+  function setAvailableCampaigns(availableCampaigns){
+    var campaignData = useStorage('read', 'campaigns') || {};
+    campaignData.available = availableCampaigns;
+
+    useStorage('write', 'campaigns', campaignData)
   }
 
 
@@ -1017,14 +1084,14 @@ var onHomePageLoad = function(){
     var $stickyFooter = $(elem);
 
     if (!$stickyFooter.hasClass('disabled')){
-      var selectedCampaigns = getSelectedCampaigns();
+      var availableSelectedCampaigns = getAvailableSelectedCampaigns();
 
       // Trackasaurus
-      that.tracker.track('User will sign petitions', {campaignIDs: selectedCampaigns})
+      that.tracker.track('User will sign petitions', {campaignIDs: availableSelectedCampaigns})
 
       var $petitionData = $stickyFooter.find('input#petition-data');
 
-      $petitionData.val(JSON.stringify(selectedCampaigns));
+      $petitionData.val(JSON.stringify(availableSelectedCampaigns));
 
       $petitionData.parents('form').submit();
     }
@@ -1120,7 +1187,7 @@ var onHomePageLoad = function(){
     var $unsignedMatchingCampaigns = $matchingCampaigns.not('.already-signed');
 
     var queryPerformed = $('div.campaign-list.matching').length > 0;
-    var $signAllButton = $('div.sign-all button.btn');
+    var $signAllButton = $('div#sign-all button.btn');
 
 
     // There is no query being performed or query selected all campaigns.
@@ -1383,11 +1450,12 @@ var onHomePageLoad = function(){
     // var start = new Date().getTime();
     // console.log('starting timer: ' + 0)
 
-    var $stickyFooter       = $('.sticky-footer');
-    // var $footerText         = $stickyFooter.find('.footer-text');
-    var $footerNumCampaigns = $stickyFooter.find('.num-campaigns');
-    var $footerCampaignText = $stickyFooter.find('.campaign-word');
-    var selectedCampaigns   = getSelectedCampaigns();
+    var $stickyFooter              = $('#sticky-footer');
+    // var $footerText                = $stickyFooter.find('.footer-text');
+    var $footerNumCampaigns        = $stickyFooter.find('.num-campaigns');
+    var $footerCampaignText        = $stickyFooter.find('.campaign-word');
+
+    var availableSelectedCampaigns = getAvailableSelectedCampaigns();
 
     // var numbersToWords = {};
     // var numbersInEnglish = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten'];
@@ -1399,16 +1467,17 @@ var onHomePageLoad = function(){
     // var timePoint1 = new Date().getTime();
     // console.log('calling internal code...: ' + (timePoint1 - start))
 
-    if (selectedCampaigns.length) {
+
+    if (availableSelectedCampaigns.length) {
       $stickyFooter.removeClass('disabled');
 
-      var numCampaigns = selectedCampaigns.length.toString();
+      var numCampaigns = availableSelectedCampaigns.length.toString();
 
       var numText = null;
       // numText = numbersToWords[numCampaigns];
       numText = numText ? numText : numCampaigns;
 
-      var campaignsText = selectedCampaigns.length == 1 ? ' petition!' : ' petitions!'
+      var campaignsText = availableSelectedCampaigns.length == 1 ? ' petition!' : ' petitions!'
 
       $footerNumCampaigns.text(numText);
       $footerCampaignText.text(campaignsText);

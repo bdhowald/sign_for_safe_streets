@@ -1,6 +1,8 @@
 - just_signed_campaigns    = @just_signed_campaigns || []
 - already_signed_campaigns = @already_signed_campaigns || []
 
+- region_alias             = @region_alias || ''
+
 %main
   %div.header#thank-you-page-header
     - 5.times.each do
@@ -19,7 +21,7 @@
               = "You're a safe streets hero!"
             %h5#ps{'aria-hidden' => 'true'}
               (Want to sign more?
-              = link_to("Head back", homepage_path, {id: 'sign-more', method: :get})
+              = link_to("Head back", homepage_path + region_alias, {id: 'sign-more', method: :get})
               to the petition homepage.)
             %span.sr-only
               Want to sign more? Head back to the petition homepage.
@@ -51,7 +53,7 @@
                     = render partial: 'application/petition', collection: already_signed_campaigns, locals: { petition_to_expand: -1 }, cached: -> petition { [ petition, just_signed_campaigns.include?(petition.id), true ] }
 
 
-  = render partial: 'layouts/footer'
+  // = render partial: 'layouts/footer'
 
 
 :javascript

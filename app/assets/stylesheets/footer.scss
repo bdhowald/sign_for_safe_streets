@@ -1,5 +1,6 @@
-.static-footer {
+#static-footer {
   background-color: #f9f9f9;
+  flex-shrink: 0;
   padding: 2rem;
   text-align: center;
 
@@ -9,53 +10,53 @@
           transition: padding 0.8s ease-out;
 }
 
-.static-footer.with-padding {
+#static-footer.with-padding {
   padding-bottom: 7rem;
 }
 
 
 
-.static-footer > * {
+#static-footer > * {
   display: inline-block;
 }
 
-.static-footer .container .row .col-lg-12 .footer-row {
+#static-footer .container .row .col-lg-12 .footer-row {
   display: inline-block;
 }
 
-.static-footer .container .row .col-lg-12 .footer-row > * {
+#static-footer .container .row .col-lg-12 .footer-row > * {
   display: inline-block;
   line-height: 2.67rem;
   margin-bottom: 0;
 }
 
-.static-footer .social-media-links {
+#static-footer .social-media-links {
   top: .375rem;
   padding: 0 .75rem;
   position: relative;
 }
 
-.static-footer .social-media-links i {
+#static-footer .social-media-links i {
   padding: 0 .25rem;
 }
 
-.static-footer .social-media-links i.fa-twitter {
+#static-footer .social-media-links i.fa-twitter {
   color: #1da1f2;
 }
 
-.static-footer .social-media-links i.fa-github {
+#static-footer .social-media-links i.fa-github {
   color: #444;
 }
 
-.static-footer .social-media-links i.fa-linkedin {
+#static-footer .social-media-links i.fa-linkedin {
   color: #007bb6
 }
 
-.static-footer .social-media-links i.fa-instagram {
+#static-footer .social-media-links i.fa-instagram {
   color: #000;
 }
 
-.static-footer .site-link a {
+#static-footer .site-link a {
   color: #000;
   font-weight: 600;
   text-decoration: underline;

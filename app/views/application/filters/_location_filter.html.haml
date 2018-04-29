@@ -1,0 +1,5 @@
+%div.row.filter-buttons.locations
+  - ['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island', 'Citywide', 'Statewide'].each do |button_text|
+    %div{class: "col filter-button borough #{button_text.downcase.strip.gsub(' ', '-')}", 'data-search-text' => button_text, 'role' => 'button', 'aria-pressed' => 'false'}
+      %span.sans{'aria-label' => button_text}
+        = borough_abbreviation(button_text)

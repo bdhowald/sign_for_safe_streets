@@ -1,0 +1,27 @@
+%div.header#home-page-header
+  %div.container
+
+    - if !@region
+
+      %div.row
+        %div.col-lg-12
+          %div#filters
+
+            = render partial: 'application/filters/search_filter', locals: {search_term: @search_term}
+
+            = render partial: 'application/filters/category_filter'
+
+            = render partial: 'application/filters/location_filter'
+
+
+
+    %div.row
+      %div.col-lg-12
+
+        = render partial: 'application/filters/sign_all_button', locals: {campaigns: campaigns, other_campaigns: other_campaigns, selected_campaigns: selected_campaigns, campaigns_already_signed: campaigns_already_signed}
+
+
+    %div.row.view-style-row
+      %div.col-lg-12
+
+        = render partial: 'application/filters/view_filter', locals: {view_style: @view_style}

@@ -70,7 +70,7 @@ var BetterInformation = function() {
   this.trackViaServer = function(event, args){
     var _this = this;
 
-    var data  = {mixpanel: {event: event, args: args == undefined ? {campaignIds: [1,2,3]} : args}}
+    var data  = {mixpanel: {event: event, args: args == undefined ? {} : args}}
 
     $.ajax({
       url     : '../tracking/' + _this.fingerprint_id + '.js',

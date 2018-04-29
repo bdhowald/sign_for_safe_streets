@@ -1,0 +1,44 @@
+.campaign-description {
+
+}
+
+.campaign-description .container .row .col-lg-12 .card {
+  // margin: 2rem 0;
+}
+
+.campaign-description .container .row .col-lg-12 .card .campaign ul.campaign-details {
+  margin: 0;
+}
+
+.campaign-description .container .row .col-lg-12 .card .campaign ul.campaign-details li.signing-list-item .col.citywide {
+  background-color: rgba(255, 179, 71, 0.25);
+}
+
+.campaign-description .container .row .col-lg-12 .card .campaign ul.campaign-details li.signing-list-item .col.statewide {
+  background-color: rgba(0, 119, 200, 0.25);
+}
+
+.campaign-description .container .row .col-lg-12 .card .campaign ul.campaign-details li.signing-list-item .col.bronx {
+  background-color: rgba(245, 199, 184, 0.25);
+}
+
+.campaign-description .container .row .col-lg-12 .card .campaign ul.campaign-details li.signing-list-item .col.brooklyn {
+  background-color: rgba(147, 230, 180, 0.25);
+}
+
+.campaign-description .container .row .col-lg-12 .card .campaign ul.campaign-details li.signing-list-item .col.manhattan {
+  background-color: rgba(0, 200, 238, 0.25);
+}
+
+.campaign-description .container .row .col-lg-12 .card .campaign ul.campaign-details li.signing-list-item .col.queens {
+  background-color: rgba(243, 234, 161, 0.25);
+}
+
+.campaign-description .container .row .col-lg-12 .card .campaign ul.campaign-details li.signing-list-item .col.staten-island {
+  background-color: rgba(218, 197, 208, 0.25);
+}
+
+
+.campaign-description .container .row .col-lg-12 .card .campaign ul.campaign-details li.signing-list-item .col.removed {
+  background-color: rgba(192, 192, 192, 0.5);
+}

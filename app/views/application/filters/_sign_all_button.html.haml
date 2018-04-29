@@ -1,0 +1,45 @@
+%div#sign-all
+  - if !other_campaigns.empty?
+    / there is a subset of all campaigns currently filtered for
+    - if campaigns.empty?
+      / that subset is empty
+      %button.btn.btn-secondary.btn-lg.btn-block{type: 'button'}
+        No Campaigns Match
+    - else
+      / that subset is not empty
+      - if (campaigns.collect(&:id) - campaigns_already_signed).empty?
+        / the subset is only signed campaigns
+        %button.btn.btn-secondary.btn-lg.btn-block{type: 'button'}
+          Matching Campaigns Signed
+      - else
+        / the subset is not only signed campaigns
+        - if (campaigns.collect(&:id) - (selected_campaigns + campaigns_already_signed)).empty?
+          / the subset is only added and signed campaigns
+          %button.btn.btn-danger.btn-lg.btn-block{type: 'button'}
+            Remove Matching Campaigns
+        - else
+          / the subset has unadded campaigns
+          %button.btn.btn-primary.btn-lg.btn-block{type: 'button'}
+            Add Matching Campaigns
+  - else
+    / all active campaigns are shown (no subset being filtered for)
+    - if campaigns.empty?
+      / we don't have any campaigns
+      %button.btn.btn-secondary.btn-lg.btn-block{type: 'button'}
+        No Campaigns
+    - else
+      / we have active campaigns
+      - if (campaigns.collect(&:id) - campaigns_already_signed).empty?
+        / we only have signed campaigns
+        %button.btn.btn-secondary.btn-lg.btn-block{type: 'button'}
+          All Campaigns Signed
+      - else
+        / we have unsigned campaigns
+        - if (campaigns.collect(&:id) - (selected_campaigns + campaigns_already_signed)).empty?
+          / we have only added and signed campaigns
+          %button.btn.btn-danger.btn-lg.btn-block{type: 'button'}
+            Remove All Campaigns
+        - else
+          / we have unadded campaigns
+          %button.btn.btn-primary.btn-lg.btn-block{type: 'button'}
+            Add All Campaigns

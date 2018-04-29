@@ -1,0 +1,37 @@
+/ - campaigns                = @campaigns || []
+/ - other_campaigns          = @other_campaigns || []
+
+/ - campaigns_already_signed = @campaigns_already_signed || []
+/ - selected_campaigns       = @selected_campaigns || []
+/ - have_selected_campaigns  = @selected_campaigns.present?
+
+/ - search_term              = @search_term
+/ - view_style               = @view_style
+
+%div#sticky-footer.sign-petitions{class: "#{'retracted' if retracted}", 'role' => 'button', 'aria-pressed' => 'false'}
+  = form_tag('/review', method: 'POST') do
+
+    %input#petition-data{type: 'hidden', name:'campaigns[selected]'}
+    %input#unsigned-campaign-ids{type: 'hidden', value: ((campaigns + other_campaigns).collect(&:id) - campaigns_already_signed).sort }
+
+    %input#search-terms{type: 'hidden', value: "#{@search_term.nil? ? '[]' : [JSON.unparse(@search_term)]}"}
+    %input#categories-filter.filter-terms{type: 'hidden', value: '[]', 'data-filter-type' => 'categories'}
+    %input#locations-filter.filter-terms{type: 'hidden', value: '[]', 'data-filter-type' => 'locations'}
+    %input#view-style{type: 'hidden', value: @view_style}
+
+
+    %div.footer-text
+      %div{'aria-labelledby' => "sign-word sign-num-campaigns sign-campaign-word"}
+        %span.sign-word{id: "sign-word", 'aria-hidden' => 'true'}
+          Sign
+        - num_selected_campaigns = (selected_campaigns || []).count
+        %span.num-campaigns{id: "sign-num-campaigns", 'aria-hidden' => 'true'}
+          = num_selected_campaigns.to_s
+        %span.campaign-word{id: "sign-campaign-word", 'aria-hidden' => 'true'}
+          = (num_selected_campaigns == 1 ? 'petition!' : 'petitions!')
+        %span.sr-only
+          = "Sign #{num_selected_campaigns} #{num_selected_campaigns == 1 ? 'petition!' : 'petitions!'}"
+    %div.notification-box{'data-add-color' => '#15a3d0', 'data-remove-color' => '#ffc107'}
+      %div.notification
+        Campaign added!
+      %div#sr-notification-text{'role' => 'alert', 'aria-atomic' => 'true'}

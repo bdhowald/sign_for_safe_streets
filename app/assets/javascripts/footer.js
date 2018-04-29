@@ -15,11 +15,11 @@ var onFooterLoad = function(){
   }
 
 
-  $('body').on('click', '.static-footer .social-media-links .social-media-link', function(event){
+  $('body').on('click', '#static-footer .social-media-links .social-media-link', function(event){
     trackSocialMediaClicks(this);
   })
 
-  $('body').on('click', '.static-footer p.site-link', function(event){
+  $('body').on('click', '#static-footer p.site-link', function(event){
     trackFooterLinkClicks(this);
   })
 

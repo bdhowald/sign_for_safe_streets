@@ -7,134 +7,17 @@
 
 %main
 
-  %div.header#home-page-header
-
-    %div.container
-      %div.row
-        %div.col-lg-12
-          %div#filters
-            %div.input-group
-              %span.input-group-addon
-                %i.fa.fa-search
-              %input.form-control.typeahead{'aria-label' => 'Search bar', placeholder: 'ex: bike lanes, cameras, Queens', type: 'text', 'aria-label' => 'Type search terms here', value: @search_term}
-              %span.input-group-btn
-                %button.btn.btn-secondary.clear-search{type: 'button', style: "#{@search_term.present? ? '' : 'display:none'}", 'aria-label' => 'Clear search', 'aria-hidden' => 'true'}
-                  %i.fa.fa-times
-
-            %div.row.filter-buttons.categories
-              - [['Cycling', 'bike'], ['Walking', 'walk'], ['Transit', 'directions-bus'], ['Schools', 'graduation-cap']].each do |button_text|
-                %div.col.filter-button{'data-search-text' => button_text[0], 'role' => 'button', 'aria-pressed' => 'false', 'aria-label' => button_text[0]}
-                  %i{class: "zmdi zmdi-#{button_text[1]} zmdi-hc-lg", 'aria-hidden' => 'true'}
-                  %span.sans{'aria-label' => button_text[0]}
-                    = button_text[0]
-
-            %div.row.filter-buttons.locations
-              - ['Bronx', 'Brooklyn', 'Manhattan', 'Queens', 'Staten Island', 'Citywide', 'Statewide'].each do |button_text|
-                %div{class: "col filter-button borough #{button_text.downcase.strip.gsub(' ', '-')}", 'data-search-text' => button_text, 'role' => 'button', 'aria-pressed' => 'false'}
-                  %span.sans{'aria-label' => button_text}
-                    = borough_abbreviation(button_text)
-
-
-
-      %div.row
-        %div.col-lg-12
-          %div.sign-all
-            - if !other_campaigns.empty?
-              / there is a subset of all campaigns currently filtered for
-              - if campaigns.empty?
-                / that subset is empty
-                %button.btn.btn-secondary.btn-lg.btn-block{type: 'button'}
-                  No Campaigns Match
-              - else
-                / that subset is not empty
-                - if (campaigns.collect(&:id) - campaigns_already_signed).empty?
-                  / the subset is only signed campaigns
-                  %button.btn.btn-secondary.btn-lg.btn-block{type: 'button'}
-                    Matching Campaigns Signed
-                - else
-                  / the subset is not only signed campaigns
-                  - if (campaigns.collect(&:id) - (selected_campaigns + campaigns_already_signed)).empty?
-                    / the subset is only added and signed campaigns
-                    %button.btn.btn-danger.btn-lg.btn-block{type: 'button'}
-                      Remove Matching Campaigns
-                  - else
-                    / the subset has unadded campaigns
-                    %button.btn.btn-primary.btn-lg.btn-block{type: 'button'}
-                      Add Matching Campaigns
-            - else
-              / all active campaigns are shown (no subset being filtered for)
-              - if campaigns.empty?
-                / we don't have any campaigns
-                %button.btn.btn-secondary.btn-lg.btn-block{type: 'button'}
-                  No Campaigns
-              - else
-                / we have active campaigns
-                - if (campaigns.collect(&:id) - campaigns_already_signed).empty?
-                  / we only have signed campaigns
-                  %button.btn.btn-secondary.btn-lg.btn-block{type: 'button'}
-                    All Campaigns Signed
-                - else
-                  / we have unsigned campaigns
-                  - if (campaigns.collect(&:id) - (selected_campaigns + campaigns_already_signed)).empty?
-                    / we have only added and signed campaigns
-                    %button.btn.btn-danger.btn-lg.btn-block{type: 'button'}
-                      Remove All Campaigns
-                  - else
-                    / we have unadded campaigns
-                    %button.btn.btn-primary.btn-lg.btn-block{type: 'button'}
-                      Add All Campaigns
-
-
-      %div.row.view-style-row
-        %div.col-lg-12
-          %div.view-style-controls
-            %div.btn-group{"data-toggle" => "buttons"}
-              %label{class: "btn btn-outline-dark #{'active' if @view_style == 'grid'}"}
-                %input#grid-view-button{'autocomplete' => 'off', 'name' => 'grid-view', 'type' => 'radio', 'data-view-style' => 'grid'}/
-                Grid
-                %i.fa.fa-th
-              %label{class: "btn btn-outline-dark #{'active' if @view_style == 'list'}"}
-                %input#list-view-button{'autocomplete' => 'off', 'name' => 'list-view', 'type' => "radio", 'data-view-style' => 'list'}/
-                List
-                %i.fa.fa-bars
+  = render partial: 'application/filters', locals: {campaigns: campaigns, other_campaigns: other_campaigns, selected_campaigns: selected_campaigns, campaigns_already_signed: campaigns_already_signed, search_term: @search_term, view_style: @view_style}
 
   %div.all-campaigns-body#main-content
     %div.container
       %div.row
-        %div.campaign-list-container
+        %div#campaign-list-container
+
           = render partial: 'application/results', locals: {campaigns: campaigns, other_campaigns: other_campaigns}
 
 
-
-  %div.sticky-footer.sign-petitions{class: "#{'retracted' if !have_selected_campaigns}", 'role' => 'button', 'aria-pressed' => 'false'}
-    = form_tag('/review', method: 'POST') do
-
-      %input#petition-data{type: 'hidden', name:'campaigns[selected]'}
-      %input#unsigned-campaign-ids{type: 'hidden', value: ((campaigns + other_campaigns).collect(&:id) - campaigns_already_signed).sort }
-
-      %input#search-terms{type: 'hidden', value: "#{@search_term.nil? ? '[]' : [JSON.unparse(@search_term)]}"}
-      %input#categories-filter.filter-terms{type: 'hidden', value: '[]', 'data-filter-type' => 'categories'}
-      %input#locations-filter.filter-terms{type: 'hidden', value: '[]', 'data-filter-type' => 'locations'}
-      %input#view-style{type: 'hidden', value: @view_style}
-
-
-      %div.footer-text
-        %div{'aria-labelledby' => "sign-word sign-num-campaigns sign-campaign-word"}
-          %span.sign-word{id: "sign-word", 'aria-hidden' => 'true'}
-            Sign
-          - num_selected_campaigns = (@selected_campaigns || []).count
-          %span.num-campaigns{id: "sign-num-campaigns", 'aria-hidden' => 'true'}
-            = num_selected_campaigns.to_s
-          %span.campaign-word{id: "sign-campaign-word", 'aria-hidden' => 'true'}
-            = (num_selected_campaigns == 1 ? 'petition!' : 'petitions!')
-          %span.sr-only
-            = "Sign #{num_selected_campaigns} #{num_selected_campaigns == 1 ? 'petition!' : 'petitions!'}"
-      %div.notification-box{'data-add-color' => '#15a3d0', 'data-remove-color' => '#ffc107'}
-        %div.notification
-          Campaign added!
-        %div#sr-notification-text{'role' => 'alert', 'aria-atomic' => 'true'}
-
-  = render partial: 'layouts/footer', locals: {have_selected_campaigns: have_selected_campaigns}
+  = render partial: 'application/sticky_footer', locals: {retracted: !have_selected_campaigns, campaigns: campaigns, other_campaigns: other_campaigns, selected_campaigns: selected_campaigns, campaigns_already_signed: campaigns_already_signed, search_term: @search_term, view_style: @view_style}
 
 
 

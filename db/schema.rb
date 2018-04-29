@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171208075359) do
+ActiveRecord::Schema.define(version: 20180426223529) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,6 +35,11 @@ ActiveRecord::Schema.define(version: 20171208075359) do
     t.integer "offline_id"
     t.integer "offline_num"
     t.index ["link"], name: "index_campaigns_on_link", unique: true
+  end
+
+  create_table "campaigns_regions", id: false, force: :cascade do |t|
+    t.bigint "region_id", null: false
+    t.bigint "campaign_id", null: false
   end
 
   create_table "campaigns_tags", id: false, force: :cascade do |t|
@@ -69,6 +74,13 @@ ActiveRecord::Schema.define(version: 20171208075359) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable_type_and_searchable_id"
+  end
+
+  create_table "regions", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "alias"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "tags", force: :cascade do |t|

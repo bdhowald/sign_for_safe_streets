@@ -24,3 +24,4 @@
   %body
     = render partial: 'layouts/site_header'
     = yield
+    = render partial: 'layouts/footer', locals: {have_selected_campaigns: @selected_campaigns.present?}

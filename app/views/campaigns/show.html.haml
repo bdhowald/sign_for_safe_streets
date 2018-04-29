@@ -1,0 +1,91 @@
+- campaign                 = @campaign
+- campaign_domain          = 'https://campaigns.transalt.org'
+- campaigns_already_signed = @campaigns_already_signed || []
+- selected_campaigns       = @selected_campaigns || []
+
+%main
+  %div.campaign-description
+    %div.container
+      %div.row
+        %div.col-lg-12
+          %div.card
+            %div.campaign{'id' => "campaign-#{campaign.id}", 'data-campaign-id' => campaign.id}
+
+              %div.card-top
+                %div.card-body
+                  // Use styles of h3, but use h1 for accessibility.
+                  %h1.h3.card-title.campaign-name
+                    = campaign.name
+
+              %ul.campaign-details.list-group-flush
+
+                - if campaign.is_success
+                  %li.list-group-item.success-list-item
+                    %div.success-banner
+                      %i.fa.fa-star{'aria-hidden' => 'true'}
+                      Campaign Won!
+
+                %li.list-group-item.description-list-item
+
+                  %div.card-text.campaign-description.grid-view
+                    = campaign.description.html_safe
+
+
+                %li.list-group-item.signatures-list-item>
+                  %span.signatures
+                    = "Signatures: #{number_with_delimiter(campaign.num_signatures, :delimiter => ',')}"
+
+                  %div.progress
+                    - percentage_complete = (campaign.num_signatures.to_f / campaign.signatures_needed) * 100
+
+                    - progress_class = case percentage_complete
+                      - when percentage_complete..25 then 'bg-danger'
+                      - when percentage_complete..75 then 'bg-warning'
+                      - when percentage_complete..100 then 'bg-success'
+                      - else 'bg-success'
+
+
+                    %div{'class' => "#{progress_class} progress-bar", 'role' => "progressbar", 'style' => "width: #{(percentage_complete < 15 ? 15 : percentage_complete)}%", 'aria-valuenow' => "#{percentage_complete}", 'aria-valuemin' => '0', 'aria-valuemax' => '100', 'aria-label' => "#{percentage_complete.to_i}% of signatures needed to reach campaign goal."}
+                      = "#{percentage_complete.to_i}%"
+
+                %li.list-group-item.campaign-starter-list-item>
+                  %div{'aria-labelledby' => "started-by-text-#{campaign.id} starter-#{campaign.id}"}
+                    %a.campaign-link{href: "#{campaign.full_url}", target: '_blank', 'aria-label' => 'Link to campaign page on Transportation Alternatives website.', rel: 'noopener noreferrer'}
+                      %span.started-by-text{id: "started-by-text-#{campaign.id}", 'aria-hidden' => 'true'}
+                        Started by:
+                      %span.starter{id: "starter-#{campaign.id}", 'aria-hidden' => 'true'}
+                        = campaign.starter
+                      %span.sr-only
+                        = "Started by #{campaign.starter}"
+
+                %li.list-group-item.social-media-list-item>
+                  %div.social-media-items
+
+                    %a.social-media-share-link.twitter-link{'href' => "https://twitter.com/intent/tweet?status=Sign the petition #{campaign.name}%0A#{campaign_domain}#{campaign.link}", 'target' => '_blank', 'aria-label' => 'Share campaign to Twitter', rel: 'noopener noreferrer'}
+                      %i.fa.fa-2x.fa-twitter-square
+
+                    %a.social-media-share-link.facebook-link{'href' => "https://www.facebook.com/sharer/sharer.php?u=#{campaign_domain}#{campaign.link}&title=#{campaign.name}", 'target' => '_blank', 'aria-label' => 'Share campaign to Facebook', rel: 'noopener noreferrer'}
+                      %i.fa.fa-2x.fa-facebook-square
+
+
+                %li.list-group-item.no-padding.signing-list-item
+                  %div.details.row
+                    - if selected_campaigns.include?(campaign.id)
+
+                      %button.col.to-be-signed{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", "data-sign" => 'true', 'aria-label' => 'Campaign added', 'type' => 'button'}
+                        %span
+                        %i.fa.fa-check{'aria-hidden' => 'true'}
+
+                    - elsif campaigns_already_signed.include?(campaign.id)
+                      %div.col.already-signed{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", 'aria-label' => 'Campaign already signed', "data-sign" => 'false'}
+                        %span
+                        %i.fa.fa-check{'aria-hidden' => 'true'}
+                    - else
+                      %button.col.sign{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}", 'aria-label' => 'Add campaign', "data-sign" => 'false', 'type' => 'button'}
+                        %span
+                          Add
+                        %i.fa.fa-plus{'aria-hidden' => 'true'}
+
+                    %div.col{class: "#{campaign.borough.downcase.strip.gsub(' ', '-')}"}
+                      %span.borough
+                        = borough_abbreviation(campaign.borough)
