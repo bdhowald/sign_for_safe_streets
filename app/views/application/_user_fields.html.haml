@@ -29,7 +29,7 @@
         %div.form-group
           %label{for: 'user-first-name', id: 'first-name-label'}
             First name
-          %input.form-control#user-first-name{'name' => 'user[first_name]', 'type' => 'text', 'aria-labeledby' => 'first-name-label', 'placeholder' => 'Enter first name', 'required' => true, 'aria-required' => 'true', value: @user['first_name']}
+          %input.form-control#user-first-name{'name' => 'user[first_name]', 'type' => 'text', 'aria-labeledby' => 'first-name-label', 'placeholder' => 'Enter first name', 'required' => true, 'aria-required' => 'true', value: @user['first_name'], 'autocomplete' => 'given-name'}
           / %small
 
           %div.invalid-feedback{'role' => 'alert', 'aria-atomic' => 'true'}
@@ -39,7 +39,7 @@
         %div.form-group
           %label{for: 'user-last-name', id: 'last-name-label'}
             Last name
-          %input.form-control#user-last-name{'name' => 'user[last_name]', 'type' => 'text', 'aria-labeledby' => 'last-name-label', 'placeholder' => 'Enter last name', 'required' => true, 'aria-required' => 'true', value: @user['last_name']}
+          %input.form-control#user-last-name{'name' => 'user[last_name]', 'type' => 'text', 'aria-labeledby' => 'last-name-label', 'placeholder' => 'Enter last name', 'required' => true, 'aria-required' => 'true', value: @user['last_name'], 'autocomplete' => 'family-name'}
           / %small
 
           %div.invalid-feedback{'role' => 'alert', 'aria-atomic' => 'true'}
@@ -50,8 +50,9 @@
           %label{for: 'user-address', id: 'address-label'}
             Address
 
-          %input.form-control#user-address{'type' => 'text', 'aria-labeledby' => 'address-label', 'placeholder' => 'Enter address', 'required' => true, 'aria-required' => 'true', value: "#{address_string(@user['address']) if address_complete?(@user['address'])}"}
+          %input.form-control#user-address{'type' => 'text', 'aria-labeledby' => 'address-label', 'placeholder' => 'Enter address', 'required' => true, 'aria-required' => 'true', value: "#{address_string(@user['address']) if address_complete?(@user['address'])}", 'autocomplete' => 'new-password'}
           / %small
+
           %input#user-address-street{type: 'hidden', name: 'user[address][street]', value: @user.try(:[], 'address').try(:[], 'street')}
           %input#user-address-city{type: 'hidden', name: 'user[address][city]', value: @user.try(:[], 'address').try(:[], 'city')}
           %input#user-address-state{type: 'hidden', name: 'user[address][state]', value: @user.try(:[], 'address').try(:[], 'state')}
@@ -64,7 +65,7 @@
         %div.form-group
           %label{for: 'user-phone', id: 'phone-label'}
             Phone number
-          %input.form-control#user-phone{'name' => 'user[phone]', 'type' => 'text', 'aria-labeledby' => 'phone-label', 'pattern' => '(?:\([2-9]\d{2}\)|[2-9]\d{2})[- \.]?\d{3}[- \.]?\d{4}', 'placeholder' => 'Enter phone number', 'required' => true, 'aria-required' => 'true', value: @user['phone']}
+          %input.form-control#user-phone{'name' => 'user[phone]', 'type' => 'text', 'aria-labeledby' => 'phone-label', 'pattern' => '(?:\([2-9]\d{2}\)|[2-9]\d{2})[- \.]?\d{3}[- \.]?\d{4}', 'placeholder' => 'Enter phone number', 'required' => true, 'aria-required' => 'true', value: @user['phone'], 'autocomplete' => 'tel'}
           %small
             Petition recipients require a phone number.
 
@@ -75,7 +76,7 @@
         %div.form-group
           %label{for: 'user-email', id: 'email-label'}
             Email
-          %input.form-control#user-email{'name' => 'user[email]', 'type' => 'text', 'aria-labeledby' => 'email-label', 'pattern' => '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$', 'placeholder' => 'Enter email address', 'required' => true, 'aria-required' => 'true', value: @user['email']}
+          %input.form-control#user-email{'name' => 'user[email]', 'type' => 'text', 'aria-labeledby' => 'email-label', 'pattern' => '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$', 'placeholder' => 'Enter email address', 'required' => true, 'aria-required' => 'true', value: @user['email'], 'autocomplete' => 'email'}
           / %small
 
           %div.invalid-feedback{'role' => 'alert', 'aria-atomic' => 'true'}

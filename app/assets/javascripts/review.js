@@ -439,6 +439,17 @@ var onReviewPageLoad = (function(){
         ensureGooglePlaceSelected();
       }, false);
 
+
+      var observerHack = new MutationObserver(function() {
+        observerHack.disconnect();
+        input.setAttribute("autocomplete", "new-password");
+      });
+
+      observerHack.observe(input, {
+        attributes: true,
+        attributeFilter: ['autocomplete']
+      });
+
     }
 
   }
