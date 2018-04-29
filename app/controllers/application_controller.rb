@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
 
   def index
     # TODO: hacky, replace ASAP
-    cookies['petition_mode'] = serialize_hash(false)
+    cookies['petition_mode'] = serialize_hash('false')
 
     @view_style = unserialize_hash(cookies['view_style']) || 'grid'
 
@@ -48,7 +48,7 @@ class ApplicationController < ActionController::Base
     return redirect_to(homepage_path) unless @region
 
     # TODO: hacky, replace ASAP
-    cookies['petition_mode'] = serialize_hash(true)
+    cookies['petition_mode'] = serialize_hash('true')
     cookies['region']        = serialize_hash(@region.alias)
 
     @campaigns       = @region.campaigns
@@ -327,7 +327,7 @@ class ApplicationController < ActionController::Base
       return redirect_to '/'
     end
 
-    is_petition_mode = unserialize_hash(cookies['petition_mode'])
+    is_petition_mode = unserialize_hash(cookies['petition_mode']) == 'true'
 
     if is_petition_mode
       set_campaigns_cookie({})
