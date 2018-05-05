@@ -150,7 +150,7 @@ class ApplicationController < ActionController::Base
                 nodeid:     petition.node_id,
                 alertid:    petition.alert_id,
                 offlineid:  petition.offline_id,
-                offlinenum: petition.offline_id
+                offlinenum: petition.offline_num
               )
 
             else
