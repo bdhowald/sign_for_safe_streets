@@ -14,13 +14,14 @@
               %ul.campaigns.list-group.list-group-flush
                 = render partial: 'application/petition', collection: @petitions_to_sign, locals: { petition_to_expand: @petitions_to_sign.first.id }, cached: -> petition { [ petition, recently_signed_petitions.include?(petition.id), @petitions_to_sign.first.id, all_errors[petition.id].present?, @petitions_to_sign ] }
 
-            - if !@recently_signed_petitions.blank?
+
+            - if !recently_signed_petitions.blank?
               %h3.signing.petitions-title
                 Signed Petitions
               %div.campaign-container.card
                 %ul.campaigns.list-group.list-group-flush
-                  - if @recently_signed_petitions.present?
-                    = render partial: 'application/petition', collection: @recently_signed_petitions, locals: { petition_to_expand: -1 }, cached: -> petition { [ petition, recently_signed_petitions.include?(petition.id), @petitions_to_sign ] }
+                  - if recently_signed_petitions.present?
+                    = render partial: 'application/petition', collection: recently_signed_petitions, locals: { petition_to_expand: -1 }, cached: -> petition { [ petition, recently_signed_petitions.include?(petition.id), @petitions_to_sign ] }
 
 
       %div.col-sm-6.col-md-6

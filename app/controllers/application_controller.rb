@@ -122,7 +122,7 @@ class ApplicationController < ActionController::Base
       user_params = params['user']
 
 
-      trans_alt_url = 'https://campaigns.transalt.org/sites/all/modules/luminate_submit/submit.php'
+      trans_alt_url = 'https://campaigns.transalt.org/modules/custom/luminate_submit/submit.php'
 
       responses = {}
       mutex = Mutex.new
