@@ -1,11 +1,16 @@
-div.privacy-page-container div.jumbotron h1#privacy span.very {
-  font-weight: 600;
+div.privacy-page-container {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 div.privacy-page-container div.jumbotron {
   background-color: #fff;
   margin: 0;
   padding: 0 2rem 0rem;
+}
+
+div.privacy-page-container div.jumbotron h1#privacy span.very {
+  font-weight: 600;
 }
 
 div.privacy-page-container div.jumbotron h3 {
