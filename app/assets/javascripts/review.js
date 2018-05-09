@@ -1,6 +1,5 @@
 'use strict'
 
-
 var onReviewPageLoad = (function(){
 
   var tracker;
