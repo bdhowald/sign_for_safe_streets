@@ -314,6 +314,7 @@ DEPENDENCIES
   jquery-rails
   listen (>= 3.0.5, < 3.2)
   mixpanel-ruby
+  nokogiri
   pg
   pg_search
   puma (~> 3.7)

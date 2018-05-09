@@ -1,3 +1,5 @@
+require 'nokogiri'
+
 class CampaignLoader
 
   # Process each step of operation from scraping to filtering.
@@ -21,16 +23,70 @@ class CampaignLoader
     campaign_page      = 0
     transalt_campaigns = []
 
+    data = {
+      'view_display_id' => 'page_1',
+      'view_name' => '_home_petition_list',
+      # 'borough[1]' => '1',
+      # 'borough[2]' => '2',
+      # 'borough[3]' => '3',
+      # 'borough[4]' => '4',
+      # 'borough[5]' => '5',
+      # 'borough[6]' => '6',
+      # 'borough[7]' => '7',
+      'combine' => '',
+      'view_path' => '/views/ajax',
+      'view_base_path' => 'home',
+      'view_args' => '',
+      'view_dom_id' => 'c5036e4601024421270b27f484096004a8aa4a88664489eefc8a07bef3d6a9ee',
+      'pager_element' => 0,
+      '_wrapper_format' => 'drupal_ajax',
+      'page' => campaign_page,
+      '_drupal_ajax' => 1,
+      'ajax_page_state[theme]' => 'whitman',
+      'ajax_page_state[theme_token]' => '',
+      'ajax_page_state[libraries]' => 'better_exposed_filters/auto_submit,better_exposed_filters/general,bootstrap/popover,bootstrap/tooltip,core/html5shiv,google_analytics/google_analytics,system/base,views/views.ajax,views/views.module,views_infinite_scroll/views-infinite-scroll,whitman/cloud-typography,whitman/font-awesome,whitman/global-styling,whitman/petition-scripts'
+    }
+
     puts "Scraping campaigns..."
     # Collect all campaigns
     while more_campaigns do
-      puts "Scraping ?page=#{campaign_page}"
-      scraper = CampaignCrawler.new(campaign_page)
-      output = scraper.crawl
 
-      transalt_campaigns = transalt_campaigns + output['campaigns']
+      puts "Scraping page #{campaign_page}"
 
-      output['campaigns'].empty? ? (more_campaigns = false) : campaign_page +=1
+      # update page
+      data['page'] = campaign_page
+
+      url = 'https://campaigns.transalt.org/views/ajax?_wrapper_format=drupal_ajax'
+      res = RestClient.post(url, data)
+
+      campaign_json  = JSON.parse(res.body).last['data'].gsub("\n", '')
+      noko_doc       = Nokogiri::HTML.parse(campaign_json)
+
+      petition_links = noko_doc.xpath(".//div[contains(@class, 'views-field-field-background-image')]//a/@href").collect{|cp| cp.value}
+
+      petition_links.each_with_index do |link, num|
+
+        next if link =~ /null/
+
+        borough_info   = noko_doc.xpath(".//div[@class='views-field views-field-field-first-name']//span")[num].children.text.gsub(/ Petition$/, '')
+        starter_info   = noko_doc.xpath(".//div[@class='views-field views-field-field-first-name']//div[@class='field-content']")[num].children.last.text.gsub(/^ by /, '')
+        num_signatures = noko_doc.xpath(".//div[@class='views-field views-field-field-victory']//div[@class='home-sigcount']")[num].children[0].text
+        # campaign_won   = ?
+
+        scraper = CampaignCrawler.new(link)
+
+        output = scraper.crawl
+
+        output['borough']          = borough_info
+        output['campaign_starter'] = starter_info
+        output['num_signatures']   = num_signatures
+        output['petition_link']    = link
+
+        transalt_campaigns = transalt_campaigns + [output]
+
+      end
+
+      petition_links.count == 0 ? (more_campaigns = false) : campaign_page +=1
     end
 
     puts "Scraped #{campaign_page} pages\n\n"
@@ -47,33 +103,28 @@ class CampaignLoader
 
     processed_data = {}
 
-    petition_info = campaign_hash['petition_info'].first
-
-    return nil if petition_info.nil?
-
-    processed_data[:description]       = petition_info['campaign_description'].collect{|p| '<p>' + p + '</p>'}.join
+    processed_data[:description]       = campaign_hash['campaign_description'].collect{|p| '<p>' + p + '</p>'}.join
     processed_data[:is_success]        = !campaign_hash['campaign_won'].nil?
-    processed_data[:letter]            = petition_info['letter']
+    processed_data[:letter]            = campaign_hash['letter']
     processed_data[:link]              = campaign_hash['petition_link']
-    processed_data[:name]              = petition_info['campaign_name']
+    processed_data[:name]              = campaign_hash['campaign_name']
     processed_data[:num_signatures]    = (campaign_hash['num_signatures'] || '').gsub(/\D/, '').to_i
-    processed_data[:signatures_needed] = ((petition_info['signatures_needed'] || '').split('of').last || '').gsub(/\D/, '').to_i
+    processed_data[:signatures_needed] = ((campaign_hash['signatures_needed'] || '').split('of').last || '').gsub(/\D/, '').to_i
 
-    targets                  = petition_info['targets']
-    started_by_array         = campaign_hash['campaign_starter'].split(' by ')
+    targets                  = campaign_hash['targets']
 
     # strip borough of petition and spaces
-    processed_data[:borough] = (started_by_array[0] || '').gsub(/petition/i, '').strip
-    processed_data[:starter] = started_by_array[1]
+    processed_data[:borough] = campaign_hash['borough']
+    processed_data[:starter] = campaign_hash['campaign_starter']
 
 
-    processed_data[:alert_id]          = petition_info['alert_id']
-    processed_data[:node_id]           = petition_info['node_id']
-    processed_data[:offline_id]        = petition_info['offline_id']
-    processed_data[:offline_num]       = petition_info['offline_num']
+    processed_data[:alert_id]          = campaign_hash['alert_id']
+    processed_data[:node_id]           = campaign_hash['node_id']
+    processed_data[:offline_id]        = campaign_hash['offline_id']
+    processed_data[:offline_num]       = campaign_hash['offline_num']
 
     if processed_data[:num_signatures] == 0
-      processed_data[:num_signatures]  = petition_info['num_signatures'].gsub(/\D/, '').to_i
+      processed_data[:num_signatures]  = campaign_hash['num_signatures'].gsub(/\D/, '').to_i
     end
 
     processed_data[:targets] = rectify_targets(targets, processed_data[:borough])
@@ -116,7 +167,7 @@ class CampaignLoader
     else
 
       begin
-
+byebug
         cp = Campaign.create({
           alert_id:          campaign_data_hash[:alert_id],
           borough:           campaign_data_hash[:borough],
