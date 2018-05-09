@@ -167,7 +167,7 @@ class CampaignLoader
     else
 
       begin
-byebug
+
         cp = Campaign.create({
           alert_id:          campaign_data_hash[:alert_id],
           borough:           campaign_data_hash[:borough],
