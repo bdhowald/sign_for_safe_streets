@@ -42,7 +42,7 @@
             = "Signatures: #{number_with_delimiter(campaign.num_signatures, :delimiter => ',')}"
 
           %div.progress
-            - percentage_complete = (campaign.num_signatures.to_f / campaign.signatures_needed) * 100
+            - percentage_complete = (campaign.signatures_needed > 0) ? ((campaign.num_signatures.to_f / campaign.signatures_needed) * 100) : 0
 
             - progress_class = case percentage_complete
               - when percentage_complete..25 then 'bg-danger'
