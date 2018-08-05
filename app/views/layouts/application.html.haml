@@ -14,7 +14,7 @@
 
     = javascript_include_tag 'fingerprintjs2'
 
-    = javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=#{Rails.application.secrets.google_api_key}&libraries=places&callback=onReviewPageLoad.initializeGooglePlaces", async: Rails.env.production?, defer: 'defer'
+    = javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=#{Rails.application.secrets.google_places[:api_key]}&libraries=places&callback=onReviewPageLoad.initializeGooglePlaces", async: Rails.env.production?, defer: 'defer'
 
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
 
