@@ -50,6 +50,8 @@
           /     - when percentage_complete..100 then 'bg-success'
           /     - else 'bg-success'
 
+          - progress_class = nil
+          - percentage_complete = 0
 
           /   %div{'class' => "#{progress_class} progress-bar", 'role' => "progressbar", 'style' => "width: #{(percentage_complete < 15 ? 15 : percentage_complete)}%", 'aria-valuenow' => "#{percentage_complete}", 'aria-valuemin' => '0', 'aria-valuemax' => '100', 'aria-label' => "#{percentage_complete.to_i}% of signatures needed to reach campaign goal."}
           /     = "#{percentage_complete.to_i}%"
