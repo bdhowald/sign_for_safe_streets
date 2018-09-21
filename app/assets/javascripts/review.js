@@ -248,7 +248,6 @@ var onReviewPageLoad = (function(){
           // AutoComplete widget
           'componentRestrictions': {'country': 'us'},
           'types': ['geocode'],
-          'key': 'AIzaSyDKCL-XgjzqfJx6y0sCc6WxbzdECHyIbYY'
         },
         function (list, status){
           if(list == null || list.length == 0) {

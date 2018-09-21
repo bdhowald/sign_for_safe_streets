@@ -32,7 +32,7 @@ class CampaignCrawler
   campaign_name "xpath=.//div[@role='heading']//h1[@class='page-header']"
   campaign_description "xpath=.//div[contains(@class, 'field--name-field-please-sign')]//p", :list
   letter "xpath=.//div[contains(@class, 'field--name-field-to-send')]"
-  node_id "xpath=.//article[contains(@class, 'petition') and contains(@class, 'is-promoted')]/@data-history-node-id"
+  node_id "xpath=.//article[contains(@class, 'petition') and contains(@role, 'article')]/@data-history-node-id"
   offline_id "xpath=.//div[contains(@class, 'field--name-field-offline-issue-id')]", :text
   offline_num "xpath=.//div[contains(@class, 'field--name-field-offline-signatures')]", :text
   num_signatures "xpath=.//div[@class='petitionsigners']//span[@id='oldsignercount']"
