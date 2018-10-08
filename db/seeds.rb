@@ -41,6 +41,20 @@
 }
 
 [
+  "Eastern Queens",
+  "Western Queens",
+  "Brooklyn",
+  "North Brooklyn",
+  "Southwest Brooklyn",
+  "Staten Island",
+  "The Bronx",
+  "Manhattan",
+  "Upper Manhattan"
+].each{|region_name|
+  Region.find_or_create_by(name: region_name)
+}
+
+[
   'cycling',
   'walking',
   'transit',
