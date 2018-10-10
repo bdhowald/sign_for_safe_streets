@@ -6,17 +6,17 @@
     %title Sign for Safe Streets
     = csrf_meta_tags
 
-    = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload', async: Rails.env.production?
+    = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
 
     = javascript_include_tag 'mixpanel', async: Rails.env.production?
 
     = javascript_include_tag 'fingerprintjs2', async: Rails.env.production?
 
-    = javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=#{Rails.application.secrets.google_places[:api_key]}&libraries=places&callback=onReviewPageLoad.initializeGooglePlaces", async: Rails.env.production?, defer: 'defer'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload', defer: 'defer'
 
-    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag "https://maps.googleapis.com/maps/api/js?key=#{Rails.application.secrets.google_places[:api_key]}&libraries=places&callback=onReviewPageLoad.initializeGooglePlaces", defer: 'defer'
 
-    = javascript_include_tag 'typeahead', async: Rails.env.production?
+    = javascript_include_tag 'typeahead', defer: 'defer'
 
 
   %body
