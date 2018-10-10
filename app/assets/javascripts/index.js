@@ -1108,6 +1108,7 @@ var onHomePageLoad = function(){
     var $seeMoreLink         = $(event.target);
     var $campaign            = $seeMoreLink.parents('.campaign');
     // var $campaignDescription = $campaign.find('.campaign-description');
+    var $campaignName        = $campaign.find('.campaign-name')
     var $campaignText        = $campaign.find('.letter-text');
     var $campaignRowItem     = $campaign.parents('.row-item');
     var expanded             = $campaignRowItem.hasClass('expanded');
@@ -1124,6 +1125,9 @@ var onHomePageLoad = function(){
       $expandedCampaignText.html($seeMoreLink.data('shortened-text'));
       $expandedCampaignText.toggleClass('expanded');
 
+      // Toggle to shortened campaign name
+      $campaignName.html($campaignName.data('shortened-name'))
+
       // Toggle to show less
       $expandedSeeMoreLink.text('(see more)');
       $expandedSeeMoreLink.toggleClass('expanded');
@@ -1138,6 +1142,9 @@ var onHomePageLoad = function(){
       // Toggle to full text
       $campaignText.html($seeMoreLink.data('full-text'));
       $campaignText.addClass('expanded');
+
+      // Toggle to full campaign name
+      $campaignName.html($campaignName.data('full-name'))
 
       // Toggle to show less
       $seeMoreLink.text('(see less)');
